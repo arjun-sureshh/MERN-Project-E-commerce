@@ -1,0 +1,44 @@
+.body {
+    width: 240px;
+    height: 255px;
+    cursor: pointer;
+    border: 1px solid rgb(225, 224, 224);
+    border-radius: 2.6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    justify-content: center;
+}
+
+.imgSec {
+    display: flex;
+    justify-content: center;
+    /* border: 2px solid; */
+
+    img {
+        width: 60%;
+        height: 100%;
+        object-fit: contain;
+        /* border: 2px solid; */
+    }
+}
+
+.imgSec:hover img{
+    transform: scale(1.02);
+}
+
+.productName {
+    font-size: 14px;
+    width: 100%;
+    height: fit-content;
+    overflow: hidden;
+    color: rgb(68, 67, 67);
+}
+
+.highlightword {
+    font-size: 16px;
+    font-weight: 550;
+}
+.nameSec{
+    text-align: center;
+}

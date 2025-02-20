@@ -1,0 +1,13 @@
+.body{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.nameSection{
+    display: flex;
+}
+
+.Free{
+    color: green;
+}

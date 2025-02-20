@@ -1,0 +1,16 @@
+.body{
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    width: 100vw;
+background-color: #eeede7;
+
+    min-height: 100vh;
+}
+/* .content{
+
+} */
+ /* .navBar{
+    margin-bottom: 10px;
+    box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3); 
+ } */

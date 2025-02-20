@@ -1,0 +1,18 @@
+.body{
+    height: 100vh;
+    
+}
+
+.sidBar{
+    width: 18%;
+}
+.listing{
+    width: 81%;
+}
+.contentBody{
+    display: flex;
+    justify-content: space-between;
+    background-color: rgb(231, 233, 233);
+   /* gap: 20px; */
+   padding: 10px;
+}

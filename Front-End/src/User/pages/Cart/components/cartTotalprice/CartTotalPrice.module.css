@@ -1,0 +1,59 @@
+.body {
+    padding: 20px;
+    background-color: #fff;
+    width: 350px;
+    border-radius: 2px;
+}
+
+.headName {
+    font-size: 17.5px;
+    font-weight: 650;
+    color: #838383;
+    padding-bottom: 15px;
+    text-transform: uppercase;
+    border-bottom: 1px dotted rgb(215, 210, 210);
+}
+
+.priceDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px dotted rgb(215, 210, 210);
+}
+
+.totalAmountSection {
+    display: flex;
+    justify-content: space-between;
+    font-size: 17.5px;
+    font-weight: 650;
+    border-bottom: 1px dotted rgb(215, 210, 210);
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.savePrice {
+    padding-bottom: 10px;
+    padding-top: 10px;
+    font-size: 15.5px;
+    font-weight: 650;
+    color: #388e3c;
+
+}
+
+.securityMessage {
+    margin-top: 40px;
+    display: flex;
+    gap: 13px;
+}
+.icons{
+ font-size: 1.7em;
+}
+.message {
+    color: #838383;
+    font-size: 15px;
+    font-weight: 500;
+    width: 350px;
+
+}

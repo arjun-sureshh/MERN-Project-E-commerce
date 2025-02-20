@@ -1,0 +1,102 @@
+.body{
+    display: flex;
+    width: 100%;
+   padding: 20px;
+   gap: 20px;
+   align-items: center;
+   box-shadow: 5px 5px 15px rgba(9, 9, 9, 0.3);   
+   cursor: pointer;
+}
+.body:hover{
+    transform: scale(1.01);
+}
+.body:hover .productName{
+    color: rgb(21, 1, 252);
+    
+}
+
+.imageSection{
+    padding-inline: 10px;
+    img{
+        width: 90px;
+        height: fit-content;
+    }
+}
+.addtoCart{
+    font-size: 14px;
+    padding: 6px;
+    border: 1px solid #878787;
+     background-color: rgb(161, 161, 157);
+     border-radius: 30px;
+}
+.addtoCart:hover{
+    transform: scale(1.1);
+}
+.delete{
+    color: #878787;
+    font-size: 19px;
+}
+.delete:hover{
+    color: blue;
+    transform: scale(1.1);
+}
+.discriptionSection{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+.productNameSection{
+    display: flex;
+    justify-content: space-between;
+   width: 100%;
+}
+
+.deletandCart{
+    display: flex;
+    gap: 20px;
+}
+.rating{
+    display: flex;
+    gap: 7px;
+}
+.avgRating{
+    background-color: rgb(22, 150, 48);
+    color: #fff;
+    padding: 2px;
+    border-radius: 3px;
+    height: 20px;
+    font-size: 80%;
+    text-align: center;
+}
+
+.totalRating_Review{
+    font-weight: 550;
+    font-size: 80%;
+    color: #7b7878;
+}
+.pricesection{
+    display: flex;
+    gap: 7px;
+    align-items: center;
+}
+.sellingPrice{
+    font-size: 20px;
+    font-weight: 545;
+    color: #212121;
+}
+.MRP{
+    color: #878787;
+    font-size: 88%;
+    font-weight: 300;
+    
+}
+.offerPer{
+    font-size: 80%;
+    font-weight: 555;
+    color: #38ac3e;
+}
+
+.strick{
+    text-decoration: line-through;
+}

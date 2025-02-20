@@ -1,0 +1,65 @@
+.body {
+    display: flex;
+    flex-direction: column;
+    /* padding-inline: 20px; */
+    width: 200px;
+    position: absolute;
+    color: black;
+    background-color: rgb(255, 255, 255);
+}
+
+.signInUP {
+    /* padding: 12px; */
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 16px;
+    text-align: center;
+    line-height: 24px;
+    text-decoration: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.signIn {
+    flex: 1;
+    padding: 10px;
+}
+
+.signup {
+    padding: 10px;
+
+    flex: 1;
+}
+
+.signIn:hover {
+    box-shadow: 15px 5px 20px rgb(228, 228, 228);
+    border: 1px solid rgb(183, 180, 180);
+
+}
+
+.signup:hover {
+    box-shadow: 15px 5px 20px rgb(228, 228, 228);
+    border: 1px solid rgb(183, 180, 180);
+
+}
+
+.subBody {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.suboptions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding-block: 10px;
+    padding-left: 30px;
+    text-align: left;
+}
+.suboptions:hover{
+    box-shadow: 15px 5px 20px rgb(228, 228, 228);
+    border: 1px solid rgb(183, 180, 180);
+    flex: 1;
+}

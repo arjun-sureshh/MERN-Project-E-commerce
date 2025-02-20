@@ -1,0 +1,61 @@
+.body {
+    display: flex;
+    align-items: center;
+    padding-block: 20px;
+    /* background-color: rgba(171, 244, 244, 0.27); */
+    justify-content: space-between;
+    width: 300px;
+    cursor: pointer;
+    border: 2px solid rgb(226, 225, 225);
+    border-radius: 4.6px;
+}
+
+.body:hover {
+    box-shadow: 15px 5px 20px rgb(238, 236, 236);
+}
+
+.disSection {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-left: 10px;
+}
+
+.title {
+
+    color: rgb(248, 154, 120);
+    font-size: 15px;
+}
+
+.item {
+    color: black;
+    font-size: 17px;
+    font-weight: 550;
+}
+
+.feature {
+    font-size: 13px;
+}
+
+.imgSection {
+    img {
+        width: 100px;
+        height: 129px;
+        object-fit: contain;
+        margin-right: 10px;
+        border-radius: 10px;
+        /* border: 3px solid; */
+    }
+}
+.clr1{
+    background-color: rgb(207, 238, 237);
+}
+.clr2{
+    background-color: rgb(203, 241, 203);
+}
+.clr3{
+    background-color: rgb(241, 227, 213);
+}
+.clr4{
+    background-color: rgb(243, 218, 218);
+}

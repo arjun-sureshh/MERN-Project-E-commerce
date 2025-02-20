@@ -1,0 +1,35 @@
+table {
+    width: 100%;
+    border-collapse: separate;
+    margin: 20px 0;
+    border-spacing: 0;
+    border: 1px solid #ddd;
+    /* border-radius: 10px; */
+    overflow: hidden;
+
+
+}
+
+th,td {
+    border: 1px solid #9b9898;
+    padding: 8px;
+    text-align: center;
+}
+
+.head {
+    height: 40px;
+    padding: 11px;
+    color: rgb(96, 112, 128);
+    font-size: 13px;
+    font-weight: normal;
+    width: 325px;
+    text-align: left;
+    position: sticky;
+    top: 0px;
+    background-color: rgb(238, 238, 238);
+
+}
+
+.details {
+    background-color: #fff;
+}

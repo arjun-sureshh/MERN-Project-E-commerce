@@ -1,0 +1,27 @@
+.body{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #fff;
+    padding: 20px;
+    cursor: pointer;
+    margin-inline: 14px;
+    border-radius: 4.3px;
+}
+.title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 25px;
+    font-weight: 550;
+    letter-spacing: .6px;
+}
+.icon{
+    margin-right: 20px;
+    font-size: 27px;
+}
+.productsRow{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}

@@ -1,0 +1,15 @@
+.body {
+    width: 99vw;
+    background-color: rgb(240, 240, 240);
+}
+
+.bannerSec {
+    width: 100%;
+    height: 500px;
+}
+.ProductListing{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 20px;
+}

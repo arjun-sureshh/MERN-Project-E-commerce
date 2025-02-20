@@ -1,0 +1,12 @@
+.body{
+    width: 100%;
+    background-color: #fff;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border: 2px solid rgb(244, 233, 233);
+}
+.sideBarsection{
+   border-bottom: 1px solid rgb(229, 224, 224);
+}

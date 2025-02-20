@@ -1,0 +1,27 @@
+.body {
+    display: flex;
+
+    justify-content: center;
+    margin-inline: 60px;
+    margin-top: 20px;
+    border-radius: 4.4px;
+    background-color: #fff;
+    padding-block: 35px;
+    gap: 10px;
+}
+
+.addBanner {
+    width: 50%;
+    height: 400px;
+    margin-left: 20px;
+}
+
+.smallCard {
+    display: flex;
+    flex-wrap: wrap;
+    width: 44%;
+    justify-content: end;
+    gap: 10px;
+    margin-right: 10px;
+
+}

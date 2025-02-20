@@ -1,0 +1,82 @@
+.body{
+    background-color: rgb(29, 29, 29);
+    color: #d1cdcd;
+    display: flex;
+    justify-content: space-evenly;
+    padding-block: 10px;
+    align-items: center;
+    
+}
+.webName{
+    font-size: 26px;
+    font-family: cursive;
+    /* margin-left: -30px; */
+    color: #e3c7a1;
+}
+.sections{
+    display: flex;
+    gap: 20px;
+}
+
+.searchBar {    
+    display: flex;
+    background-color: #f9c241;
+    border-radius: 3px;
+    justify-content: flex-start;
+    height: 70%;
+    min-width: 304px;
+    width: 500px;
+    margin: 0 auto 0 12px;
+    align-items: center;
+}
+
+
+.searchBar input {
+    padding: 0 16px;
+    border-radius: 2px 0 0 2px;
+    border: 0;
+    outline: 0 none;
+    font-size: 14px;
+    height: 36px;
+    width: 100%;
+    background-color: #f3f0f0;
+}
+
+.searchIcon {
+    border: 1px solid var(--color-white-bg);
+    background-color: var(--color-white-bg);
+    height: 36px;
+    width: 44px;
+    border-radius: 2px;
+    cursor: pointer;
+    padding: 4px 12px 0 8px;
+    color: rgb(52, 89, 238);
+}
+.loginReg{
+    /* display: flex; */
+    font-size: small;
+    gap: 10px;
+    cursor: pointer;
+}
+.logcon{
+    display: flex;
+    gap: 10px;
+}
+.navIcons{
+    font-size: 25px;
+}
+.wishList{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.cart{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.becomeSeller{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}

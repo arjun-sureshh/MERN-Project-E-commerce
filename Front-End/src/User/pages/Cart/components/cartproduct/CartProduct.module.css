@@ -1,0 +1,81 @@
+.body {
+    display: flex;
+    gap: 20px;
+    background-color: #fff;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px;
+    border-bottom: 1px solid rgb(211, 208, 208);
+    border-radius: 2px;
+}
+
+
+.productImage {
+    width: 100px;
+
+    img {
+        object-fit: contain;
+        width: 100px;
+
+    }
+}
+
+.NameSection {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.name {
+    font-size: 18px;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.name:hover {
+    color: rgb(7, 7, 186);
+}
+
+.sellerName {
+    color: rgb(160, 163, 164);
+    font-size: 14px;
+    font-weight: 400;
+
+}
+
+
+.removefromcart {
+    padding: 5px;
+    border-radius: 3px;
+    font-size: 16px;
+    font-weight: 550;
+    width: fit-content;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.removefromcart:hover {
+    color: rgb(6, 6, 181);
+    border: 1px solid;
+}
+
+
+.sellingPrice {
+    font-size: 18px;
+    font-weight: 550;
+}
+
+.MRP {
+    color: rgb(160, 163, 164);
+    font-size: 13px;
+    font-weight: 400;
+    width: 120px;
+    margin-bottom: 50%;
+}
+
+.strick {
+    text-decoration: line-through;
+}

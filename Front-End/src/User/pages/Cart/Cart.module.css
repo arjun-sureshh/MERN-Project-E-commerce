@@ -1,0 +1,36 @@
+.body{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 20px;
+}
+.product{
+    border-bottom: 1px solid silver;
+    height: 69vh;
+    overflow: scroll;
+    overflow-y: scroll;
+}
+.product::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Edge */
+  }
+
+
+.placeOrderSection{
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: end;
+    background-color: #fff;
+    box-shadow: 1px 0px 30px 1px gray;;
+
+}
+.placeOrderButton{
+    width: 200px;
+    padding: 20px;
+    background-color: rgb(255, 111, 0);
+    text-align: center;
+    cursor: pointer;
+    border-radius: 4px ;
+}

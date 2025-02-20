@@ -1,0 +1,32 @@
+.body{
+    width: 100%;
+    object-fit: contain;
+}
+.slider{
+    color: blanchedalmond;
+   width: 100%;
+   display: flex;
+   justify-content: center;
+   
+}
+.headName{
+   
+    width: 100%;
+    padding-left:20px;
+    padding-bottom: 7px;
+    padding-top: 5px;
+    font-size: 13px;
+    font-weight: 580;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+}
+.minMax{
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    span{
+        margin-top: 10px;
+    }
+}
