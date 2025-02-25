@@ -7,16 +7,15 @@ import Path from '../../../../../components/path/Path';
 interface SubNavProps {
     addnewlisting: boolean;
     subnavName: string;
+    path: string;
 }
 
-const SubNav: React.FC<SubNavProps> = ({ addnewlisting, subnavName }) => {
+const SubNav: React.FC<SubNavProps> = ({ addnewlisting, subnavName, path}) => {
     const [handleaddListing, sethandleAddListing] = useState<boolean>(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
     // Close the dropdown when clicking outside the container
     useEffect(() => {
-        console.log(containerRef.current?.contains);
-
         const handleOutsideClick = (event: MouseEvent) => {
             if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
                 sethandleAddListing(false);
@@ -47,7 +46,7 @@ const SubNav: React.FC<SubNavProps> = ({ addnewlisting, subnavName }) => {
                     </div>
                     {handleaddListing && (
                         <div className={styles.newlistDropdown}>
-                            <AddNewList />
+                            <AddNewList linPath={path} />
                         </div>
                     )}
                 </div>}

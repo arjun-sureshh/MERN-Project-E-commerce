@@ -100,10 +100,34 @@ const updateBrand = async (req, res) => {
     }
 }
 
+// search brand in product upload
+const searchBrand = async (req, res) => {
+    try {
+      const { searchData } = req.params;
+  
+      if (!searchData) {
+        return res.status(400).json({ message: "Search term is required" });
+      }
+  
+      const categories = await Brand.aggregate([
+        {
+          $match: {
+            brandName: { $regex: `^${searchData}`, $options: "i" }, // Case-insensitive match
+          },
+        },
+      ])
+      return res.json(categories);
+    } catch (error) {
+      console.error("Error searching categories:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  };
+
 module.exports = {
     createBrand,
     getBrand,
     getBrandById,
     updateBrand,
-    deleteBrand
+    deleteBrand,
+    searchBrand
 }

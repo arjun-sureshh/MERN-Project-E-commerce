@@ -8,7 +8,7 @@ import DisplayInputContainer from './components/displayinputContainer/DisplayInp
 const PriceAndStock: React.FC = () => {
 
   const [displaypricestock, setDisplaypricestock] = useState<Boolean>(false)
-
+  
   return (
     <div className={styles.body}>
       <div className={`${styles.titleSection} ${ displaypricestock && styles.buttomBorder}`}>
@@ -18,14 +18,14 @@ const PriceAndStock: React.FC = () => {
         </div>
         { displaypricestock ?<div className={styles.flex}>
           <div className={styles.cancle} onClick={() => { setDisplaypricestock((!displaypricestock)) }}>Cancel</div>
-          <div className={styles.savebtn}>Save</div>
+          <div className={styles.savebtn} >Save</div>
         </div>
         :
         <div className={styles.editBtn} onClick={() => { setDisplaypricestock((!displaypricestock)) }}>Edit</div>}
       </div>
       { displaypricestock &&
          <div className={styles.displayInputContainer}>
-          <DisplayInputContainer/>
+          <DisplayInputContainer />
          </div> 
           }    
     </div>

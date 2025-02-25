@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import styles from './AdminProfile.module.css'
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { togglePageControl } from '../../../redux/toogleSlice';
+import { togglePageControl, toggleResetPage } from '../../../redux/toogleSlice';
+import { IoIosArrowBack } from 'react-icons/io';
 
 interface alldataProps {
   adminName: string;
@@ -78,6 +79,8 @@ const AdminProfile: React.FC = () => {
 
   return (
 <div className={styles.profileContainer}>
+  <div className={styles.homeLink}> <span onClick={() => dispatch(toggleResetPage())}><IoIosArrowBack/> Home</span></div>
+  <div className={styles.profileCardCOntainer}>
       <div className={styles.profileCard}>
         <h2 className={styles.profileTitle}>Admin Profile</h2>
 
@@ -114,6 +117,7 @@ const AdminProfile: React.FC = () => {
               Edit Profile
             </button>
           </div>
+        </div>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-.body{
+.body {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -7,32 +7,38 @@
     padding: 10px 20px 10px 20px;
     box-sizing: border-box;
 }
-.navSections{
+
+.navSections {
     display: flex;
     gap: 14px;
     align-items: center;
 }
-.navSections2{
+
+.navSections2 {
     display: flex;
     gap: 20px;
     align-items: center;
     position: relative;
     right: 20px;
 }
-.menuIcon{
+
+.menuIcon {
     font-size: 35px;
     cursor: pointer;
     color: rgb(27, 27, 27);
 }
-.menuIcon:hover{
+
+.menuIcon:hover {
     color: rgb(14, 14, 252);
 }
-.searchbar{
+
+.searchbar {
     display: flex;
     border: 1px solid rgb(195, 194, 194);
     border-radius: 5px;
 }
-.searchbar input{
+
+.searchbar input {
     height: 40px;
     width: 265px;
     background: white;
@@ -41,7 +47,8 @@
     outline: none;
     padding-left: 20px;
 }
-.searchIcon{
+
+.searchIcon {
     position: relative;
     left: -10px;
     border: none;
@@ -50,37 +57,40 @@
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
 }
-.image{
-    img{
+
+.image {
+    img {
         width: 30px;
         height: 30px;
     }
 }
-.chat{
+
+.chat {
     cursor: pointer;
 }
-.notification{
+
+.notification {
     cursor: pointer;
 }
-.profile{
+
+.profile {
     display: flex;
     gap: 10px;
     align-items: center;
     cursor: pointer;
 }
 
-.dropdown{
-    width: 100%;
-    border: 1px solid black;
+.dropdown {
+    width: 200px;
+    border: 1px solid rgb(190, 188, 188);
     position: absolute;
     height: fit-content;
-    width: fit-content;
+    left: 25px;
     max-width: 280px;
     margin-top: 8px;
     font-size: 14px;
     z-index: 9999;
     user-select: none;
-    
     display: flex;
     flex-direction: column;
     padding: 0px 0px;
@@ -88,20 +98,24 @@
     box-shadow: rgb(193, 199, 208) 0px 0px 4px;
     border-radius: 8px;
 }
-.listName{
+
+.listName {
     display: flex;
     align-items: center;
-  
-    padding-block: 3px ;
-    display: block;
+    gap: 14px;
     cursor: pointer;
-    color: rgb(61, 70, 77);
+    color: rgb(84, 84, 84);
     padding: 8px 12px;
+    font-size: 16px;
 }
-.listName:hover{
+
+.listName:hover {
     background-color: rgba(145, 145, 145, 0.1);
+    color: black;
 }
-.listIcon{
-    font-size: 17px;
-    color: grey;
+
+.listIcon {
+    font-size: 20px;
+    color: black;
+    color: rgb(70, 70, 70);
 }

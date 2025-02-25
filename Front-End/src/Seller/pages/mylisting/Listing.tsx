@@ -12,7 +12,7 @@ const Listing:React.FC = () => {
   return (
     <div className={styles.body}>
         <div className={styles.subNav}>
-           <SubNav addnewlisting={true}  subnavName={"My Listing"}/>
+           <SubNav addnewlisting={true} subnavName={"My Listing"} path={'/Seller/AddNewProductToListing'}/>
         </div>
         <div className={styles.updatesSection}>
         <div className={styles.updatesBoxs}>

@@ -1,24 +1,26 @@
-.body{
+.body {
     background-color: rgb(29, 29, 29);
     color: #d1cdcd;
     display: flex;
     justify-content: space-evenly;
     padding-block: 10px;
     align-items: center;
-    
+
 }
-.webName{
+
+.webName {
     font-size: 26px;
     font-family: cursive;
     /* margin-left: -30px; */
     color: #e3c7a1;
 }
-.sections{
+
+.sections {
     display: flex;
     gap: 20px;
 }
 
-.searchBar {    
+.searchBar {
     display: flex;
     background-color: #f9c241;
     border-radius: 3px;
@@ -52,31 +54,60 @@
     padding: 4px 12px 0 8px;
     color: rgb(52, 89, 238);
 }
-.loginReg{
+
+.loginReg {
     /* display: flex; */
     font-size: small;
     gap: 10px;
     cursor: pointer;
 }
-.logcon{
+
+.logcon {
     display: flex;
     gap: 10px;
 }
-.navIcons{
+
+.navIcons {
     font-size: 25px;
 }
-.wishList{
+
+.wishList {
     display: flex;
     gap: 10px;
     align-items: center;
+    cursor: pointer;
+    color: #aaaaaa;
+
 }
-.cart{
-    display: flex;
-    gap: 10px;
-    align-items: center;
+
+.wishList:hover {
+    transform: scale(1.02);
+    color: rgb(255, 255, 255);
 }
-.becomeSeller{
+
+.cart {
     display: flex;
     gap: 10px;
     align-items: center;
+    cursor: pointer;
+    color: #aaaaaa;
+}
+
+.cart:hover {
+    transform: scale(1.02);
+    color: rgb(255, 255, 255);
+}
+
+.becomeSeller {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    cursor: pointer;
+    text-decoration: none;
+    color: #aaaaaa;
+}
+
+.becomeSeller:hover {
+    transform: scale(1.02);
+    color: rgb(255, 255, 255);
 }

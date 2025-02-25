@@ -1,6 +1,7 @@
 const Admin = require("../models/adminModels");
 const bcrypt = require("bcrypt");
-
+const nodemailer = require("nodemailer");
+const otpGenerator = require("otp-generator");
 
 // admin get 
 const getAdmin = async (req, res) => {
@@ -124,7 +125,101 @@ const updateAdmin = async (req, res) => {
             res.status(404).json({ message: "Admin account is not found " })
         }
     } catch (error) {
-        console.error("Error updateing in Policy Method:", error);
+        console.error("Error updateing in admin Detailes:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+// otp generation
+
+// store  OTP temporarily
+const otpStorage = {};
+
+// Configure Nodemailer transporter
+const transporter = nodemailer.createTransport({
+    service: process.env.EMAIL_SERVICE,
+    auth: {
+        user: process.env.EMAIL_USER, // Your email
+        pass: process.env.EMAIL_PASS, // Your email app password
+    }
+});
+
+// Generate and send OTP to email
+const sendOTP = async (req, res) => {
+    const { adminEmail } = req.body;
+console.log(adminEmail);
+
+    if (!adminEmail) {
+        return res.status(400).json({ message: "Email is required" });
+    }
+
+    try {
+        const admin = await Admin.findOne({ adminEmail });
+
+        if (!admin) {
+            return res.status(404).json({ message: "Admin not found" });
+        }
+
+        // Generate OTP
+        const otp = otpGenerator.generate(4, {
+            digits: true, 
+            upperCaseAlphabets: false, 
+            specialChars: false, 
+            lowerCaseAlphabets: false // Ensure no lowercase letters
+          });
+          otpStorage[adminEmail] = otp;
+
+        // Email message
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: adminEmail,
+            subject: "Your OTP Code",
+            text: `Your OTP code is: ${otp}. It will expire in 5 minutes.`
+        };
+
+        await transporter.sendMail(mailOptions);
+        res.status(200).json({ message: "OTP sent successfully" });
+
+        // Set OTP expiry (optional)
+        setTimeout(() => {
+            delete otpStorage[adminEmail];
+        }, 300000); // OTP expires in 5 minutes
+
+    } catch (error) {
+        console.error("Error sending OTP:", error);
+        res.status(500).json({ message: "Error sending OTP", error });
+    }
+};
+// Verify OTP
+const verifyOTP = (req, res) => {
+    const { adminEmail, otp } = req.body;
+
+    if (otpStorage[adminEmail] === otp) {
+        delete otpStorage[adminEmail]; // Remove OTP after use
+        res.status(200).json({ message: "OTP verified successfully" });
+    } else {
+        res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+};
+
+//  update Brand by id 
+
+const updateAdminpassword = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { adminPassword } = req.body;
+            const updateItem = await Admin.findByIdAndUpdate(
+                id,
+                { adminPassword },
+                { new: true }
+            );
+        if(updateItem){
+            res.status(200).send({ message: "Admin Password Changed", updateItem });
+        } else {
+            res.status(400).send({ message: "required Password for change",});
+        }  
+    } catch (error) {
+        console.error("Error in password changing:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 }
@@ -134,6 +229,9 @@ module.exports = {
     getAdmin,
     getAdminById,
     deleteAdmin,
-    updateAdmin
+    updateAdmin,
+    sendOTP,
+    verifyOTP,
+    updateAdminpassword
 }
 

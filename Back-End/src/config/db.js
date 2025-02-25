@@ -1,8 +1,12 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+require('dotenv').config();
+
 
 const connectDB = async () => {
     try {
-        await mongoose.connect('mongodb+srv://arjunsuresh410:arjunsuresh410@cluster0.kbzr3.mongodb.net/db-e-commerce');
+        // console.log("mono-url",process.env.MONGO_URI);
+        
+        await mongoose.connect(process.env.MONGO_URI,);
 
         console.log('Mongo DB connected');
     } catch (error) {
@@ -11,5 +15,5 @@ const connectDB = async () => {
     }
 
 };
-
+ 
 module.exports = connectDB;

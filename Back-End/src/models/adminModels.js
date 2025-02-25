@@ -18,13 +18,6 @@ const adminSchemaStructure = new mongoose.Schema({
         required:true,
         unique:true,
         trim:true,
-    //     validate: {
-    //         validator: function (password) {
-    //           const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    //           return strongPasswordRegex.test(password);
-    //         },
-    //          message: 'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number.',
-    // }
     },
 },{timestamps:true})
 

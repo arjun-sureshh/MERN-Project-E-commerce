@@ -10,7 +10,7 @@ const DisplayInputContainer:React.FC = () => {
         <InputBox headName={"Price details"} attributeName={"MRP"} inputContain={"INR"}/>
         <InputBox headName={""} attributeName={"Your selling price"} inputContain={"INR"}/>
 
-        <SelectBox headName={"Status Details"} attributeName={"Listing Status "} inputContain={["Active","Inactive"]} />
+        {/* <SelectBox headName={"Status Details"} attributeName={"Listing Status "} inputContain={["Active","Inactive"]} /> */}
 
         <SelectBox headName={"Inventory details"} attributeName={"Fullfilment by"} inputContain={["Seller"]} />
         <SelectBox headName={""} attributeName={"Procurement type "} inputContain={["Instock","Express","Domestic Procurement","Made To Order"]} />

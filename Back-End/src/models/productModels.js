@@ -14,20 +14,21 @@ const productSchemaStructure = new mongoose.Schema({
     brandId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "brand",
-        required: true,
+        required: false,
     },
     skuId:{
       type:Number,
-      required:true,
+      required:false,
     },
+    
     ListingStatus: {
         type: String,
-        required: true,
+        required: false,
     },
    
     fulfilmentBy:{
         type:String,
-        required:true,
+        required:false,
         trim:true
     },
  

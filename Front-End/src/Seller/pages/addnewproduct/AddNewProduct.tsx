@@ -7,7 +7,7 @@ const AddNewProduct:React.FC = () => {
   return (
     <div className={styles.body}>
         <div className={styles.subNav}>
-            <SubNav addnewlisting={true} subnavName={""}/>
+            <SubNav addnewlisting={true} subnavName={"Add New Product"} path={'/Seller/AddNewProductToListing'}/>
         </div>
         <div className={styles.secSection}>
             <div className={styles.headingSection}>

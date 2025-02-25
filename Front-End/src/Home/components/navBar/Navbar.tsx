@@ -4,6 +4,7 @@ import { FaRegUser, FaSearch } from 'react-icons/fa'
 import { FiHeart } from 'react-icons/fi'
 import { BsCart4, BsShop } from 'react-icons/bs'
 import HoverDown from './components/hoverDown/HoverDown'
+import { Link } from 'react-router'
 
 const Navbar: React.FC = () => {
 
@@ -54,10 +55,12 @@ const Navbar: React.FC = () => {
         <div className={styles.cart}>
           <span className={styles.navIcons}><BsCart4 /></span>
           Cart</div>
-        <div className={styles.becomeSeller}>
+        <>
+          <Link to={"/Seller"}  className={styles.becomeSeller}>
           <span className={styles.navIcons}><BsShop /></span>
           Become a Seller
-        </div>
+          </Link>
+        </>
       </div>
     </div>
   )

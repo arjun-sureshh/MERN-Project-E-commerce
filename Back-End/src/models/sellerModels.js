@@ -14,20 +14,13 @@ const sellerSchemaStructure = new mongoose.Schema({
     },
     sellerPassword: {
         type: String,
-        required: true,
+        required: false,
         unique: true,
         trim:true,
-        // validate: {
-        //     validator: function (password) {
-        //         const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
-        //         return strongPasswordRegex.test(password);
-        //     },
-        //     message: 'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number.',
-        // }
     },
     sellerMobileNumber: {
         type: Number,
-        required: true,
+        required: false,
         trim:true,
         validate: {
             validator: function (number) {
@@ -40,29 +33,28 @@ const sellerSchemaStructure = new mongoose.Schema({
     sellerDisplayName: {
         type: String,
         trim:true,
-        required: true,
+        required: false,
     },
     bankAccountNo:{
         type:String,
-        required:true,
+        required:false,
         unique:true,
         trim:true,
     },
     ifscCode:{
         type:String,
-        required:true,
+        required:false,
         trim:true,
         unique:true
     },
     storeDiscribtion:{
         type:String,
-        required:true,
+        required:false,
         trim:true,
     },
-    categoryId:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "categories",
-        required: true,
+    RegStatges:{
+        type: Number,
+        required:false,
     },
     qcStatus:{
         type:Number,

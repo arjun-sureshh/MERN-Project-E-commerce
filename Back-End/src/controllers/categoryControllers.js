@@ -129,12 +129,6 @@ const updateCategory = async (req, res) => {
         const { categoryName, mainCategory } = req.body;
         const findItem = await Category.findById(id);
 
-        // let existingCategory = await Category.findOne({categoryName : { $regex: new RegExp("^" + categoryName + "$", "i") }})
-
-        // if(existingCategory){
-        //     return res.status(400).json({message:"This Category is already exists"})
-        // }
-
         if (findItem) {
             const updateItem = await Category.findByIdAndUpdate(
                 id,
@@ -151,11 +145,70 @@ const updateCategory = async (req, res) => {
     }
 }
 
+
+    const searchCategory = async (req, res) => {
+        try {
+          const { searchData } = req.params;
+      
+          if (!searchData) {
+            return res.status(400).json({ message: "Search term is required" });
+          }
+      
+          const categories = await Category.aggregate([
+            {
+              $match: {
+                categoryName: { $regex: `^${searchData}`, $options: "i" }, // Case-insensitive match
+              },
+            },
+            {
+              $graphLookup: {
+                from: "categories", // Collection name (should match DB)
+                startWith: "$mainCategory",
+                connectFromField: "mainCategory",
+                connectToField: "_id",
+                as: "parentCategories",
+              },
+            },
+            {
+              $addFields: {
+                fullPath: {
+                  $concat: [
+                    { $reduce: {
+                        input: "$parentCategories",
+                        initialValue: "",
+                        in: { $concat: ["$$value", "", "$$this.categoryName"] },
+                      },
+                    },
+                    "/",
+                    "$categoryName",
+                  ],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                categoryName: 1,
+                fullPath: 1, // "fashion/men/tshirt"
+              },
+            },
+            { $sort: { fullPath: 1 } }, // Sort alphabetically
+          ]);
+      
+          return res.json(categories);
+        } catch (error) {
+          console.error("Error searching categories:", error);
+          res.status(500).json({ message: "Internal Server Error" });
+        }
+      };
+
+
 module.exports = {
     createCategory,
     getCategory,
     getCategoryById,
     updateCategory,
-    deleteCategory
+    deleteCategory,
+    searchCategory
 }
 

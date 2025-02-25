@@ -2,11 +2,15 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 interface ToggleState {
     menuOpen: boolean;
     openPage:{[key:string]:boolean};
+    productAdddingState:number | null;
+    productId:string;
 }
 
 const initialState: ToggleState = {
     menuOpen: false,
-    openPage:{}
+    openPage:{},
+    productAdddingState: 1,
+    productId:""
 }
 
 const toggleSlice = createSlice({
@@ -24,9 +28,16 @@ const toggleSlice = createSlice({
         },
         toggleResetPage:(state) =>{
             state.openPage = {};
+        },
+        toggleProductAddingState:(state ,action:PayloadAction<number>) =>{
+            state.productAdddingState = action.payload;
+        },
+        toggleProductId:(state,action:PayloadAction<string>)=>{
+            state.productId = action.payload;
         }
+
     }
 })
 
-export const { toggleMenuOpen, toggleResetPage , togglePageControl } = toggleSlice.actions;
+export const { toggleMenuOpen, toggleResetPage , togglePageControl , toggleProductAddingState,toggleProductId } = toggleSlice.actions;
 export default toggleSlice.reducer;

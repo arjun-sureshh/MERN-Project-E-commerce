@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import styles from './AdminEditProfile.module.css'
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { togglePageControl } from '../../../redux/toogleSlice';
+import { togglePageControl, toggleResetPage } from '../../../redux/toogleSlice';
 import { IoArrowBackCircleOutline } from 'react-icons/io5';
+import { IoIosArrowBack } from 'react-icons/io';
 
 
 interface InputData {
@@ -109,7 +110,7 @@ const AdminEditProfile: React.FC = () => {
       }
     }
   }
-  
+
   // fetch data from the back end 
   const fetchData = async () => {
     if (!id) {
@@ -151,38 +152,40 @@ const AdminEditProfile: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.card}>
-        <div className={styles.moveBack}>
-          <p className={styles.link} onClick={() => dispatch(togglePageControl("AdminProfile"))}><IoArrowBackCircleOutline /></p>
+      <div className={styles.homeLink}> <span onClick={() => dispatch(toggleResetPage())}><IoIosArrowBack /> Home</span></div>
+      <div className={styles.profileCardCOntainer}>
+        <div className={styles.card}>
+          <div className={styles.moveBack}>
+            <p className={styles.link} onClick={() => dispatch(togglePageControl("AdminProfile"))}><IoArrowBackCircleOutline /></p>
+          </div>
+          <h1 className={styles.title}>Edit Profile</h1>
+          <form className={styles.form}
+            ref={formref}
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit(e);
+            }}
+          >
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>Your Name</label>
+              <input type="text" name="adminName" value={inputData.adminName} className={styles.input} required onChange={handleChange} />
+            </div>
+
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>Email</label>
+              <input type="email" name="adminEmail" value={inputData.adminEmail} className={styles.input} required onChange={handleChange} />
+            </div>
+            {successfullMsg && <div className={styles.successMsg}>{successfullMsg}</div>}
+            {clientError && <div className={styles.noChanges}>{clientError}</div>}
+            {backEndError && <div className={styles.noChanges}>{backEndError}</div>}
+
+            <button type="submit" className={styles.primaryButton}>Save Changes</button>
+          </form>
+
+
+          <p className={styles.link} onClick={reset}>Cancel</p>
+
         </div>
-        <h1 className={styles.title}>Edit Profile</h1>
-        <form className={styles.form}
-          ref={formref}
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSubmit(e);
-          }}
-        >
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>Your Name</label>
-            <input type="text" name="adminName" value={inputData.adminName} className={styles.input} required onChange={handleChange} />
-          </div>
-
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>Email</label>
-            <input type="email" name="adminEmail" value={inputData.adminEmail} className={styles.input} required onChange={handleChange} />
-          </div>
-          {successfullMsg && <div className={styles.successMsg}>{successfullMsg}</div>}
-          {clientError && <div className={styles.noChanges}>{clientError}</div>}
-          {backEndError && <div className={styles.noChanges}>{backEndError}</div>}
-
-          <button type="submit" className={styles.primaryButton}>Save Changes</button>
-        </form>
-
-
-        <p className={styles.link} onClick={reset}>Cancel</p>
-
-
       </div>
     </div>
   )
