@@ -14,7 +14,7 @@ interface fetchData {
 
 const SelectBrand:React.FC = () => {
 
- const productId = useSelector((state: RootState) => state.toggle.productId)
+ const productId = useSelector((state: RootState) => state.toggle.productId);
  
   const dispatch = useDispatch();
 
@@ -41,8 +41,8 @@ const SelectBrand:React.FC = () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/brand/search/${value}`);
       setFetchData(response.data);
-      console.log("fetchdata:",fetchData);
-      console.log(e.currentTarget);
+      // console.log("fetchdata:",fetchData);
+      // console.log(e.currentTarget);
 
     } catch (error) {
       console.error("Error fetching categories", error);
@@ -62,8 +62,8 @@ const SelectBrand:React.FC = () => {
 
   // add product submi
   const updateBrand = async () => {
-    console.log(productId);
-    console.log(selectedBrandId);
+    // console.log(productId);
+    // console.log(selectedBrandId);
     
     
     if (!productId || !selectedBrandId) {
@@ -74,6 +74,7 @@ const SelectBrand:React.FC = () => {
     try {
       const response = await axios.put(`http://localhost:5000/api/product/brandId/${productId}`, { // ✅ Corrected URL
         brandId: selectedBrandId, // Ensure key matches backend expectations
+       ListingStatus:3
     });
 
         // alert(response.data.message);

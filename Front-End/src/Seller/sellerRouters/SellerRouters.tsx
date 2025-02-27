@@ -13,7 +13,6 @@ const SellerRouters:React.FC = () => {
     <div>
         <Routes>
         <Route path="/"  element={<SellerHomePage/>}/>
-        <Route path="/DashBoard"  element={<SellerDashBoard/>}/>
         <Route path="/Listing"  element={<Listing/>}/>
         <Route path='/AddNewProduct' element={<AddNewProduct/>}/>
         <Route path='/AddNewProductToListing' element={<AddNewProductToListing/>}/>

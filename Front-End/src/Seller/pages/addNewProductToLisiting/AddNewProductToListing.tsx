@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './AddNewProductToListing.module.css'
 import SubNav from '../mylisting/components/subNav/SubNav'
 import ProductAddingSections from './components/productAddingSection/ProductAddingSections'
@@ -21,7 +21,9 @@ const AddNewProductToListing: React.FC = () => {
   const displayimageBlock = () => {
     setdisplayPhotoupload(!displayphotoupload)
   }
-
+ 
+  
+  
 
   return (
     <div className={styles.body}>

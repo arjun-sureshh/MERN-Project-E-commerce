@@ -71,3 +71,7 @@
     color: blue;
     border-color: blue;
 }
+.displayInputContainer{
+    height: 250px;
+    overflow: scroll;
+}

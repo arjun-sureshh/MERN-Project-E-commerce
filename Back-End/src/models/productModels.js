@@ -22,7 +22,8 @@ const productSchemaStructure = new mongoose.Schema({
     },
     
     ListingStatus: {
-        type: String,
+        type: Number,
+        default:1,
         required: false,
     },
    

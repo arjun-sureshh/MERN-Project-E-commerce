@@ -1,30 +1,50 @@
-import React from 'react'
-import styles from './InputBox.module.css'
-import AttributeBox from '../attributeBox/AttributeBox'
+import React from "react";
+import styles from "./InputBox.module.css";
+import AttributeBox from "../attributeBox/AttributeBox";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../../../../redux/store";
+import { toggleProductFields } from "../../../../../../redux/toogleSlice";
 
 interface InputBoxProps {
-    headName: string;
+    headName?: string;
     attributeName: string;
-    inputContain: string;
+    inputContain?: string;
+    name: keyof RootState["toggle"]["productFields"];
 }
 
-const InputBox: React.FC<InputBoxProps> = ({ headName, attributeName,inputContain }) => {
+// ✅ Use React.forwardRef with correct typing
+const InputBox = React.forwardRef<HTMLInputElement, InputBoxProps>(
+  ({ headName, attributeName, inputContain, name  }, ref) => {
+    const dispatch = useDispatch();
+    const value = useSelector((state: RootState) => state.toggle.productFields[name]);
+
     return (
-        <div className={styles.body}>
-          { headName === "" ? undefined :
-           <div className={styles.headName}>{headName}</div>
-          }
-            <div className={styles.attributeSection}>
-                <AttributeBox attributeName={attributeName} />
-                <div className={styles.input}>
-                    <input type="text" name='text' />
-                </div>
-                <div className={styles.inputContain}>
-                    {inputContain}
-                </div>
-            </div>
-        </div>
-    )
-}
+      <div className={styles.body}>
+        {headName && <div className={styles.headName}>{headName}</div>}
 
-export default InputBox
+        <div className={styles.attributeSection}>
+          <AttributeBox attributeName={attributeName} />
+
+          <div className={styles.input}>
+            <input
+              type="text"
+              name={name}
+              value={value}
+              ref={ref as React.Ref<HTMLInputElement>} // ✅ Ensure correct type
+              onChange={(e) =>
+                dispatch(toggleProductFields({ field: name, value: e.target.value }))
+              }
+            />
+          </div>
+
+          {inputContain && <div className={styles.inputContain}>{inputContain}</div>}
+        </div>
+      </div>
+    );
+  }
+);
+
+// ✅ Set display name for debugging
+InputBox.displayName = "InputBox";
+
+export default InputBox;

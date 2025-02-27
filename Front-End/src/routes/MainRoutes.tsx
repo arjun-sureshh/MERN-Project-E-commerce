@@ -14,8 +14,8 @@ const Routers = () => {
     <Routes>
     <Route path="/" element={<HomePage/>} />
       <Route path="/User/*" element={<UserApp/>} />
-      <Route path="/Seller" element={<SellerApp/>} />
-      <Route path="/Seller/*" element={<SellerDashBoard/>} />
+      <Route path="/SellerLanding" element={<SellerApp/>} />
+      <Route path="/Seller/*" element={<SellerDashBoard/>}/>
       <Route path="/Seller/Registration"  element={<SellerRegistration/>}/>
       <Route path="/Admin/*" element={<AdminApp/>} />
       <Route path="/Admin/Registration" element={<AdminRegistration/>} />

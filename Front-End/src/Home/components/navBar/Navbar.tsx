@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
           <span className={styles.navIcons}><BsCart4 /></span>
           Cart</div>
         <>
-          <Link to={"/Seller"}  className={styles.becomeSeller}>
+          <Link to={"/SellerLanding"}  className={styles.becomeSeller}>
           <span className={styles.navIcons}><BsShop /></span>
           Become a Seller
           </Link>

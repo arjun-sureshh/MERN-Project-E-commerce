@@ -53,7 +53,8 @@ const SelectCategory: React.FC = () => {
  const handleSubmit = async () => {
   const data = {
     sellerId: "67b437ba9acde33aace70f15",
-    categoryId: selectedCategory
+    categoryId: selectedCategory,
+    ListingStatus:2
   };
 
   try {

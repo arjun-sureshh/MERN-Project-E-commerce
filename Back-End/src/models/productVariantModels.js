@@ -13,71 +13,71 @@ const productVariantSchemaStructure = new mongoose.Schema({
     },
     mrp: {
         type: Number,
-        required: true,
+        required: false,
     },
     sellingPrice: {
         type: Number,
-        required: true,
+        required: false,
     },
     minimumOrderQty: {
         type: Number,
-        required: true,
+        required: false,
     },
     shippingProvider: {
         type: String,
-        required: true,
+        required: false,
     },
     Length: {
         type: Number,
-        required: true,
+        required: false,
     },
     breadth: {
         type: Number,
-        required: true,
+        required: false,
     },
     weight: {
         type: Number,
-        required: true,
+        required: false,
     },
     hsnCode: {
         type: String,
-        required: true
+        required: false
     },
     taxCode: {
         type: String,
-        required: true
+        required: false
     },
     countryOfOrgin: {
         type: String,
-        required: true
+        required: false
     },
     manufactureDetails: {
         type: String,
-        required: true
+        required: false
     },
     packerDetails: {
         type: String,
-        required: true
+        required: false
     },
     productDiscription: {
         type: String,
-        required: true
+        required: false
     },
     productTitle: {
         type: String,
-        required: true
+        required: false
     },
     intheBox: {
         type: String,
-        required: true
+        required: false
     },
     warrantyPeriod: {
         type: String,
-        required: true
+        required: false
     },
-    warantyType: {
+    warantySummary: {
         type: String,
-        required: true
+        required: false
     },
 
 }, { timestamps: true })

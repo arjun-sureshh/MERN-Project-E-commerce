@@ -21,6 +21,7 @@
     align-items: center;
 }
 
+
 .editBtn {
     border-radius: 8px;
     font-size: 13px;
@@ -68,4 +69,8 @@
 .savebtn:hover {
     color: blue;
     border-color: blue;
+}
+.displayInputContainer{
+    height: 250px;
+    overflow: scroll;
 }

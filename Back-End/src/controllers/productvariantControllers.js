@@ -18,8 +18,6 @@ const createProductVariant = async (req, res) => {
         Length ,breadth,weight,hsnCode,taxCode,countryOfOrgin,
         manufactureDetails,packerDetails,productDiscription,
         productTitle,intheBox,warrantyPeriod,warantyType } = req.body;
-
-   
     try {
        
         const newProductVareint = new Admin({
