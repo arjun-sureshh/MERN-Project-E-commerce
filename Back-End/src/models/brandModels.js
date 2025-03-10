@@ -5,6 +5,10 @@ const brandSchemaStructure = new mongoose.Schema({
     brandName :{
         type:String,
         required:true,
+    },
+    brandStatus:{
+        type: Number,
+        default: 0,
     }
 },{timestamps:true})
 

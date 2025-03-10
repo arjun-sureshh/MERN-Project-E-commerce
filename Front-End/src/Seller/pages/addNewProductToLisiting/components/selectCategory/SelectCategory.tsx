@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import styles from "./SelectCategory.module.css";
-import { IconButton, InputBase, Paper, Box, Typography, Menu, MenuItem } from "@mui/material";
+import { IconButton, InputBase, Paper, Box, Typography, MenuItem } from "@mui/material";
 import { IoSearchCircleOutline } from "react-icons/io5";
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { toggleProductAddingState, toggleProductId } from "../../../../../redux/toogleSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleProductId } from "../../../../../redux/toogleSlice";
+import { RootState } from "../../../../../redux/store";
 
 interface fetchData {
   categoryName: string;
@@ -15,7 +16,7 @@ interface fetchData {
 const SelectCategory: React.FC = () => {
 
   const dispatch = useDispatch();
-
+  const productId = useSelector((state: RootState) => state.toggle.productId); // fetch the productid from the redux
   const [searchData, setSearchData] = useState<string>("");
   const [fetchData, setFetchData] = useState<fetchData[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -35,8 +36,8 @@ const SelectCategory: React.FC = () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/category/search/${value}`);
       setFetchData(response.data);
-      console.log(fetchData);
-      console.log(e.currentTarget);
+      // console.log(fetchData);
+      // console.log(e.currentTarget);
 
     } catch (error) {
       console.error("Error fetching categories", error);
@@ -50,25 +51,25 @@ const SelectCategory: React.FC = () => {
     setFetchData([]); // Hide dropdown after selection
   };
 
- const handleSubmit = async () => {
-  const data = {
-    sellerId: "67b437ba9acde33aace70f15",
-    categoryId: selectedCategory,
-    ListingStatus:2
+  const handleSubmit = async () => {
+    const data = {
+      sellerId: "67c926173f7fe222ff32287e",
+      categoryId: selectedCategory,
+    };
+    console.log(productId);
+
+    try {
+      const response = await axios.post(`http://localhost:5000/api/product`, data); // Send data directly
+      console.log("Product draft created:", response.data);
+      const productid = response.data.product._id;
+      dispatch(toggleProductId(""));
+      setTimeout(() => dispatch(toggleProductId(productid)), 0); // Reinsert after a short delay
+    } catch (error) {
+      console.error("Error creating product:", error);
+    }
+
+
   };
-
-  try {
-    const response = await axios.post(`http://localhost:5000/api/product`, data); // Send data directly
-    console.log("Product draft created:", response.data);
-    const product_Id = response.data.productId;
-    dispatch(toggleProductId(product_Id))
-    dispatch(toggleProductAddingState(2));
-  } catch (error) {
-    console.error("Error creating product:", error);
-  }
-
-};
-
 
 
   return (

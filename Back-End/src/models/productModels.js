@@ -1,41 +1,43 @@
 const mongoose = require("mongoose");
 
 const productSchemaStructure = new mongoose.Schema({
-    sellerId:{
+    sellerId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "seller",
         required: true,
     },
-    categoryId:{
+    categoryId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "categories",
-        required: true,
+        required: false,
+        default: null,
     },
     brandId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "brand",
         required: false,
+        default: null,
     },
-    skuId:{
-      type:Number,
-      required:false,
-    },
-    
-    ListingStatus: {
+    skuId: {
         type: Number,
-        default:1,
+        default: null,
         required: false,
     },
-   
-    fulfilmentBy:{
-        type:String,
-        required:false,
-        trim:true
+    ListingStatus: {
+        type: Number,
+        default: 1,
+        required: false,
     },
- 
-    qcStatus:{
-        type:Number,
-        default:0,
+    fulfilmentBy: {
+        type: String,
+        required: false,
+        default: null,
+        trim: true
+    },
+
+    qcStatus: {
+        type: Number,
+        default: 0,
     }
 
 }, { timestamps: true })

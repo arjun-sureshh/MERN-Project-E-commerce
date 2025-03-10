@@ -8,51 +8,41 @@ const NavBar: React.FC = () => {
     return (
         <div className={styles.body}>
             <div className={styles.section1}>
-                <div className={styles.home}> <Link to={"/Seller"}> Home </Link></div>
+                <div className={styles.home}> <Link to={"/Seller"} style={{ textDecoration: "none", color: "inherit" }}> Home </Link></div>
                 <div className={styles.listing}>
                     <NavDropdown title="Listing" id="basic-nav-dropdown">
-                        <NavDropdown.Item> <Link to={"/Seller/Listing"}> My Listing </Link></NavDropdown.Item>
+                    <NavDropdown.Item> <Link to={"/Seller/Listing"} style={{ textDecoration: "none", color: "inherit" }}> My Listing</Link> </NavDropdown.Item>
                         <NavDropdown.Item>
-                            <Link to={"/Seller/AddNewProduct"}>
+                            <Link to={"/Seller/AddNewProduct"} style={{ textDecoration: "none", color: "inherit" }}>
                                 Add New listing
                             </Link>
                         </NavDropdown.Item>
-                        <NavDropdown.Item >
-                            <Link to={"/Seller/"}>
+                        {/* <NavDropdown.Item >
+                            <Link to={"/Seller/"} style={{ textDecoration: "none", color: "inherit" }}>
                                 Track Approval Requests
                             </Link>
-                        </NavDropdown.Item>
-                        {/* <NavDropdown.Divider />
-                        <NavDropdown.Item href="#action/3.4">
-                            Separated link
                         </NavDropdown.Item> */}
+     
                     </NavDropdown>
 
                 </div>
                 <div className={styles.orders}>
                     <NavDropdown title="Orders" id="basic-nav-dropdown">
-                        <NavDropdown.Item href="#action/3.1">Active Orders</NavDropdown.Item>
-                        <NavDropdown.Item href="#action/3.2">
+                        <NavDropdown.Item>Active Orders</NavDropdown.Item>
+                        <NavDropdown.Item>
                             Returns
                         </NavDropdown.Item>
-                        <NavDropdown.Item href="#action/3.3">Cancellation</NavDropdown.Item>
-                        {/* <NavDropdown.Divider />
-                        <NavDropdown.Item href="#action/3.4">
-                            Separated link
-                        </NavDropdown.Item> */}
+                        <NavDropdown.Item >Cancellation</NavDropdown.Item>
+     
                     </NavDropdown>
                 </div>
                 <div className={styles.Payments}>
                     <NavDropdown title="Payments" id="basic-nav-dropdown">
-                        <NavDropdown.Item href="#action/3.1">My Listing</NavDropdown.Item>
-                        <NavDropdown.Item href="#action/3.2">
+                        <NavDropdown.Item >My Listing</NavDropdown.Item>
+                        <NavDropdown.Item>
                             Add New listing
                         </NavDropdown.Item>
-                        <NavDropdown.Item href="#action/3.3">Track Approval Requests</NavDropdown.Item>
-                        {/* <NavDropdown.Divider />
-                        <NavDropdown.Item href="#action/3.4">
-                            Separated link
-                        </NavDropdown.Item> */}
+                        <NavDropdown.Item >Track Approval Requests</NavDropdown.Item>
                     </NavDropdown>
                 </div>
             </div>

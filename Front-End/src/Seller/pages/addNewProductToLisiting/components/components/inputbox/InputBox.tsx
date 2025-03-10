@@ -10,11 +10,12 @@ interface InputBoxProps {
     attributeName: string;
     inputContain?: string;
     name: keyof RootState["toggle"]["productFields"];
+    required:string;
 }
 
 // ✅ Use React.forwardRef with correct typing
 const InputBox = React.forwardRef<HTMLInputElement, InputBoxProps>(
-  ({ headName, attributeName, inputContain, name  }, ref) => {
+  ({ headName, attributeName, inputContain, name ,required  }, ref) => {
     const dispatch = useDispatch();
     const value = useSelector((state: RootState) => state.toggle.productFields[name]);
 
@@ -23,7 +24,7 @@ const InputBox = React.forwardRef<HTMLInputElement, InputBoxProps>(
         {headName && <div className={styles.headName}>{headName}</div>}
 
         <div className={styles.attributeSection}>
-          <AttributeBox attributeName={attributeName} />
+          <AttributeBox attributeName={attributeName} requiredMust={required}/>
 
           <div className={styles.input}>
             <input

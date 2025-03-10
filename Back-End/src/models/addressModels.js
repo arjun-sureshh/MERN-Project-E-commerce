@@ -5,30 +5,34 @@ const addressSchemaStructure = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "usres",
         default:null,
-        trim:true
+        trim:false
     },
     sellerId:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "sellers",
         default:null,
-        trim:true
+        trim:false
     },
     address: {
         type: String,
-        required: true,
+        default:null,
+        required: false,
     },
     pincode: {
-        type: Number,
-        required: true,
+        type: String,
+        default:null,
+        required: false,
     },
     districtId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "districts",
-        required: true,
+        default:null,
+        required: false,
     },
     city: {
         type: String,
-        required: true,
+        default:null,
+        required: false,
     }
 },{timestamps:true})
 

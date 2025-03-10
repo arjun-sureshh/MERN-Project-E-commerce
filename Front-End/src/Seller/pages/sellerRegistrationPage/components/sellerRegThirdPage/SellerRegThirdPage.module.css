@@ -72,23 +72,23 @@
 .secmain{
     display: flex;
     flex-direction: column;
+    border-top: 1px solid gray;
     background-color: rgb(255, 255, 255);
     width: 100%;
-    padding-block: 20px;
-    padding-inline: 17vw;
+    /* padding-inline: 17vw; */
 }
 .id{
-    width: 60%;
-    height: 20px;
-    background-color: rgb(255, 255, 255);
-    margin-left: 10px;
-    font-size: 14px;
+    width: 60vh;
     font-weight: 600;
+    height: 20px;
+    margin-top: 10px;
+    background-color: rgb(255, 255, 255);
+    font-size: 14px;
 }
 
 .fnamgst{
     margin-top: 15px;
-    width: 67.2%;
+    width: 100%;
 }
 
 .third{
@@ -103,6 +103,7 @@
     margin-left: 38vh;
     padding-block: 20px ;
     background-color: rgb(255, 255, 255);
+
 }
 .storee{
     width: 60vh;
@@ -143,4 +144,16 @@
 .save:active{
     color: blue;
     background-color: rgb(246, 251, 255);
+}
+.borderRed{
+    border-color: rgb(220, 6, 6) !important;
+}
+.errorMsg{
+    position: relative;
+    margin-top: 4px;
+    /* left: 300px; */
+    color: rgb(140, 0, 0);
+    p{
+        font-size: small;
+    }
 }

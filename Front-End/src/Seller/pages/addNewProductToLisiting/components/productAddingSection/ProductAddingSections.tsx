@@ -1,43 +1,167 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styles from './ProductAddingSections.module.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../../../../redux/store'
 import { GiCheckMark } from "react-icons/gi";
 import axios from 'axios';
-import { toggleProductAddingState } from '../../../../../redux/toogleSlice';
 
 const ProductAddingSections: React.FC = () => {
-const dispatch = useDispatch();
+// const dispatch = useDispatch();
     const productAdddingState = useSelector((state: RootState) => state.toggle.productAdddingState) ?? 0;
-     const productId = useSelector((state: RootState) => state.toggle.productId);
-    const skuId = useSelector((state: RootState) => state.toggle.productFields["skuId"]);
-    const fullfilementBy = useSelector((state: RootState) => state.toggle.productFields["fullfilementBy"]);
+    const productId = useSelector((state: RootState) => state.toggle.productId);
+    const productFields = useSelector((state: RootState) => state.toggle.productFields);
+    const [ProductVaraintId, setProductVaraintId] = useState<string>("");
+    const produKeyFeature = useSelector((state: RootState) => state.toggle.features);
+    const searchKeyWords = useSelector((state: RootState) => state.toggle.searchKeyWords);
+    const productImage = useSelector((state: RootState) => state.toggle.images);
 
 
-    // update the skuid and fulfilemt by into the product collection
+
+
+// update the skuid and fulfilemt by into the product collection
     const updateIntoProduct = async () =>{
 
-        if (!productId || !skuId || !fullfilementBy) {
-            alert("Missing fullfilemrntBy or skuId ");
+        if (!productId) {
+            alert("Missing product ID");
             return;
-        }
-    
+        }    
         try {
           const response = await axios.put(`http://localhost:5000/api/product/skuidUpdate/${productId}`, { // ✅ Corrected URL
-            skuId: skuId ,fulfilmentBy:fullfilementBy, // Ensure key matches backend expectations
-           ListingStatus:3
+            skuId: productFields.skuId ,fulfilmentBy:productFields.fullfilementBy, // Ensure key matches backend expectations
         });
-        console.log(response.data.message);
-        
+        console.log(response.data.message);       
         } catch (error) {
             console.error("Error updating skuId, Fulfilemt By:", error);
         }
-    }
-    
-const handleSaveAndBack =() =>{
- 
-    updateIntoProduct();
+    };
 
+// create an empty variant of the product first when we click the save and btn
+const  createProductVaraint= async () =>{
+
+    if (!productId) {
+        alert("Missing product ID");
+        return;
+    }
+
+    try {
+      const response = await axios.post(`http://localhost:5000/api/productvaraint`, { // ✅ Corrected URL
+        productId:productId,
+    });
+    const productVaraintId = response.data.data._id;
+    setProductVaraintId(productVaraintId);
+    console.log(response.data);       
+    } catch (error) {
+     console.error("Error updating :", error);
+    }
+};
+
+
+// create other fields into productvarient
+const  updateProductVariant= async () =>{
+
+    if (!ProductVaraintId) {
+        alert("Missing product ID");
+        return;
+    }
+
+    try {
+      const response = await axios.put(`http://localhost:5000/api/productvaraint/updateVaraint/${ProductVaraintId}`, { // ✅ Corrected URL
+        productId:productId,
+        mrp:productFields.mrp,
+        sellingPrice:productFields.sellingPrice,
+        minimumOrderQty:productFields.minimumOrderQty,
+        shippingProvider:productFields.shippingProvider,
+        Length:productFields.length,
+        breadth:productFields.breadth,
+        weight:productFields.weight,
+        hsnCode:productFields.HSN,
+        taxCode:productFields.taxCode,
+        countryOfOrgin:productFields.countryOfOrigin,
+        manufactureDetails:productFields.manufacturerDetails,
+        packerDetails:productFields.packerDetails,
+        productDiscription:productFields.productDiscription,
+        productTitle:productFields.productTitle,
+        intheBox:productFields.intheBox,
+        warrantyPeriod:productFields.warrantyPeriod,
+        warantySummary:productFields.warantySummary,
+    });
+    console.log(response.data.message);       
+    } catch (error) {
+     console.error("Error updating :", error);
+    }
+};
+
+// handle key features
+const handleKeyFeatures = async () => {
+
+    if (!ProductVaraintId) {
+        alert("Missing product ID");
+        return;
+    }
+
+    try {
+        const response = await axios.post(`http://localhost:5000/api/keyfeatures`, { 
+            productVariantId: ProductVaraintId,
+            features: produKeyFeature // ✅ Pass an array of { title, content }
+        });
+
+        console.log(response.data.message);
+    } catch (error) {
+        console.error("Error updating:", error);
+    }
+};
+
+//  insert the search key Words
+const handleSearchKeywords = async () => {
+    if (!ProductVaraintId) {
+        alert("Missing product ID");
+        return;
+    }
+
+    try {
+        const response = await axios.post(`http://localhost:5000/api/searchkeyword`, { 
+            productVariantId: ProductVaraintId,
+            searchKeyWords: searchKeyWords // ✅ Pass an array of { searchKeyWord }
+        });
+
+        console.log(response.data.message);
+    } catch (error) {
+        console.error("Error updating:", error);
+    }
+};
+
+// insert images 
+
+const handleImage = async() =>{
+    if (!ProductVaraintId) {
+        alert("Missing product ID");
+        return;
+    }
+
+    try {
+        const response = await axios.post(`http://localhost:5000/api/gallery`, { 
+            productVariantId: ProductVaraintId,
+            productImage: productImage // ✅ Pass an array of { searchKeyWord }
+        });
+
+        console.log(response.data.message);
+    } catch (error) {
+        console.error("Error updating:", error);
+    }
+}
+ 
+// handle Save And Back Button........
+const handleSaveAndBack =() =>{
+
+    updateIntoProduct();
+    if(!ProductVaraintId){
+        createProductVaraint(); 
+    }
+   
+    console.log(ProductVaraintId);
+    updateProductVariant();
+    handleKeyFeatures();
+    handleSearchKeywords();
 }
 
     return (

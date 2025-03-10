@@ -4,7 +4,7 @@ const Color = require("../models/colorModules")
 const getColor = async (req, res) => {
     try {
         const colorDetails = await Color.find();
-        res.status(200).json({ colorDetails });
+        res.status(200).json({message:"color fetched successfullly", data:colorDetails });
     } catch (error) {
         res.status(500).json({ message: "Error in fetching Category ", error })
     }

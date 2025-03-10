@@ -64,6 +64,7 @@
     font-size: 13px;
     font-weight: 600;
     letter-spacing: .5px;
+    cursor: pointer;
 }
 .cancle:hover,
 .savebtn:hover {
@@ -73,4 +74,11 @@
 .displayInputContainer{
     height: 250px;
     overflow: scroll;
+}
+
+.iconSaved{
+    color: green;
+}
+.icon{
+    font-size: large;
 }

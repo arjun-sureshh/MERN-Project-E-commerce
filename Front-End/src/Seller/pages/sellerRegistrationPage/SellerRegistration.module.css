@@ -33,7 +33,12 @@
     background-color: aquamarine;
 }
 .tick{
-   color: rgb(0, 0, 0);
+   color: rgb(103, 103, 103);
+   font-size: x-large;
+}
+.ticktrue{
+    color: rgb(0, 141, 0);
+    font-size: x-large;
 }
 .tickk{
     display: flex;
@@ -42,11 +47,14 @@
 }
 .firsticon{
     display: flex;
+    align-items: center;
     background-color: rgb(255, 255, 255);
     margin-left: 40vh;
 }
 .seccon{
     display: flex;
+    align-items: center;
+
     background-color: rgb(255, 255, 255);
     margin-left: 10vh;
 }

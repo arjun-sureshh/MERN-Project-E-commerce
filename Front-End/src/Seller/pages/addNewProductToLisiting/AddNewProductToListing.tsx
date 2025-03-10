@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import styles from './AddNewProductToListing.module.css'
 import SubNav from '../mylisting/components/subNav/SubNav'
 import ProductAddingSections from './components/productAddingSection/ProductAddingSections'
@@ -7,23 +7,55 @@ import PriceAndStock from './components/price,Stock,Shiping/PriceAndStock'
 import ProductDescription from './components/productDescription/ProductDescription'
 import AdditionalDescription from './components/additionalDescription/AdditionalDescription'
 import AddPhoto from './components/productPhoto/components/AddPhoto'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../../redux/store'
 import SelectCategory from './components/selectCategory/SelectCategory'
 import SelectBrand from './components/selectBrand/SelectBrand'
+import axios from 'axios'
+import { toggleProductAddingState } from '../../../redux/toogleSlice'
 
 const AddNewProductToListing: React.FC = () => {
 
-  const [displayphotoupload, setdisplayPhotoupload] = useState<Boolean>(false)
-  const productAdddingState = useSelector((state: RootState) => state.toggle.productAdddingState)
+  const dispatch = useDispatch();
+
+  const [displayphotoupload, setdisplayPhotoupload] = useState<Boolean>(false);
+  const productAdddingState = useSelector((state: RootState) => state.toggle.productAdddingState);
+  const productId = useSelector((state: RootState) => state.toggle.productId);
+  const [saved, setSaved] = useState<boolean>(false);
 
 
+// set the save btn
+  const setSave = () =>{
+     setSaved(true)
+  }
+// set usetate to display image block
   const displayimageBlock = () => {
     setdisplayPhotoupload(!displayphotoupload)
   }
  
-  
-  
+// useeffect for   fetch the productstage
+  useEffect(() => {
+    if (!productId) {
+      dispatch(toggleProductAddingState(1)); // Handle the case when productId is null
+      return;
+  }
+
+    const fetchProductStatus = async () => {
+        try {
+            const response = await axios.get(`http://localhost:5000/api/product/${productId}`);
+            dispatch(toggleProductAddingState(response.data.productDetails.ListingStatus));
+            // console.log("fetch product id",productId);
+            // console.log("listing stutus:",response.data.productDetails.ListingStatus);
+            
+        } catch (error:any) {
+            console.error("Error fetching product status:", error.response?.data || error.message);
+        }
+    };
+
+    fetchProductStatus();
+}, [productId]);
+
+
 
   return (
     <div className={styles.body}>
@@ -42,14 +74,11 @@ const AddNewProductToListing: React.FC = () => {
           <><div className={styles.photoSection}>
 
             {displayphotoupload ?
-              <AddPhoto displyaimageblockFn={displayimageBlock} />
+              <AddPhoto displyaimageblockFn={displayimageBlock} setSave={setSave}  saved={saved}/>
               :
-              <ProductPhoto displyaimageblockFn={displayimageBlock} />}
+              <ProductPhoto displyaimageblockFn={displayimageBlock} saved={saved}/>}
           </div><div className={styles.detailsSection}>
-
-
               <PriceAndStock />
-
               <ProductDescription />
               <AdditionalDescription />
             </div></>

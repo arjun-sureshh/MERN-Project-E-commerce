@@ -75,3 +75,10 @@
     height: 250px;
     overflow: scroll;
 }
+
+.iconSaved{
+    color: green;
+}
+.icon{
+    font-size: large;
+}

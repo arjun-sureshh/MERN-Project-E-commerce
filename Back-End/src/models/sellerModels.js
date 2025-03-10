@@ -3,7 +3,8 @@
 const sellerSchemaStructure = new mongoose.Schema({
     sellerName: {
         type: String,
-        require: true,
+        require: false,
+        default:null,
         trim:true
     },
     sellerEmail: {
@@ -11,6 +12,11 @@ const sellerSchemaStructure = new mongoose.Schema({
         required: true,
         unique: true,
         match: [/^\S+@\S+\.\S+$/, "Please use a valid email address"],
+    },
+    ListingStatus: {
+        type: Number,
+        default:1,
+        required: false,
     },
     sellerPassword: {
         type: String,
@@ -27,34 +33,41 @@ const sellerSchemaStructure = new mongoose.Schema({
                 const phoneNumber = /^\d{10}$/;
                 return phoneNumber.test(number)
             },
-            message: 'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number.'
+            message: 'enter valid number'
         }
     },
     sellerDisplayName: {
         type: String,
         trim:true,
+        default:null,
         required: false,
     },
     bankAccountNo:{
         type:String,
         required:false,
-        unique:true,
+        default:null,
+        unique:true,  
         trim:true,
     },
     ifscCode:{
         type:String,
         required:false,
+        default:null,
         trim:true,
         unique:true
     },
-    storeDiscribtion:{
+    storeDiscription:{
         type:String,
         required:false,
+        default:null,
         trim:true,
     },
-    RegStatges:{
-        type: Number,
+    
+    sellerGST:{
+        type:String,
         required:false,
+        default:null,
+        trim:true,
     },
     qcStatus:{
         type:Number,

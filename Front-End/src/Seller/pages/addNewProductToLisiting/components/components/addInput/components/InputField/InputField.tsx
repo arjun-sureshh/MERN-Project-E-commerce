@@ -6,6 +6,7 @@ import { updateFeatureField } from '../../../../../../../../redux/toogleSlice';
 
 interface InputFieldProps {
     index: number;
+    feature:any;
 }
 
 const InputField: React.FC<InputFieldProps> = ({ index }) => {

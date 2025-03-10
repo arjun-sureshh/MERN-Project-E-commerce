@@ -56,13 +56,7 @@
     } 
 }
   
-.eye{
-    position: absolute;
-    top: 240px;
-    left: 835px;
-    color: gray;
-    cursor: pointer;
-}
+
 .suggest{
     width: 40%;
     height: 20px;
@@ -85,4 +79,17 @@
     border-radius: 4px;
     justify-content: center;
     align-items: center;
+}
+.errorMsg{
+    position: relative;
+    margin-top: 4px;
+    left: 300px;
+    color: rgb(140, 0, 0);
+    p{
+        font-size: small;
+    }
+}
+
+.borderRed{
+    border-color: rgb(220, 6, 6);
 }

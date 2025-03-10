@@ -7,7 +7,7 @@ require('dotenv').config();
 app.use(express.json());
 app.use(cors());
 
-connectDB()
+connectDB();
 
 const adminRouter = require('./routers/adminRouters')
 const userRouter = require('./routers/userRouters')

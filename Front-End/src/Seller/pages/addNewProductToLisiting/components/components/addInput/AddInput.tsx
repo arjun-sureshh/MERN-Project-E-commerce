@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect} from 'react'
 import styles from './AddInput.module.css'
 import InputField from './components/InputField/InputField'
 import { GoPlus } from "react-icons/go";
@@ -9,19 +9,12 @@ import { removeFeatureField, toggleFeatureAdd } from '../../../../../../redux/to
 
 interface InputProps {
     headName?: string;
-    // attributeName: string;
-    // inputContain?: string;
-    // name: keyof RootState["toggle"]["productFields"];
 }
 
 const AddInput:React.FC<InputProps> = ({ headName}) => {
     const dispatch = useDispatch();
     const features = useSelector((state: RootState) => state.toggle.features);
     console.log(features);
-    
-    const [title, setTitle] = useState("");
-    const [content, setContent] = useState("");
-
    
 
     const addFeatureField = () => {
@@ -43,10 +36,10 @@ const AddInput:React.FC<InputProps> = ({ headName}) => {
     {features.map((feature,index) =>(
     <div className={styles.subContainer}>
     <div className={styles.inputField}>
-       <InputField index={index}/>
+       <InputField feature={feature} index={index}/>
     </div>
     <div
-        className={styles.plusBtn}
+        className={styles.addButton}
         onClick={index === features.length - 1 ? addFeatureField : () => removeFeature(index)}
       >
         {index === features.length - 1 ? <GoPlus /> : <FiMinus/>}

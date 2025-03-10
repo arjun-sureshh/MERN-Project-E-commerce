@@ -3,10 +3,14 @@ import styles from './AdditionalDescription.module.css'
 import { IoCheckmarkCircle } from 'react-icons/io5'
 import { RootState } from '../../../../../redux/store'
 import DisplayContainer from './components/displayfields/DisplayContainer'
+import { useSelector } from 'react-redux'
 
 const AdditionalDescription:React.FC = () => {
 
     const [displayadddisc, setDisplayadddisc] = useState<Boolean>(false)
+    const productFields = useSelector((state: RootState) => state.toggle.productFields);
+const [saved, setSaved] = useState<Boolean>(false)
+  const [filledCount, setFilledCount] = useState<number>(0)
   
     // Store refs for each input field
       const inputRefs: Record<
@@ -41,19 +45,43 @@ const AdditionalDescription:React.FC = () => {
         warrantyPeriod: useRef<HTMLInputElement>(null),
         searchKeyword: useRef<HTMLInputElement>(null),
         featureTitle: useRef<HTMLInputElement>(null),
-        featureContent: useRef<HTMLInputElement>(null)
+        featureContent: useRef<HTMLInputElement>(null),
+        color: useRef<HTMLInputElement>(null),
       };
+
+       // required fields for the price and stock page
+  const requiredFields: (keyof typeof productFields)[] = [
+    "productTitle",
+    "productDiscription",
+    "intheBox",
+    "minimumOrderQty",
+    "countryOfOrigin",
+    "manufacturerDetails",
+    "packerDetails",
+  ];
+
+  const handleSave = () => {
+   
+    const filledCount = requiredFields.filter((key) => productFields[key]).length;
+    setFilledCount(filledCount);
+   
+     
+    
+     
+      setSaved(true);
+      setDisplayadddisc((!displayadddisc))
+    };
 
   return (
     <div className={styles.body}>
     <div className={styles.titleSection}>
        <div className={styles.icon_title}>
-       <div className={styles.icon}><IoCheckmarkCircle/></div>
-       <div className={styles.title}>Additional Describtion (Optional) (0/21)</div>
+       <div className={`${styles.icon} ${saved ? styles.iconSaved :""}`}><IoCheckmarkCircle/></div>
+       <div className={styles.title}>Additional Describtion (Optional) ({filledCount}/21)</div>
        </div>
        { displayadddisc ?<div className={styles.flex}>
           <div className={styles.cancle} onClick={() => { setDisplayadddisc((!displayadddisc)) }}>Cancel</div>
-          <div className={styles.savebtn}>Save</div>
+          <div className={styles.savebtn} onClick={handleSave}>Save</div>
         </div>
         :
         <div className={styles.editBtn} onClick={() => { setDisplayadddisc((!displayadddisc)) }}>Edit</div>}

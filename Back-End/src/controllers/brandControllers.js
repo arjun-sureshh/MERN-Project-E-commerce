@@ -38,7 +38,7 @@ const createBrand = async(req,res) =>{
     }
 
     const newBrand = new Brand({
-        brandName
+        brandName,brandStatus : 1
     })
     await newBrand.save();
     res.status(201).json({message:"New Brand successfully created"})
@@ -51,6 +51,33 @@ const createBrand = async(req,res) =>{
 
         res.status(500).json({ message: "server error" })
     }
+}
+
+// sugest brand from the seller side to add the brand 
+
+const brandBySeller = async(req,res) =>{
+    const {brandName} = req.body;
+    try {
+      let existingBrand = await Brand.findOne({ brandName : { $regex: new RegExp("^" + brandName + "$", "i")}})
+  
+      if(existingBrand){
+          return res.status(400).json({message:"This Brand is already exists"})
+      }
+  
+      const newBrand = new Brand({
+          brandName
+      })
+      await newBrand.save();
+      res.status(201).json({message:"New Brand successfully created", data:newBrand})
+  
+    } catch (error) {
+      console.error(error);
+          if (error.name === "ValidationError") {
+              return res.status(400).json({ message: error.message });
+          }
+  
+          res.status(500).json({ message: "server error" })
+      }
 }
 
 
@@ -113,6 +140,7 @@ const searchBrand = async (req, res) => {
         {
           $match: {
             brandName: { $regex: `^${searchData}`, $options: "i" }, // Case-insensitive match
+            // brandStatus: 1, // Only return brands with status 1
           },
         },
       ])
@@ -129,5 +157,6 @@ module.exports = {
     getBrandById,
     updateBrand,
     deleteBrand,
-    searchBrand
+    searchBrand,
+    brandBySeller,
 }

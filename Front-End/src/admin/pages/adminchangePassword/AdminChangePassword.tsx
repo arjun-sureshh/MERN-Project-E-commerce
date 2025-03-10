@@ -4,8 +4,7 @@ import { useDispatch } from "react-redux";
 import { togglePageControl, toggleResetPage } from "../../../redux/toogleSlice";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import axios from "axios";
-import { TextField, Tooltip } from "@mui/material";
-import ErrorIcon from "@mui/icons-material/Error"; // Import the Error Icon
+import { TextField } from "@mui/material";
 import { IoIosArrowBack } from "react-icons/io";
 
 interface InputData {

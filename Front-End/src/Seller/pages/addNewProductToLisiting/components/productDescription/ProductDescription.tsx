@@ -9,6 +9,8 @@ const ProductDescription:React.FC = () => {
 
   const [displayprodisc, setDisplayprodisc] = useState<Boolean>(false)
   const productFields = useSelector((state: RootState) => state.toggle.productFields);
+const [saved, setSaved] = useState<Boolean>(false)
+  const [filledCount, setFilledCount] = useState<number>(0)
 
 
    // Store refs for each input field
@@ -40,23 +42,56 @@ const ProductDescription:React.FC = () => {
       productDiscription: useRef<HTMLInputElement>(null),
       intheBox: useRef<HTMLInputElement>(null),
       minimumOrderQty: useRef<HTMLInputElement>(null),
-      warantyType: useRef<HTMLInputElement>(null),
+      warantySummary: useRef<HTMLInputElement>(null),
       warrantyPeriod: useRef<HTMLInputElement>(null),
       searchKeyword: useRef<HTMLInputElement>(null),
       featureTitle: useRef<HTMLInputElement>(null),
-      featureContent: useRef<HTMLInputElement>(null)
+      featureContent: useRef<HTMLInputElement>(null),
+      color: useRef<HTMLInputElement>(null),
     };
+
+    // required fields for the price and stock page
+  const requiredFields: (keyof typeof productFields)[] = [
+    "productTitle",
+    "productDiscription",
+    "intheBox",
+    "minimumOrderQty",
+    "countryOfOrigin",
+    "manufacturerDetails",
+    "packerDetails",
+  ];
+
+  const handleSave = () => {
+   
+    const filledCount = requiredFields.filter((key) => productFields[key]).length;
+    setFilledCount(filledCount);
+   
+      for (const key of requiredFields) {
+        if (!productFields[key]) {  // Check only required fields
+          alert(`Please fill in the ${key} field.`);
+          
+          // Focus on the corresponding input field
+          inputRefs[key]?.current?.focus();
+          return;
+        }
+      }
+    
+      // If all required fields are filled, proceed
+      setSaved(true);
+      setDisplayprodisc((!displayprodisc))
+    };
+
 
   return (
     <div className={styles.body}>
     <div className={styles.titleSection}>
        <div className={styles.icon_title}>
-       <div className={styles.icon}><IoCheckmarkCircle/></div>
-       <div className={styles.title}>Product Describtion & Manufacturing Details(0/21)</div>
+       <div className={`${styles.icon} ${saved ? styles.iconSaved :""}`}><IoCheckmarkCircle/></div>
+       <div className={styles.title}>Product Describtion & Manufacturing Details({filledCount}/7)</div>
        </div>
        { displayprodisc ?<div className={styles.flex}>
           <div className={styles.cancle} onClick={() => { setDisplayprodisc((!displayprodisc)) }}>Cancel</div>
-          <div className={styles.savebtn}>Save</div>
+          <div className={styles.savebtn} onClick={handleSave}>Save</div>
         </div>
         :
         <div className={styles.editBtn} onClick={() => { setDisplayprodisc((!displayprodisc)) }}>Edit</div>}

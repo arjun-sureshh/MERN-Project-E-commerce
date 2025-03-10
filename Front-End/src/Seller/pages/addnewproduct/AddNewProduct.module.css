@@ -70,3 +70,7 @@ tr,th{
     font-size: 13.9px;
     color: black;
 }
+.Continue{
+    color: blue;
+    cursor: pointer;
+}

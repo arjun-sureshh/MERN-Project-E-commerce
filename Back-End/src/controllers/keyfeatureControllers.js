@@ -12,33 +12,37 @@ const getKeyFeatures = async (req, res) => {
     }
 }
 
-// KeyFeatures post
-const createKeyFeatures = async (req, res) => {
-    const { featureTitle, featureContent,productVariantId} = req.body;
 
-    if (!featureTitle || !featureContent || !productVariantId) {
-        return res.status(400).json({ message: "Please provide all required fields" })
+// create Keyfeature
+
+const createKeyFeatures = async (req, res) => {
+    const { productVariantId, features } = req.body; // ✅ Receive an array of features
+
+    if (!productVariantId || !Array.isArray(features) || features.length === 0) {
+        return res.status(400).json({ message: "Please provide productVariantId and at least one feature" });
     }
 
     try {
-       
-        const newFeatures = new Features({
-            photos, varientId
-        });
+        const newFeatures = features.map(feature => ({
+            featureTitle: feature.title,   // ✅ Extract title from the array
+            featureContent: feature.content, // ✅ Extract content from the array
+            productVariantId: productVariantId
+        }));
 
-        await newFeatures.save();
-        res.status(201).json({ message: "features added succeccfully" });
+        await Features.insertMany(newFeatures); // ✅ Insert multiple features at once
+
+        res.status(201).json({ message: "Features added successfully" });
     } catch (error) {
-        console.error(error)
+        console.error(error);
 
         if (error.name === "ValidationError") {
             return res.status(400).json({ message: error.message });
         }
 
-        res.status(500).json({ message: "server error" })
+        res.status(500).json({ message: "Server error" });
     }
-
 };
+
 
 module.exports = {
     createKeyFeatures,

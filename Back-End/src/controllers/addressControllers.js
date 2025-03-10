@@ -12,33 +12,26 @@ const getAddress = async (req, res) => {
 
 // post Address
 
-const createAddress = async (req, res) => {
-    const { userId, sellerId, address, pincode, districtId, city } = req.body;
+const sellerAddress = async (req, res) => {
+    const {sellerId, address, pincode } = req.body;
+    
     try {
-        // let existingSizeHead = await SizeHead.findOne({sizeHeadName})
-
-        // if(existingSizeHead){
-        //     return res.status(400).json({message:"This Size  is already exists"})
-        // }
-
-        // save the address
+        if(!sellerId || !address || !pincode){
+            return res.status(400).json({ message: "Please provide all fields" });
+        }
         const newAddress = new Address({
-            userId, sellerId, address, pincode, districtId, city
+             sellerId, address, pincode
         })
         await newAddress.save();
         res.status(201).json({ message: "New Address successfully created" })
 
     } catch (error) {
         console.error(error);
-        if (error.name === "ValidationError") {
-            return res.status(400).json({ message: error.message });
-        }
-
         res.status(500).json({ message: "server error" })
     }
 }
 
 module.exports = {
-    createAddress,
+    sellerAddress,
     getAddress
 }

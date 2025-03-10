@@ -8,11 +8,12 @@ import {  toggleProductFields} from '../../../../../../redux/toogleSlice';
 interface SelectBoxProps {
   headName?: string; // Made optional for flexibility
   attributeName: string // Ensures type safety
-  inputContain?: string[]; // Made optional
+  inputContain?: string[] | { _id: string; color: string }[]; // Made optional
   name:keyof RootState['toggle']['productFields'];
+  required?: string;
 }
 
-const SelectBox: React.FC<SelectBoxProps> = ({ headName, attributeName, inputContain = [] , name }) => {
+const SelectBox: React.FC<SelectBoxProps> = ({ headName, attributeName, inputContain = [] , name , required}) => {
   const dispatch = useDispatch();
   
   // Retrieve the current value from Redux state
@@ -29,7 +30,7 @@ const SelectBox: React.FC<SelectBoxProps> = ({ headName, attributeName, inputCon
     <div className={styles.body}>
       {headName && <div className={styles.headName}>{headName}</div>}
       <div className={styles.attributeSection}>
-        <AttributeBox attributeName={attributeName} />
+        <AttributeBox attributeName={attributeName}  requiredMust={required}/>
         <div className={styles.select}>
           <select
             name={name}
@@ -38,8 +39,11 @@ const SelectBox: React.FC<SelectBoxProps> = ({ headName, attributeName, inputCon
           >
             <option value="">Select One</option>
             {inputContain.map((option, index) => (
-              <option value={option} key={index}>
-                {option}
+              <option 
+              value={typeof option === "string" ? option : option._id} 
+              key={index}
+          >
+                {typeof option === "string" ? option : option.color}
               </option>
             ))}
           </select>

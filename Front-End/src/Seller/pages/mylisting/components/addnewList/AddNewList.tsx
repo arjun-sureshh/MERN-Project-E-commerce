@@ -1,6 +1,8 @@
 import React from 'react'
 import styles from './AddNewList.module.css'
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { toggleProductId } from '../../../../../redux/toogleSlice';
 
 interface AddNewListProps {
 linPath:string;
@@ -8,11 +10,17 @@ linPath:string;
 
 const AddNewList:React.FC<AddNewListProps> = ({linPath}) => {
 
-  
+  const dispatch = useDispatch();
+const navigate = useNavigate();
+
+  const addnewProduct = () =>{
+   dispatch(toggleProductId(""));
+   navigate(linPath);
+  }
+
   return (
     <div className={styles.body}>
-     <><Link to={linPath} className={styles.singlelisting}> Add Single Listing </Link></>
-     <div className={styles.bullklisting}>Add Bulk Listing</div>
+    <div className={styles.singlelisting} onClick={addnewProduct}> Add A New Product</div> 
 
     </div>
   )

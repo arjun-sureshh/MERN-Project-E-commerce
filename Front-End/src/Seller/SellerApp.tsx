@@ -1,7 +1,5 @@
 import React from 'react'
 import styles from './SellerApp.module.css'
-import SellerRouters from './sellerRouters/SellerRouters'
-import NavBar from './components/navBar/NavBar'
 import { Link } from 'react-router'
 
 const SellerApp:React.FC = () => {

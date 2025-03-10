@@ -85,11 +85,11 @@ const AdminRegister: React.FC = () => {
       focusInput("password");
       return;
     }
-    if (!strongPasswordRegex.test(inputData.password)) {
+    if(!strongPasswordRegex.test(inputData.password)) {
       setPasswordError(
         "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number."
       );
-      focusInput("password");
+      focusInput("password"); 
       return;
     }
     if (!inputData.confirmPassword) {

@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const Product = require("../models/productModels");
 
 
@@ -13,24 +14,124 @@ const getProduct = async (req, res) => {
     }
 }
 
-// Product cerated in category add section post
+// get product Details by Seller ID
+const getProductBySellerID = async (req, res) => {
+    const { sellerId } = req.params;
+
+
+    try {
+        
+               // Ensure sellerId is a valid ObjectId
+               if (!mongoose.Types.ObjectId.isValid(sellerId)) {
+                return res.status(400).json({ message: "Invalid seller ID" });
+            }
+
+            const sellerObjectId = new mongoose.Types.ObjectId(String(sellerId));
+
+        const productDetails = await Product.aggregate([
+            {
+                $match:{sellerId: sellerObjectId}
+            },
+            {
+                $lookup:{
+                    from:"categories",
+                    localField:"categoryId",
+                    foreignField:"_id",
+                    as:"categoryDetails"
+                }
+            },
+            {
+                $lookup:{
+                    from:"brand",
+                    localField:"brandId",
+                    foreignField:"_id",
+                    as:"brandDetails"
+                }
+            },
+            {
+                $unwind:{
+                    path:"$categoryDetails",
+                    preserveNullAndEmptyArrays: true // If no category is found, keep null instead of removing the document
+                }
+            },
+            {
+                $unwind:{
+                    path:"$brandDetails",
+                    preserveNullAndEmptyArrays: true // If no category is found, keep null instead of removing the document
+                }
+            },
+            {
+                $project:{
+                    _id: 1,
+                    sellerId: 1,
+                    skuId: 1,
+                    ListingStatus: 1,
+                    fulfilmentBy: 1,
+                    qcStatus: 1,
+                    createdAt: 1,
+                    updatedAt: 1,
+                    categoryName: "$categoryDetails.categoryName", // Assuming 'name' is the field for category name
+                    brandName: "$brandDetails.brandName" // Assuming 'name' is the field for brand name
+                }
+            }
+        ]);
+
+        if (!productDetails || productDetails.length === 0) {
+            return res.status(404).json({ message: "No products found for the given seller ID." });
+        }
+
+        res.status(200).json({
+            message: "Products fetched successfully",
+            data: productDetails
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error fetching product", error });
+    }
+};
+
+// get product bY Id 
+const getProductById = async (req, res) => {
+    const { productId } = req.params;
+
+    try {
+        const productDetails = await Product.findById(productId).select("ListingStatus sellerId"); // Fetch only required fields
+
+        if (!productDetails) {
+            return res.status(404).json({ message: "Product not found with the given ID." });
+        }
+
+        res.status(200).json({ 
+            message: "Product fetched successfully", 
+            productDetails 
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error fetching product", error });
+    }
+};
+
+
+// create product when the page loads
 const createProduct = async (req, res) => {
-    const { sellerId, categoryId,ListingStatus } = req.body;
+    const { sellerId,categoryId } = req.body;
 
     if (!sellerId || !categoryId ) {
-        return res.status(400).json({ message: "Please provide the category  fields" })
+        return res.status(400).json({ message: "seller must be login or select category properly" })
     }
 
     try {
        
         const newProduct = new Product({
-            sellerId, categoryId, ListingStatus
+            sellerId,categoryId, ListingStatus : 2,
         });
 
         const savedProduct = await newProduct.save();
         res.status(201).json({
-            message: "caetrgory added to product listing succeccfully",
-            productId: savedProduct._id
+            message: "product created successfully with category",
+            product: savedProduct
         });
 
     } catch (error) {
@@ -44,11 +145,12 @@ const createProduct = async (req, res) => {
     }
 };
 
+
 // update Brand Id in to  product 
 
 const updateBrandId = async (req, res) => {
     const {productId} = req.params;
-    const { brandId ,ListingStatus } = req.body;
+    const { brandId  } = req.body;
     
 
     if ( !brandId || !productId ) {
@@ -58,7 +160,7 @@ const updateBrandId = async (req, res) => {
     try {
         const updatedBrandId = await Product.findByIdAndUpdate(
             productId, 
-            { brandId: brandId,ListingStatus }, 
+            { brandId: brandId,ListingStatus:3 }, 
             { new: true, runValidators: true }
         );
 
@@ -87,7 +189,7 @@ const updateSkuidAndFullfilement = async (req, res) => {
     try {
         const updatedData = await Product.findByIdAndUpdate(
             productId, 
-            { skuId,fulfilmentBy }, 
+            { skuId,fulfilmentBy, ListingStatus:3 }, 
             { new: true, runValidators: true }
         );
 
@@ -103,13 +205,36 @@ const updateSkuidAndFullfilement = async (req, res) => {
     }
 };
 
+// delete the product 
+const deleteProduct = async (req,res) =>{
+
+try {
+        const { id } = req.params;
+
+        const deleted = await Product.findByIdAndDelete(id)
+        if (!deleted) {
+            return res.status(404).json({ message: "Product Variant   not found" });
+        } else {
+            res.json({ message: "Product deleted successfully", deleted });
+        }
+
+    } catch (error) {
+        console.error("Error deleting in Product:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+
+};
+
 
 
 
 module.exports = {
     createProduct,
     getProduct,
+    getProductById,
     updateBrandId,
-    updateSkuidAndFullfilement
+    getProductBySellerID,
+    updateSkuidAndFullfilement,
+    deleteProduct
 }
 

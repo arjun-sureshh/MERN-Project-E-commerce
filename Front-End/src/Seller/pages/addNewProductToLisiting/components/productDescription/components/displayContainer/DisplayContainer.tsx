@@ -1,30 +1,57 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './DisplayContainer.module.css'
 import InputBox from '../../../components/inputbox/InputBox'
-import SelectBox from '../../../components/selectBox/SelectBox'
 import { RootState } from '../../../../../../../redux/store';
+import SelectCountry from '../selectCountry/SelectCountry';
+import SelectBox from '../../../components/selectBox/SelectBox';
+import axios from 'axios';
 
 type DisplayInputContainerProps = {
   inputRefs: Record<
-  keyof RootState["toggle"]["productFields"],
-  React.RefObject<HTMLInputElement>
->;
+    keyof RootState["toggle"]["productFields"],
+    React.RefObject<HTMLInputElement>
+  >;
 };
 
-const DisplayContainer:React.FC<DisplayInputContainerProps> = ({inputRefs}) => {
+interface fetchColor{
+  _id:string;
+color:string;
+};
+
+const DisplayContainer: React.FC<DisplayInputContainerProps> = ({ inputRefs }) => {
+
+  const [fetchColor, setfetchColor] = useState<fetchColor[]>([]);
+
+  useEffect(() => {
+    const fetchColorData = async() =>{
+      try {
+        const response = await axios.get("http://localhost:5000/api/color/");
+        console.log(response.data);
+        setfetchColor(response.data.data);
+      } catch (error) {
+        
+      }
+    };
+    fetchColorData();
+   
+    
+  }, [])
+  
+
   return (
     <div className={styles.inputwholeContainer}>
-        <InputBox headName={"Product Details"}   attributeName={"Product Title"} ref={inputRefs["productTitle"]} name={'productTitle'} inputContain={""}/>
-        <InputBox headName={""} attributeName={"Product Discription"} ref={inputRefs["productDiscription"]} name={"productDiscription"} inputContain={""}/>
-        <InputBox headName={""} attributeName={"In The Box"} ref={inputRefs["intheBox"]} name={"intheBox"} inputContain={""}/>
-        <InputBox headName={""} attributeName={"Minimum OrderQty"} ref={inputRefs["minimumOrderQty"]} name={"minimumOrderQty"} inputContain={""}/>
+      <InputBox headName={"Product Details"} attributeName={"Product Title"} ref={inputRefs["productTitle"]} name={'productTitle'} inputContain={""} required={"*"}/>
+      <InputBox headName={""} attributeName={"Product Discription"} ref={inputRefs["productDiscription"]} name={"productDiscription"} inputContain={""} required={"*"}/>
+      <InputBox headName={""} attributeName={"In The Box"} ref={inputRefs["intheBox"]} name={"intheBox"} inputContain={""} required={"*"}/>
+      <InputBox headName={""} attributeName={"Minimum OrderQty"} ref={inputRefs["minimumOrderQty"]} name={"minimumOrderQty"} inputContain={""} required={"*"}/>
 
+      <SelectCountry headName="Manufacturing Details" attributeName="Country Of Origin" name="countryOfOrigin" isCountrySelect={true} required={"*"} />
 
-        
-        <SelectBox headName={"Manufacturing Details"} attributeName={"Country Of Origin "} name={"countryOfOrigin"} inputContain={["GST_0","GST_12","GST_18","GST_28","GST_3","GST_5","GST_APPAREL"]} />
-        <InputBox headName={""} attributeName={"Manufacturer Details"} ref={inputRefs["manufacturerDetails"]} name={"manufacturerDetails"} inputContain={""}/>
-        <InputBox headName={""} attributeName={"Packer Details"} ref={inputRefs["packerDetails"]} name={"packerDetails"} inputContain={""} />
-        </div>
+      <SelectBox headName={"Color Of Your Product"} attributeName={"Color"} name={"color"} inputContain={fetchColor} required={"*"}/>
+      
+      <InputBox headName={""} attributeName={"Manufacturer Details"} ref={inputRefs["manufacturerDetails"]} name={"manufacturerDetails"} inputContain={""} required={"*"}/>
+      <InputBox headName={""} attributeName={"Packer Details"} ref={inputRefs["packerDetails"]} name={"packerDetails"} inputContain={""} required={"*"}/>
+    </div>
   )
 }
 

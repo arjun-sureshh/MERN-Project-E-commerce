@@ -13,26 +13,28 @@ const getSearchKeyword = async (req, res) => {
 // post searchKeyword
 
 const createSearchKeyword = async (req, res) => {
+    const { productVariantId, searchKeyWords } = req.body; // ✅ Receiving an array of keywords
 
-    const { productVariantId, searchKeyword } = req.body;
+    if (!productVariantId || !Array.isArray(searchKeyWords) || searchKeyWords.length === 0) {
+        return res.status(400).json({ message: "Please provide productVariantId and at least one search keyword" });
+    }
+
     try {
-       
-        // save the address
-        const newSearchKeyword = new SearchKeywords({
-            productVariantId, searchKeyword
-        })
-        await newSearchKeyword.save();
-        res.status(201).json({ message: " SearchKeyword Added successfully" })
+        // ✅ Create keyword entries for each keyword in the array
+        const newKeywords = searchKeyWords.map((item) => ({
+            productVariantId: productVariantId,
+            searchKeyword: item.searchKeyWord // ✅ Extract keyword value
+        }));
 
+        await SearchKeywords.insertMany(newKeywords); // ✅ Insert all keywords at once
+
+        res.status(201).json({ message: "Search keywords added successfully" });
     } catch (error) {
         console.error(error);
-        if (error.name === "ValidationError") {
-            return res.status(400).json({ message: error.message });
-        }
-
-        res.status(500).json({ message: "server error" })
+        res.status(500).json({ message: "Server error" });
     }
-}
+
+};
 
 module.exports = {
     createSearchKeyword,

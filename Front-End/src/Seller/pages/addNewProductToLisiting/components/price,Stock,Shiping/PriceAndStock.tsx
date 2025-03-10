@@ -11,6 +11,10 @@ const PriceAndStock: React.FC = () => {
 
   const [displaypricestock, setDisplaypricestock] = useState<Boolean>(false)
   const productFields = useSelector((state: RootState) => state.toggle.productFields);
+  const [saved, setSaved] = useState<Boolean>(false)
+  const [filledCount, setFilledCount] = useState<number>(0)
+
+  
 
   // Store refs for each input field
   const inputRefs: Record<
@@ -41,43 +45,73 @@ const PriceAndStock: React.FC = () => {
     productDiscription: useRef<HTMLInputElement>(null),
     intheBox: useRef<HTMLInputElement>(null),
     minimumOrderQty: useRef<HTMLInputElement>(null),
-    warantyType: useRef<HTMLInputElement>(null),
+    warantySummary: useRef<HTMLInputElement>(null),
     warrantyPeriod: useRef<HTMLInputElement>(null),
     searchKeyword: useRef<HTMLInputElement>(null),
     featureTitle: useRef<HTMLInputElement>(null),
-    featureContent: useRef<HTMLInputElement>(null)
+    featureContent: useRef<HTMLInputElement>(null),
+    color: useRef<HTMLInputElement>(null),
   };
 
+// required fields for the price and stock page
+  const requiredFields: (keyof typeof productFields)[] = [
+    "skuId",
+    "mrp",
+    "sellingPrice",
+    "stock",
+    "shippingProvider",
+    "localDeliveryCharge",
+    "ZonalDeliveryCharge",
+    "nationalDeliveryCharge",
+    "length",
+    "breadth",
+    "height",
+    "weight",
+    "HSN",
+    "taxCode",
+    "fullfilementBy",
+    "ProcurementType",
+    "shippingProvider",
+    
+  ];
 
   const handleSave = () => {
    
-  
-    for (const key in productFields) {
-      // Iterate only over valid keys
-  for (const key of Object.keys(productFields) as (keyof typeof productFields)[]) {
-    if (!productFields[key]) {  // Check if field is empty ("" or undefined/null)
-      alert(`Please fill in the ${key} field.`);
-      
-      // Focus on the corresponding input field
-      inputRefs[key]?.current?.focus();
-      return;
-    }
+    const filledCount = requiredFields.filter((key) => productFields[key]).length;
+    setFilledCount(filledCount);
+   
+      for (const key of requiredFields) {
+        if (!productFields[key]) {  // Check only required fields
+          alert(`Please fill in the ${key} field.`);
+          
+          // Focus on the corresponding input field
+          inputRefs[key]?.current?.focus();
+          return;
+        }
       }
-    }
+    
+      // If all required fields are filled, proceed
+      setSaved(true);
+      setDisplaypricestock((!displaypricestock))
+    };
 
-    console.log("All fields are filled:", productFields);
+  //   console.log("All fields are filled:", productFields);
 
-  };
+  // console.log(displaypricestock);
+  
   
   return (
     <div className={styles.body}>
       <div className={`${styles.titleSection} ${ displaypricestock && styles.buttomBorder}`}>
         <div className={styles.icon_title}>
-          <div className={styles.icon}><IoCheckmarkCircle /></div>
-          <div className={styles.title}>Price, Stock and Shipping Information (0/21)</div>
+          <div className={`${styles.icon} ${saved ? styles.iconSaved :""}`}><IoCheckmarkCircle /></div>
+          <div className={styles.title}>Price, Stock and Shipping Information
+             ({filledCount}/17)
+
+          </div>
         </div>
         { displaypricestock ?<div className={styles.flex}>
-          <div className={styles.cancle} onClick={() => { setDisplaypricestock((!displaypricestock)) }}>Cancel</div>
+          <div className={styles.cancle} onClick={() => { setDisplaypricestock((!displaypricestock))}}>Cancel</div>
           <div className={styles.savebtn} onClick={handleSave} >Save</div>
         </div>
         :
@@ -90,6 +124,6 @@ const PriceAndStock: React.FC = () => {
           }    
     </div>
   )
-}
+};
 
 export default PriceAndStock

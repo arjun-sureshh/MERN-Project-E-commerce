@@ -4,7 +4,7 @@ const productVariantSchemaStructure = new mongoose.Schema({
     productId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "productdetails",
-        required: true,
+        required: false,
     },
     qcStatus: {
         type: Number,
@@ -50,6 +50,11 @@ const productVariantSchemaStructure = new mongoose.Schema({
     countryOfOrgin: {
         type: String,
         required: false
+    },
+    colorId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "colors",
+        required: false,
     },
     manufactureDetails: {
         type: String,
