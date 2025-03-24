@@ -4,11 +4,11 @@ const searchKeywordSchemaStructure = new mongoose.Schema({
     productVariantId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "productvariantdetails",
-        required: true,
+        required: false,
     },
     searchKeyword:{
         type: String,
-        required: true,
+        required: false,
     },
     
 },{timestamps:true})

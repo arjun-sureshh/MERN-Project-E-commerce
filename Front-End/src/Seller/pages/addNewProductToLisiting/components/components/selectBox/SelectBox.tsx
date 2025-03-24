@@ -11,6 +11,7 @@ interface SelectBoxProps {
   inputContain?: string[] | { _id: string; color: string }[]; // Made optional
   name:keyof RootState['toggle']['productFields'];
   required?: string;
+ 
 }
 
 const SelectBox: React.FC<SelectBoxProps> = ({ headName, attributeName, inputContain = [] , name , required}) => {
@@ -20,6 +21,7 @@ const SelectBox: React.FC<SelectBoxProps> = ({ headName, attributeName, inputCon
   const value = useSelector(
     (state: RootState) => state.toggle.productFields[name]
   );
+console.log(value,"select color:");
 
   // Handler to update Redux state when the select value changes
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -34,7 +36,8 @@ const SelectBox: React.FC<SelectBoxProps> = ({ headName, attributeName, inputCon
         <div className={styles.select}>
           <select
             name={name}
-            value={value} // controlled select value from Redux
+            value={value}
+            // defaultValue={value} // controlled select value from Redux
             onChange={handleChange}
           >
             <option value="">Select One</option>

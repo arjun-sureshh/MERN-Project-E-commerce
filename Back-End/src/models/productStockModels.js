@@ -4,12 +4,12 @@ const stockSchemaStructure = new mongoose.Schema({
 
     stockqty:{ 
         type:Number,
-        required:true,
+        required:false,
     },
     productvariantId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"productvariantdetails",
-        required:true,
+        required:false,
     },
 },{timestamps:true})
 

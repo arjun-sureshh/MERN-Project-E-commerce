@@ -15,6 +15,7 @@ interface fetchedDataProps {
   brandName: string;
   categoryName: string;
   productId:string;
+  stockqty?:string;
 }
 
 const Listing: React.FC = () => {
@@ -48,12 +49,41 @@ const Listing: React.FC = () => {
         const response = await axios.get(`http://localhost:5000/api/productvaraint/fetchallproducts/${sellerId}`);
         console.log(response.data.data);
         setfetchedData(response.data.data);
-
+        const variantdata = response.data.data;
+        const productVariantIds = variantdata.map((productVariant: { _id: any; }) => productVariant._id); // Use response directly
+        if (productVariantIds.length > 0) {
+          fetchProducstock(productVariantIds);
+        }
+         
       } catch (error: any) {
         console.log(error);
 
       }
 
+    };
+
+    // fetch the stock based on the Variant
+    const fetchProducstock = async (productVariantIds: string[]) => {
+      console.log("Fetching Variants from Product IDS:", productVariantIds);
+
+      try {
+        const response = await axios.post("http://localhost:5000/api/productstock/fetchstockByProductVariantId", { productVariantIds });
+        console.log("Fetched Product stock:", response.data);
+        const stockdata = response.data.data;
+
+        setfetchedData((prevSellers) =>
+          prevSellers.map((product) => {
+            const productVariant = stockdata.find((stock: { productvariantId: string }) => stock.productvariantId === product._id);
+            return {
+              ...product,
+              stockqty: productVariant?.stockqty || "No stockqty found"
+            };
+          })
+        );
+
+      } catch (error: any) {
+        console.error("Error fetching addresses:", error);
+      }
     };
 
     fetchProductVaraint();
@@ -69,15 +99,13 @@ const Listing: React.FC = () => {
     } catch (error:any) {
       console.log(error);
     }
-    try {
-      const response = await axios.delete(`http://localhost:5000/api/product/${productId}`)
-      console.log(response.data);
-    } catch (error:any) {
-      console.log(error);
-    }
-
-    
-  }
+    // try {
+    //   const response = await axios.delete(`http://localhost:5000/api/product/${productId}`)
+    //   console.log(response.data);
+    // } catch (error:any) {
+    //   console.log(error);
+    // }
+  };
  
 
 
@@ -142,7 +170,7 @@ const Listing: React.FC = () => {
                       <th>{item.productTitle}</th>
                       <th>{item.mrp}</th>
                       <th>{item.sellingPrice}</th>
-                      <th>dsv</th>
+                      <th>{item.stockqty}</th>
                       <th>{item.categoryName}</th>
                       <th>{item.fulfilmentBy}</th>
                       <th>{item.brandName}</th>

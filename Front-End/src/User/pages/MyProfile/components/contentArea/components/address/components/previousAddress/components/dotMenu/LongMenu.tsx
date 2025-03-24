@@ -4,21 +4,43 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-const options = [
-  'delete',
-  'edit'
-];
+interface LongMenuProps {
+  addressId?: string;
+  onDelete?: (id: string) => void; // Callback function for delete
+      onEdit?:(id: string) => void;
+}
 
 const ITEM_HEIGHT = 48;
 
-export default function LongMenu() {
+const LongMenu: React.FC<LongMenuProps> = ({ addressId, onDelete, onEdit}) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+// handle edit btn
+const handleEdit = () => {
+  if (addressId && onEdit) {
+    onEdit(addressId); // Call the delete function with addressId
+  }
+  handleClose();
+};
+
+
+
+
+// handle the delete btn
+  const handleDeleteAddress = () => {
+    if (addressId && onDelete) {
+      onDelete(addressId); // Call the delete function with addressId
+    }
+    handleClose();
   };
 
   return (
@@ -41,21 +63,18 @@ export default function LongMenu() {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        slotProps={{
-          paper: {
-            style: {
-              maxHeight: ITEM_HEIGHT * 4.5,
-              width: '20ch',
-            },
+        PaperProps={{
+          style: {
+            maxHeight: ITEM_HEIGHT * 4.5,
+            width: '20ch',
           },
         }}
       >
-        {options.map((option) => (
-          <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleClose}>
-            {option}
-          </MenuItem>
-        ))}
+        <MenuItem onClick={handleEdit}>Edit</MenuItem>
+        <MenuItem onClick={handleDeleteAddress}>Delete</MenuItem>
       </Menu>
     </div>
   );
-}
+};
+
+export default LongMenu;

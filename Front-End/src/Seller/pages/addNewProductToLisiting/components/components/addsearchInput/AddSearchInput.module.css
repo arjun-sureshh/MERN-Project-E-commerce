@@ -17,13 +17,26 @@ h2 {
     text-align: center;
     color: #333;
 }
+.headName {
+    /* -webkit-box-align: center; */
+    align-items: center;
+    display: flex;
+    margin-right: 50px;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: rgb(91, 92, 92);
+}
 
 .inputContainer {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
 }
-
+.inputsection{
+    display: flex;
+    flex-direction: column;
+}
 .input {
     flex: 1;
     padding: 8px;

@@ -7,20 +7,22 @@ import AdminApp from "../admin/AdminApp"
 import AdminRegistration from "../admin/pages/adminRegistration/AdminRegistration"
 import SellerDashBoard from "../Seller/sellerDashBoard/SellerDashBoard"
 import SellerRegistration from "../Seller/pages/sellerRegistrationPage/SellerRegistration"
+import SellerLogin from "../Seller/pages/sellerLogin/SellerLogin"
 
 const Routers = () => {
   return (
     <div>
-    <Routes>
-    <Route path="/" element={<HomePage/>} />
-      <Route path="/User/*" element={<UserApp/>} />
-      <Route path="/SellerLanding" element={<SellerApp/>} />
-      <Route path="/Seller/*" element={<SellerDashBoard/>}/>
-      <Route path="/Seller/Registration"  element={<SellerRegistration/>}/>
-      <Route path="/Admin/*" element={<AdminApp/>} />
-      <Route path="/Admin/Registration" element={<AdminRegistration/>} />
-      
-    </Routes>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/User/*" element={<UserApp />} />
+        <Route path="/SellerLanding" element={<SellerApp />} />
+        <Route path="/Seller/*" element={<SellerDashBoard />} />
+        <Route path="/Seller/Registration" element={<SellerRegistration />} />
+        <Route path="/Admin/*" element={<AdminApp />} />
+        <Route path="/Admin/Registration" element={<AdminRegistration />} />
+
+
+      </Routes>
     </div>
   )
 }

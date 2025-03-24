@@ -12,6 +12,27 @@ const getKeyFeatures = async (req, res) => {
     }
 }
 
+// product Stock get by varaint Id 
+const getKeyFeaturesByProductVaraintId = async (req, res) => {
+
+    const {productVariantId} = req.params;
+    try {
+        const productFeatureDetails = await Features.find({productVariantId:productVariantId});
+        
+
+        if (!productFeatureDetails) {
+            return res.status(404).json({ message: "Product Key Features not found with the given ID." });
+        }
+        res.status(200).json({ 
+            message: "Product Key Features fetched successfully", 
+            data: productFeatureDetails 
+        });
+    
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error fetching product", error });
+    }
+};
 
 // create Keyfeature
 
@@ -46,6 +67,7 @@ const createKeyFeatures = async (req, res) => {
 
 module.exports = {
     createKeyFeatures,
-    getKeyFeatures
+    getKeyFeatures,
+    getKeyFeaturesByProductVaraintId
 }
 

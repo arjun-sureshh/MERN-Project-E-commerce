@@ -10,13 +10,73 @@ const getProductVariant = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Error in fetching product ", error })
     }
+};
+
+// get the Varaint by ProductId to QC department
+const getVariantToQC = async (req, res) => {
+    const { productIds } = req.body; // Expecting an array from frontend
+
+    if (!productIds || !Array.isArray(productIds)) {
+        return res.status(400).json({ message: "Invalid Product IDs" });
+    }
+
+    try {
+        const productVariantDetails = await ProductVariant.find({ productId: { $in: productIds } });
+
+        res.status(200).json({ message: "Fetching Product Variant successful", data: productVariantDetails });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching Product Variant ", error });
+    }
+};
+
+
+
+// get product based on the productId
+
+const getVaraintByID = async(req,res) =>{
+    const {productVaraintId} = req.params;
+try {
+    const productDetails = await ProductVariant.findById(productVaraintId);
+    if (!productDetails) {
+        return res.status(404).json({ message: "Product Varaint not found with the given ID." });
+    }
+
+    res.status(200).json({ 
+        message: "Product Variant fetched successfully", 
+        data:productDetails 
+    });
+} catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching product Varaint", error });
 }
+};
+
+// get product varaint by the product id  based on the productId
+
+const getVaraintByProductID = async(req,res) =>{
+    const {productId} = req.params;
+    
+try {
+    const productDetails = await ProductVariant.findOne({productId:productId});
+    if (!productDetails) {
+        return res.status(404).json({ message: "Product Varaint not found with the given ID." });
+    }
+
+    res.status(200).json({ 
+        message: "Product Variant fetched successfully", 
+        data: productDetails 
+    });
+} catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching product Varaint", error });
+}
+};
+
 
 
 // get product Details by Seller ID
-const getVaraintByProductID = async (req, res) => {
+const getVaraintBySellerID = async (req, res) => {
     const { sellerId } = req.params;
-console.log(sellerId);
 
 
     try {
@@ -105,7 +165,7 @@ console.log(sellerId);
                     fulfilmentBy: "$productDetails.fulfilmentBy", // Assuming 'name' is the field for category name
                     brandName: "$brandDetails.brandName" ,// Assuming 'name' is the field for brand name
                     categoryName:"$categoryDetails.categoryName",
-                    productId:"$productDetails._id"
+                    productId:"$productDetails._id",
                 }
             }
         ]);
@@ -150,45 +210,60 @@ const createProductVariant = async (req, res) => {
 
 };
 
-// Update Balance fileds to Product Varaint
 const updateProductVariant = async (req, res) => {
-
-const {productVaraintId} = req.params;
-
-    const { productId,mrp, sellingPrice, minimumOrderQty , shippingProvider ,
-        Length ,breadth,weight,hsnCode,taxCode,countryOfOrgin,
-        manufactureDetails,packerDetails,productDiscription,
-        productTitle,intheBox,warrantyPeriod,warantySummary } = req.body;
-console.log(productId);
+    const { productVaraintId } = req.params;
+    const {
+        productId, mrp, sellingPrice, minimumOrderQty, shippingProvider,
+        Length, breadth,height, weight, hsnCode, taxCode, countryOfOrgin,
+        manufactureDetails, packerDetails, productDiscription,
+        productTitle, procurementSLA, procurementType, colorId, 
+        intheBox, warrantyPeriod, warantySummary
+    } = req.body;
 
     try {
-        if(!productVaraintId){
-            return res.status(404).json({message:" we can't Find Product Varaint By this Varaint ID"})
+        if (!productVaraintId) {
+            return res.status(404).json({ message: "We can't find Product Variant by this Variant ID" });
         }
-       
+
+        // ✅ Handle empty colorId: Set it to null if it's empty
+        let updateData = {
+            productId, mrp, sellingPrice, minimumOrderQty, shippingProvider,
+            Length, breadth,height, weight, hsnCode, taxCode, countryOfOrgin,
+            manufactureDetails, packerDetails, productDiscription,
+            productTitle, procurementSLA, procurementType, intheBox, 
+            warrantyPeriod, warantySummary
+        };
+
+        // ✅ Only add colorId if it's valid (not empty or invalid ObjectId)
+        if (colorId && mongoose.Types.ObjectId.isValid(colorId)) {
+            updateData.colorId = colorId;
+        } else {
+            updateData.colorId = null; // Or delete updateData.colorId;
+        }
+
+        // ✅ Update the product variant
         const updatedData = await ProductVariant.findByIdAndUpdate(
-            productVaraintId, 
-            { productId,mrp, sellingPrice, minimumOrderQty , shippingProvider ,
-                Length ,breadth,weight,hsnCode,taxCode,countryOfOrgin,
-                manufactureDetails,packerDetails,productDiscription,
-                productTitle,intheBox,warrantyPeriod,warantySummary}, 
+            productVaraintId,
+            updateData,
             { new: true, runValidators: true }
         );
 
+        if (!updatedData) {
+            return res.status(404).json({ message: "Product Variant not found" });
+        }
 
-        await updatedData.save();
-        res.status(201).json({ message: "Product Variant Updated succeccfully", data:updatedData });
+        res.status(200).json({ message: "Product Variant updated successfully", data: updatedData });
     } catch (error) {
-        console.error(error)
+        console.error(error);
 
         if (error.name === "ValidationError") {
             return res.status(400).json({ message: error.message });
         }
 
-        res.status(500).json({ message: "server error" })
+        res.status(500).json({ message: "Server error" });
     }
-
 };
+
 
 // delete the product varaint
 const deleteProductVaraint = async (req,res) =>{
@@ -213,7 +288,10 @@ module.exports = {
     createProductVariant,
     getProductVariant,
     updateProductVariant,
+    getVaraintBySellerID,
+    deleteProductVaraint,
     getVaraintByProductID,
-    deleteProductVaraint
+    getVaraintByID,
+    getVariantToQC
 }
 

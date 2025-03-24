@@ -4,12 +4,26 @@ const District = require("../models/districtModels");
 
 const getDistrict = async (req, res) => {
     try {
+        
         const districtDetails = await District.find();
-        res.status(200).json({ districtDetails });
+
+        if (!districtDetails.length) {
+            return res.status(404).json({ message: "No districts available." });
+        }
+
+        res.status(200).json({
+            message: "All districts fetched successfully",
+            data: districtDetails
+        });
+
     } catch (error) {
-        res.status(500).json({ message: "Error in fetching District ", error })
+        res.status(500).json({
+            message: "Error in fetching districts",
+            error: error.message
+        });
     }
-}
+};
+
 
 // get District by id 
 

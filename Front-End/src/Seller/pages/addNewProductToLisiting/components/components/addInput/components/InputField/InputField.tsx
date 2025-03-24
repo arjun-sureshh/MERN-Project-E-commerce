@@ -7,9 +7,10 @@ import { updateFeatureField } from '../../../../../../../../redux/toogleSlice';
 interface InputFieldProps {
     index: number;
     feature:any;
+    type:string;
 }
 
-const InputField: React.FC<InputFieldProps> = ({ index }) => {
+const InputField: React.FC<InputFieldProps> = ({type, index }) => {
     const dispatch = useDispatch();
     const feature = useSelector((state: RootState) => state.toggle.features[index]); // Get only this input's data
 
@@ -22,18 +23,18 @@ const InputField: React.FC<InputFieldProps> = ({ index }) => {
         <div className={styles.container}>
             <div className={styles.inputTitle}>
                 <input
-                    type="text"
+                    type={type}
                     name="title"
-                    value={feature?.title || ""}
+                    defaultValue={feature?.title || ""}
                     onChange={handleChange}
                     placeholder="Key"
                 />
             </div>
             <div className={styles.input}>
                 <input
-                    type="text"
+                    type={type}
                     name="content"
-                    value={feature?.content || ""}
+                    defaultValue={feature?.content || ""}
                     onChange={handleChange}
                     placeholder="Content"
                 />

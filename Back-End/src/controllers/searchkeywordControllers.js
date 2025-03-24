@@ -8,7 +8,30 @@ const getSearchKeyword = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Error in fetching searchKeyword ", error })
     }
-}
+};
+
+
+// product search Key get by varaint Id 
+const getSearchKeyByProductVaraintId = async (req, res) => {
+
+    const {productVariantId} = req.params;
+    try {
+        const productSearchKeyDetails = await SearchKeywords.find({productVariantId:productVariantId});
+        
+
+        if (!productSearchKeyDetails) {
+            return res.status(404).json({ message: "Product search Key words not found with the given ID." });
+        }
+        res.status(200).json({ 
+            message: "Product search Key words fetched successfully", 
+            data: productSearchKeyDetails 
+        });
+    
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error fetching product search Key words", error });
+    }
+};
 
 // post searchKeyword
 
@@ -38,5 +61,6 @@ const createSearchKeyword = async (req, res) => {
 
 module.exports = {
     createSearchKeyword,
-    getSearchKeyword
+    getSearchKeyword,
+    getSearchKeyByProductVaraintId
 }

@@ -4,16 +4,16 @@ const featuresSchemaStructure = new mongoose.Schema({
 
     featureTitle:{ 
         type:String,
-        required:true,
+        required:false,
     },
     featureContent:{
         type:String,
-        required:true,
+        required:false,
     },
     productVariantId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"productvariantdetails",
-        required:true,
+        required:false,
     },
 },{timestamps:true})
 

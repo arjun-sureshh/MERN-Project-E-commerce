@@ -37,18 +37,18 @@ const AddPhoto: React.FC<AddPhotoProps> = ({ displyaimageblockFn, setSave, saved
       setMessage("Please select a file before submitting.");
       return;
     }
-
-    // Generate local preview URL for the selected image
-    const imageUrl = URL.createObjectURL(upload);
-
-    // Dispatch action to store image in Redux
-    dispatch(toggleAddImage(imageUrl));
-
-    setMessage("File added successfully!");
-    setUpload(null);
-    setTimeout(() => {
-      setMessage("")
-    }, 1000);
+    const reader = new FileReader();
+    reader.readAsDataURL(upload); // Convert File to Base64
+    reader.onloadend = () => {
+        if (reader.result) {
+          dispatch(toggleAddImage(upload)); // Dispatch Base64 string
+            setMessage("File added successfully!");
+            setUpload(null);
+            setTimeout(() => {
+                setMessage("");
+            }, 1000);
+        }
+    };
   };
 
   // handle save btn
@@ -59,8 +59,6 @@ const AddPhoto: React.FC<AddPhotoProps> = ({ displyaimageblockFn, setSave, saved
     }
     // If all required fields are filled, proceed
     setSave();
-    //  console.log("Saved state:", saved);
-
     displyaimageblockFn();
   }
 
@@ -83,14 +81,25 @@ const AddPhoto: React.FC<AddPhotoProps> = ({ displyaimageblockFn, setSave, saved
         {images.length === 0 && <div className={styles.emptyImgcard}><BsFillImageFill /></div>}
 
         {images.map((img, index) => (
-          <div key={index} className={styles.imgcard}>
+        <div key={index} className={styles.imgcard}>
+          {typeof img === 'string' ? (
             <img src={img} alt={`Product ${index}`} className={styles.preview} />
-            <button className={styles.removeBtn} onClick={() => dispatch(toggleRemoveImage(index))}>
-              &times;
-            </button>
-          </div>
+          ) : img instanceof File ? (
+            <img
+              src={URL.createObjectURL(img)}
+              alt={`Product ${index}`}
+              className={styles.preview}
+            />
+          ) : null}
+          <button
+            className={styles.removeBtn}
+            onClick={() => dispatch(toggleRemoveImage(index))}
+          >
+            &times;
+          </button>
+        </div>
+      ))}
 
-        ))}
       </div>
 
       {/* Image Upload Section */}

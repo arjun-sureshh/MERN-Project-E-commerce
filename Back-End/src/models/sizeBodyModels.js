@@ -10,7 +10,13 @@ const sizebodySchemaStructure = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"sizeheads",
         required:true,
-    }
+    },
+    productVariantId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"sizeheads",
+        required:true,
+    },
+
 
 })
 

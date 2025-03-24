@@ -50,7 +50,7 @@ const Color: React.FC = () => {
     try {
       const response = await axios.get("http://localhost:5000/api/color");
       // console.log(response)
-      setAllcolor(response.data.colorDetails)
+      setAllcolor(response.data.data)
     } catch (error) {
       console.error("Error Fetching color:", error);
     }

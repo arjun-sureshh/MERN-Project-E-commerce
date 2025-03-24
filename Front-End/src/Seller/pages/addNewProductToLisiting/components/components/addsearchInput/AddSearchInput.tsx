@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./AddSearchInput.module.css"; // CSS Module for styles
 import { RootState } from "../../../../../../redux/store";
@@ -6,33 +6,43 @@ import { toggleSearchKeyWordAdd, toggleSearchKeyWordFieldRemove, toggleSearchKey
 import AttributeBox from "../attributeBox/AttributeBox";
 import { GoPlus } from "react-icons/go";
 import { FiMinus } from "react-icons/fi";
+import KeyWordInput from "./components/keyWordInput/KeyWordInput";
 
 interface InputBoxProps {
     headName?: string;
     attributeName: string;
-    required?:string;
-    
+    required?: string;
+    type?: string;
 }
 
-const SearchKeywordManager: React.FC<InputBoxProps> = ({ headName, attributeName, required }) => {
+const SearchKeywordManager: React.FC<InputBoxProps> = ({ type, headName, attributeName, required }) => {
     const dispatch = useDispatch();
     const searchKeyWords = useSelector((state: RootState) => state.toggle.searchKeyWords);
     const [newKeyword, setNewKeyword] = useState("");
-    const features = useSelector((state: RootState) => state.toggle.searchKeyWords);
-        console.log(features);
+    console.log(searchKeyWords);
 
-    const handleAddKeyword = () => {
-        if (newKeyword.trim() !== "") {
-            dispatch(toggleSearchKeyWordAdd(newKeyword));
-            setNewKeyword("");
-        }
-    };
+    // const handleAddKeyword = () => {
+    //     if (newKeyword.trim() !== "") {
+    //         dispatch(toggleSearchKeyWordAdd(newKeyword));
+    //         setNewKeyword("");
+    //     }
+    // };
 
-    const handleUpdateKeyword = (index: number, value: string) => {
-        dispatch(toggleSearchKeyWordsUpdate({ index, value }));
-    };
+    const   addSearchKeyWord = () => {
+            dispatch(toggleSearchKeyWordAdd({  searchKeyWord: "" }));
+        };
 
-console.log();
+    // const handleUpdateKeyword = (index: number, value: string) => {
+    //     dispatch(toggleSearchKeyWordsUpdate({ index, value }));
+    // };
+
+    const removeSearchKeyWord = (index: number) => {
+            dispatch(toggleSearchKeyWordFieldRemove(index));
+        };
+    
+         useEffect(() => {
+            addSearchKeyWord();
+            }, [])
 
     return (
         <div className={styles.container}>
@@ -42,26 +52,25 @@ console.log();
                 <AttributeBox attributeName={attributeName} requiredMust={required} />
 
                 {/* Input Field for Adding New Keywords */}
-                <div className={styles.inputsection}>
-
-
+                
+               
+                    <div className={styles.inputsection}>
+                    {searchKeyWords.map((keyWord,index) =>(
                     <div className={styles.inputContainer}>
-                        <input
-                            type="text"
-                            placeholder="Enter search keyword"
-                            value={newKeyword}
-                            onChange={(e) => setNewKeyword(e.target.value)}
-                            className={styles.input}
-                        />
-                        <button onClick={handleAddKeyword} className={styles.addButton}>
-                           <GoPlus/>
+                        <KeyWordInput searchKey={keyWord} index={index} inputType={type}/>
+                        <button 
+                        onClick={index === searchKeyWords.length-1 ? addSearchKeyWord : () => removeSearchKeyWord(index)} 
+                        className={styles.addButton}>
+                            {index === searchKeyWords.length -1 ? <GoPlus /> : <FiMinus/>}
                         </button>
                     </div>
-                    <ul className={styles.list}>
+                ))}
+
+                    {/* <ul className={styles.list}>
                         {searchKeyWords.map((keyword, index) => (
                             <li key={index} className={styles.listItem}>
                                 <input
-                                    type="text"
+                                    type={type}
                                     value={keyword.searchKeyWord}
                                     onChange={(e) => handleUpdateKeyword(index, e.target.value)}
                                     className={styles.input}
@@ -70,11 +79,12 @@ console.log();
                                     onClick={() => dispatch(toggleSearchKeyWordFieldRemove(index))}
                                     className={styles.deleteButton}
                                 >
-                                    <FiMinus/>
+                                    <FiMinus />
                                 </button>
                             </li>
                         ))}
-                    </ul>
+                    </ul> */}
+
                 </div>
             </div>
 

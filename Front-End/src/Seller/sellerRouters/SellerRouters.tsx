@@ -5,7 +5,7 @@ import Listing from '../pages/mylisting/Listing'
 import AddNewProduct from '../pages/addnewproduct/AddNewProduct'
 import Inventory from '../pages/inventory/Inventory'
 import AddNewProductToListing from '../pages/addNewProductToLisiting/AddNewProductToListing'
-import SellerDashBoard from '../sellerDashBoard/SellerDashBoard'
+
 
 
 const SellerRouters:React.FC = () => {
@@ -17,6 +17,7 @@ const SellerRouters:React.FC = () => {
         <Route path='/AddNewProduct' element={<AddNewProduct/>}/>
         <Route path='/AddNewProductToListing' element={<AddNewProductToListing/>}/>
         <Route path='/Inventory' element={<Inventory/>}/>
+
       </Routes>
     </div>
   )

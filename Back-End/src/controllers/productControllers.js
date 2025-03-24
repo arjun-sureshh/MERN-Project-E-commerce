@@ -3,16 +3,145 @@ const Product = require("../models/productModels");
 
 
 
-// product get 
+// get all products
 const getProduct = async (req, res) => {
+
     try {
         const productDetails = await Product.find();
-        res.status(200).json(productDetails);
+        res.status(200).json({ message: "Fetching Data From Product Model is Successfull", data: productDetails });
 
     } catch (error) {
         res.status(500).json({ message: "Error in fetching product ", error })
     }
-}
+};
+
+// get approved seller details
+
+const getApprovedProduct = async (req,res) =>{
+    try {
+        const productDetails = await Product.find({ListingStatus : 4, qcStatus:1 });
+        res.status(200).json({message:"fetching Approved Product details successfull",data:productDetails})
+    } catch (error) {
+        res.status(500).json({messgae:"Error in fetching Product ", error})
+    }
+};
+
+// get approved seller details
+const getRejectedProduct = async (req,res) =>{
+    try {
+        const productDetails = await Product.find({ListingStatus : 4, qcStatus:-1 });
+        res.status(200).json({message:"fetching Rejected Product details successfull",data:productDetails})
+    } catch (error) {
+        res.status(500).json({messgae:"Error in fetching Product ", error})
+    }
+};
+
+
+// get all product with lisiting status is 4 ad qc status is 0
+const getProductToQC = async (req, res) => {
+    try {
+        const productDetails = await Product.aggregate([
+            {
+                $match: { ListingStatus: 4, qcStatus: 0 }
+            },
+            {
+                $lookup: {
+                    from: "categories",
+                    localField: "categoryId",
+                    foreignField: "_id",
+                    as: "categoryDetails"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$categoryDetails",
+                    preserveNullAndEmptyArrays: true // If no category is found, keep null instead of removing the document
+                }
+            },
+            {
+                $lookup: {
+                    from: "brands",
+                    localField: "brandId",
+                    foreignField: "_id",
+                    as: "brandDetails"
+                }
+            },
+            
+            {
+                $unwind: {
+                    path: "$brandDetails",
+                    preserveNullAndEmptyArrays: true // If no category is found, keep null instead of removing the document
+                }
+            },
+            {
+                $lookup: {
+                    from: "sellers",
+                    localField: "sellerId",
+                    foreignField: "_id",
+                    as: "sellerDetails"
+                }
+            },
+            
+            {
+                $unwind: {
+                    path: "$sellerDetails",
+                    preserveNullAndEmptyArrays: true // If no category is found, keep null instead of removing the document
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    sellerId: 1,
+                    skuId: 1,
+                    ListingStatus: 1,
+                    fulfilmentBy: 1,
+                    qcStatus: 1,
+                    createdAt: 1,
+                    updatedAt: 1,
+                    localDeliveryCharge: 1,
+                    zonalDeliveryCharge: 1,
+                    categoryName: "$categoryDetails.categoryName", // Assuming 'name' is the field for category name
+                    brandName: "$brandDetails.brandName", // Assuming 'name' is the field for brand name
+                    sellerName:"$sellerDetails.sellerName",
+                }
+            }
+        ]);
+        if (!productDetails || productDetails.length === 0) {
+            return res.status(404).json({ message: "No products found for the given seller ID." });
+        }
+
+        res.status(200).json({
+            message: "Products fetched successfully",
+            data: productDetails
+        });
+
+    } catch (error) {
+        console.error("Error in getProductToQC:", error);
+        res.status(500).json({ message: "Error in fetching product", error: error.message });
+    }
+};
+
+// get product based on the productId
+
+const getProductByProductId = async (req, res) => {
+    const { productId } = req.params;
+    try {
+        const productDetails = await Product.findById(productId);
+        if (!productDetails) {
+            return res.status(404).json({ message: "Product not found with the given ID." });
+        }
+
+        res.status(200).json({
+            message: "Product fetched successfully",
+            data: productDetails
+        });
+
+      
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error fetching product", error });
+    }
+};
 
 // get product Details by Seller ID
 const getProductBySellerID = async (req, res) => {
@@ -20,48 +149,48 @@ const getProductBySellerID = async (req, res) => {
 
 
     try {
-        
-               // Ensure sellerId is a valid ObjectId
-               if (!mongoose.Types.ObjectId.isValid(sellerId)) {
-                return res.status(400).json({ message: "Invalid seller ID" });
-            }
 
-            const sellerObjectId = new mongoose.Types.ObjectId(String(sellerId));
+        // Ensure sellerId is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(sellerId)) {
+            return res.status(400).json({ message: "Invalid seller ID" });
+        }
+
+        const sellerObjectId = new mongoose.Types.ObjectId(String(sellerId));
 
         const productDetails = await Product.aggregate([
             {
-                $match:{sellerId: sellerObjectId}
+                $match: { sellerId: sellerObjectId , qcStatus : 0 }
             },
             {
-                $lookup:{
-                    from:"categories",
-                    localField:"categoryId",
-                    foreignField:"_id",
-                    as:"categoryDetails"
+                $lookup: {
+                    from: "categories",
+                    localField: "categoryId",
+                    foreignField: "_id",
+                    as: "categoryDetails"
                 }
             },
             {
-                $lookup:{
-                    from:"brand",
-                    localField:"brandId",
-                    foreignField:"_id",
-                    as:"brandDetails"
+                $lookup: {
+                    from: "brand",
+                    localField: "brandId",
+                    foreignField: "_id",
+                    as: "brandDetails"
                 }
             },
             {
-                $unwind:{
-                    path:"$categoryDetails",
+                $unwind: {
+                    path: "$categoryDetails",
                     preserveNullAndEmptyArrays: true // If no category is found, keep null instead of removing the document
                 }
             },
             {
-                $unwind:{
-                    path:"$brandDetails",
+                $unwind: {
+                    path: "$brandDetails",
                     preserveNullAndEmptyArrays: true // If no category is found, keep null instead of removing the document
                 }
             },
             {
-                $project:{
+                $project: {
                     _id: 1,
                     sellerId: 1,
                     skuId: 1,
@@ -102,9 +231,9 @@ const getProductById = async (req, res) => {
             return res.status(404).json({ message: "Product not found with the given ID." });
         }
 
-        res.status(200).json({ 
-            message: "Product fetched successfully", 
-            productDetails 
+        res.status(200).json({
+            message: "Product fetched successfully",
+            productDetails
         });
 
     } catch (error) {
@@ -116,16 +245,16 @@ const getProductById = async (req, res) => {
 
 // create product when the page loads
 const createProduct = async (req, res) => {
-    const { sellerId,categoryId } = req.body;
+    const { sellerId, categoryId } = req.body;
 
-    if (!sellerId || !categoryId ) {
+    if (!sellerId || !categoryId) {
         return res.status(400).json({ message: "seller must be login or select category properly" })
     }
 
     try {
-       
+
         const newProduct = new Product({
-            sellerId,categoryId, ListingStatus : 2,
+            sellerId, categoryId, ListingStatus:2,
         });
 
         const savedProduct = await newProduct.save();
@@ -149,18 +278,18 @@ const createProduct = async (req, res) => {
 // update Brand Id in to  product 
 
 const updateBrandId = async (req, res) => {
-    const {productId} = req.params;
-    const { brandId  } = req.body;
-    
+    const { productId } = req.params;
+    const { brandId } = req.body;
 
-    if ( !brandId || !productId ) {
+
+    if (!brandId || !productId) {
         return res.status(400).json({ message: "Please provide Brand Id" });
     }
 
     try {
         const updatedBrandId = await Product.findByIdAndUpdate(
-            productId, 
-            { brandId: brandId,ListingStatus:3 }, 
+            productId,
+            { brandId: brandId, ListingStatus: 3 },
             { new: true, runValidators: true }
         );
 
@@ -176,20 +305,54 @@ const updateBrandId = async (req, res) => {
     }
 };
 
+// update the product Qcstatus
+const updateQcStatus = async (req,res) =>{
+    const {productId} = req.params;
+    const {qcStatus} = req.body;
+    
+
+    if ( !qcStatus ) {
+        return res.status(400).json({ message: "Please provide teh Qc status" });
+    }
+
+    try {
+        const updateData = await Product.findByIdAndUpdate(
+            productId, 
+            { qcStatus:qcStatus }, 
+            { new: true, runValidators: true }
+        );
+
+        if (!updateData) {
+            return res.status(404).json({ message: "Product  Not Found" });
+        }
+
+        res.status(200).json({ message: "Product Approved", data: updateData });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
 // update Skui Id and fulfilement in to  product 
 
 const updateSkuidAndFullfilement = async (req, res) => {
-    const {productId} = req.params;
-    const { skuId ,fulfilmentBy } = req.body;
+    const { productId } = req.params;
+    const { skuId, fulfilmentBy, localDeliveryCharge, zonalDeliveryCharge, ListingStatus } = req.body;
 
-    if ( !skuId || !productId || !fulfilmentBy ) {
+    if (!skuId || !productId || !fulfilmentBy || !ListingStatus) {
         return res.status(400).json({ message: "Please provide skuid and fullfilement" });
     }
 
     try {
         const updatedData = await Product.findByIdAndUpdate(
-            productId, 
-            { skuId,fulfilmentBy, ListingStatus:3 }, 
+            productId,
+            {
+                skuId, fulfilmentBy,
+                localDeliveryCharge,
+                zonalDeliveryCharge,
+                ListingStatus: ListingStatus
+            },
             { new: true, runValidators: true }
         );
 
@@ -205,10 +368,11 @@ const updateSkuidAndFullfilement = async (req, res) => {
     }
 };
 
-// delete the product 
-const deleteProduct = async (req,res) =>{
 
-try {
+// delete the product 
+const deleteProduct = async (req, res) => {
+
+    try {
         const { id } = req.params;
 
         const deleted = await Product.findByIdAndDelete(id)
@@ -235,6 +399,11 @@ module.exports = {
     updateBrandId,
     getProductBySellerID,
     updateSkuidAndFullfilement,
-    deleteProduct
+    deleteProduct,
+    getProductByProductId,
+    getProductToQC,
+    updateQcStatus,
+    getApprovedProduct,
+    getRejectedProduct
 }
 

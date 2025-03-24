@@ -71,7 +71,7 @@ const SelectCountry: React.FC<SelectBoxProps> = ({
           <input
             type="text"
             placeholder="Search..."
-            value={searchTerm}
+            value={value}
             onChange={handleSearch}
             onFocus={() => setDropdownOpen(true)}
             onBlur={() => setTimeout(() => setDropdownOpen(false), 200)}

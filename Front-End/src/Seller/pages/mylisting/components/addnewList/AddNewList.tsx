@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './AddNewList.module.css'
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { toggleProductId } from '../../../../../redux/toogleSlice';
+import { toggleProductId, toggleProductVaraintId, toggleResetProductData } from '../../../../../redux/toogleSlice';
 
 interface AddNewListProps {
 linPath:string;
@@ -15,6 +15,8 @@ const navigate = useNavigate();
 
   const addnewProduct = () =>{
    dispatch(toggleProductId(""));
+   dispatch(toggleProductVaraintId(""));
+   dispatch(toggleResetProductData());
    navigate(linPath);
   }
 

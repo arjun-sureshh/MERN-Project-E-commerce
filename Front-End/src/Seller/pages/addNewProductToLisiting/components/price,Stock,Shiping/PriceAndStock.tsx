@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styles from './PriceAndStock.module.css'
 import { IoCheckmarkCircle } from 'react-icons/io5'
 import DisplayInputContainer from './components/displayinputContainer/DisplayInputContainer'
@@ -14,6 +14,11 @@ const PriceAndStock: React.FC = () => {
   const [saved, setSaved] = useState<Boolean>(false)
   const [filledCount, setFilledCount] = useState<number>(0)
 
+
+  
+  
+  
+ 
   
 
   // Store refs for each input field
@@ -30,7 +35,6 @@ const PriceAndStock: React.FC = () => {
     shippingProvider: useRef<HTMLInputElement>(null),
     localDeliveryCharge: useRef<HTMLInputElement>(null),
     ZonalDeliveryCharge: useRef<HTMLInputElement>(null),
-    nationalDeliveryCharge: useRef<HTMLInputElement>(null),
     length: useRef<HTMLInputElement>(null),
     breadth: useRef<HTMLInputElement>(null),
     height: useRef<HTMLInputElement>(null),
@@ -51,6 +55,8 @@ const PriceAndStock: React.FC = () => {
     featureTitle: useRef<HTMLInputElement>(null),
     featureContent: useRef<HTMLInputElement>(null),
     color: useRef<HTMLInputElement>(null),
+    sizebody: useRef<HTMLInputElement>(null),
+    sizeHeadId: useRef<HTMLInputElement>(null),
   };
 
 // required fields for the price and stock page
@@ -62,7 +68,6 @@ const PriceAndStock: React.FC = () => {
     "shippingProvider",
     "localDeliveryCharge",
     "ZonalDeliveryCharge",
-    "nationalDeliveryCharge",
     "length",
     "breadth",
     "height",
@@ -74,9 +79,15 @@ const PriceAndStock: React.FC = () => {
     "shippingProvider",
     
   ];
+// useeffect 
+useEffect(() => {
+  const filledCount = requiredFields.filter((key) => productFields[key]).length;
+  setFilledCount(filledCount);
+}, [])
 
+// handle save 
   const handleSave = () => {
-   
+
     const filledCount = requiredFields.filter((key) => productFields[key]).length;
     setFilledCount(filledCount);
    

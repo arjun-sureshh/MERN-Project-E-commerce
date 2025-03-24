@@ -7,17 +7,21 @@ import { IoIosArrowForward } from 'react-icons/io'
 import { ImNotification } from 'react-icons/im'
 import { FiLogOut } from 'react-icons/fi'
 
-const SideBar: React.FC = () => {
+interface SideBarProps {
+    userName?:string;
+}
+
+const SideBar: React.FC <SideBarProps>= ({userName}) => {
     return (
         <div className={styles.body}>
             <div className={styles.profileName}>
-                ARJUN SURESH
+               {userName}
             </div>
             <div className={styles.sideBody}>
                 <div className={styles.ddd}>
                 <YourActivites headName={"My Order"} subName={[]} icon={<FaParachuteBox/>} rightArrow={<IoIosArrowForward/>}/>
                 <YourActivites  headName={"Account Settings"} subName={["Profile Name","Manage Addresses"]} icon={<FaHouseUser/>} rightArrow={null}/>
-                <YourActivites  headName={"MY STUFF"} subName={["My Reviews & Ratings","All Notifications","My Wishlist"]} icon={<ImNotification/>} rightArrow={null}/>
+                <YourActivites  headName={"MY STUFF"} subName={["My Reviews & Ratings","All Notifications","My Wishlist"]}  icon={<ImNotification/>} rightArrow={null}/>
                 <YourActivites  headName={"Logout"} subName={[]} icon={<FiLogOut/>} rightArrow={null}/>
                 </div>
             </div>

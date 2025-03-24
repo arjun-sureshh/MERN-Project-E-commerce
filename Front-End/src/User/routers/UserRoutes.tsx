@@ -4,6 +4,8 @@ import ProductView from "../pages/ProductDetails/ProductView"
 import Cart from "../pages/Cart/Cart"
 import MyProfile from "../pages/MyProfile/MyProfile"
 import Home from "../pages/Home/Home"
+import UserRegister from "../pages/userRegistration/UserRegistration"
+import UserLogin from "../pages/userLogin/UserLogin"
 
 const UserRoutes = () => {
   return (
@@ -14,6 +16,8 @@ const UserRoutes = () => {
         <Route path="/ProductListing" element={<ProductListing />} />
         <Route path="/Cart" element={<Cart />} />
         <Route path="/MyAccount" element={<MyProfile />} />
+        <Route path="/Registration" element={<UserRegister/>} />
+        <Route path="/Login" element={<UserLogin/>} />
       </Routes>
     </div>
   )

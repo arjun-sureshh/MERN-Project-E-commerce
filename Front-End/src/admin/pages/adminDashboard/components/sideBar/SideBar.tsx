@@ -41,12 +41,10 @@ const SideBar: React.FC = () => {
                             {openMenus["QC Department"] && (
                                 <ul className={styles.subMenu}>
                                     <li>
-                                        <span onClick={() => toggleMenu("Seller QC")}>Seller QC</span>
-                                        {openMenus["Seller QC"] && <ul className={styles.sub_subMenu}><li>View</li></ul>}
+                                        <span onClick={() =>dispatch(togglePageControl("SellerQC"))}>Seller QC</span>
                                     </li>
                                     <li>
-                                        <span onClick={() => toggleMenu("Product QC")}>Product QC</span>
-                                        {openMenus["Product QC"] && <ul className={styles.sub_subMenu}><li>View</li></ul>}
+                                        <span onClick={() =>dispatch(togglePageControl("ProductQC"))}>Product QC</span>
                                     </li>
                                 </ul>
                             )}
@@ -65,12 +63,10 @@ const SideBar: React.FC = () => {
                             {openMenus["Seller"] && (
                                 <ul className={styles.subMenu}>
                                     <li>
-                                        <span onClick={() => toggleMenu("Active Seller")}>Active Seller</span>
-                                        {openMenus["Active Seller"] && <ul className={styles.sub_subMenu}><li>View</li></ul>}
+                                        <span onClick={() => dispatch(togglePageControl("ApprovedSeller"))}>Active Seller</span>
                                     </li>
                                     <li>
-                                        <span onClick={() => toggleMenu("Cancelled Seller")}>Cancelled Seller</span>
-                                        {openMenus["Cancelled Seller"] && <ul className={styles.sub_subMenu}><li>View</li></ul>}
+                                        <span onClick={() => dispatch(togglePageControl("RejectedSeller"))}>Cancelled Seller</span>
                                     </li>
                                 </ul>
                             )}
@@ -89,12 +85,10 @@ const SideBar: React.FC = () => {
                             {openMenus["Product"] && (
                                 <ul className={styles.subMenu}>
                                     <li>
-                                        <span onClick={() => toggleMenu("Active Product")}>Active Product</span>
-                                        {openMenus["Active Product"] && <ul className={styles.sub_subMenu}><li>View</li></ul>}
+                                        <span onClick={() => dispatch(togglePageControl("ApprovedProducts"))}>Active Product</span>
                                     </li>
                                     <li>
-                                        <span onClick={() => toggleMenu("Cancelled Product")}>Cancelled Product</span>
-                                        {openMenus["Cancelled Product"] && <ul className={styles.sub_subMenu}><li>View</li></ul>}
+                                        <span onClick={() => dispatch(togglePageControl("RejectedProducts"))}>Cancelled Product</span>
                                     </li>
                                 </ul>
                             )}
@@ -121,6 +115,9 @@ const SideBar: React.FC = () => {
                         {/* Brand */}
                         <li className={styles.menu_item} onClick={() =>dispatch(togglePageControl("Brand"))}>
                             Brand
+                        </li>
+                        <li className={styles.menu_item} onClick={() =>dispatch(togglePageControl("Size"))}>
+                            Size
                         </li>
                         
 

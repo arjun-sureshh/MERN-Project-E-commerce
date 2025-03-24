@@ -23,6 +23,7 @@ const productSchemaStructure = new mongoose.Schema({
         default: null,
         required: false,
     },
+    
     ListingStatus: {
         type: Number,
         default: 1,
@@ -34,7 +35,18 @@ const productSchemaStructure = new mongoose.Schema({
         default: null,
         trim: true
     },
-
+    localDeliveryCharge: {
+        type: String,
+        required: false,
+        default: null,
+        trim: true
+    },
+    zonalDeliveryCharge:{
+        type: String,
+        required: false,
+        default: null,
+        trim: true
+    },
     qcStatus: {
         type: Number,
         default: 0,

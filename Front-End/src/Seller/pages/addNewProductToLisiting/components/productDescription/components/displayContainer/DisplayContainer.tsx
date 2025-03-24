@@ -40,17 +40,17 @@ const DisplayContainer: React.FC<DisplayInputContainerProps> = ({ inputRefs }) =
 
   return (
     <div className={styles.inputwholeContainer}>
-      <InputBox headName={"Product Details"} attributeName={"Product Title"} ref={inputRefs["productTitle"]} name={'productTitle'} inputContain={""} required={"*"}/>
-      <InputBox headName={""} attributeName={"Product Discription"} ref={inputRefs["productDiscription"]} name={"productDiscription"} inputContain={""} required={"*"}/>
-      <InputBox headName={""} attributeName={"In The Box"} ref={inputRefs["intheBox"]} name={"intheBox"} inputContain={""} required={"*"}/>
-      <InputBox headName={""} attributeName={"Minimum OrderQty"} ref={inputRefs["minimumOrderQty"]} name={"minimumOrderQty"} inputContain={""} required={"*"}/>
+      <InputBox type={"text"} headName={"Product Details"} attributeName={"Product Title"} ref={inputRefs["productTitle"]} name={'productTitle'} inputContain={""} required={"*"}/>
+      <InputBox type={"text"} headName={""} attributeName={"Product Discription"} ref={inputRefs["productDiscription"]} name={"productDiscription"} inputContain={""} required={"*"}/>
+      <InputBox type={"text"} headName={""} attributeName={"In The Box"} ref={inputRefs["intheBox"]} name={"intheBox"} inputContain={""} required={"*"}/>
+      <InputBox type={"number"} headName={""} attributeName={"Minimum OrderQty"} ref={inputRefs["minimumOrderQty"]} name={"minimumOrderQty"} inputContain={""} required={"*"}/>
 
       <SelectCountry headName="Manufacturing Details" attributeName="Country Of Origin" name="countryOfOrigin" isCountrySelect={true} required={"*"} />
 
       <SelectBox headName={"Color Of Your Product"} attributeName={"Color"} name={"color"} inputContain={fetchColor} required={"*"}/>
       
-      <InputBox headName={""} attributeName={"Manufacturer Details"} ref={inputRefs["manufacturerDetails"]} name={"manufacturerDetails"} inputContain={""} required={"*"}/>
-      <InputBox headName={""} attributeName={"Packer Details"} ref={inputRefs["packerDetails"]} name={"packerDetails"} inputContain={""} required={"*"}/>
+      <InputBox type={"text"} headName={""} attributeName={"Manufacturer Details"} ref={inputRefs["manufacturerDetails"]} name={"manufacturerDetails"} inputContain={""} required={"*"}/>
+      <InputBox type={"text"} headName={""} attributeName={"Packer Details"} ref={inputRefs["packerDetails"]} name={"packerDetails"} inputContain={""} required={"*"}/>
     </div>
   )
 }

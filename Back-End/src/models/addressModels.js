@@ -4,36 +4,58 @@ const addressSchemaStructure = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "usres",
-        default:null,
         trim:false
     },
     sellerId:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "sellers",
-        default:null,
         trim:false
     },
     address: {
         type: String,
-        default:null,
         required: false,
     },
     pincode: {
         type: String,
-        default:null,
         required: false,
     },
     districtId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "districts",
-        default:null,
+        required: false,
+    },
+    mobileNumber:{
+        type:String,
+        required: false,
+    },
+    alternateMobileNumber:{
+        type:String,
+        required: false,
+    },
+    fullName:{
+        type:String,
+        required: false,
+    },
+    addressType:{
+        type:String,
         required: false,
     },
     city: {
         type: String,
-        default:null,
         required: false,
-    }
+    },
+    location: {
+        latitude: {
+          type: Number,
+          required: false,
+        },
+        longitude: {
+          type: Number,
+          required: false,
+        },
+      },
+    
+
 },{timestamps:true})
 
 const Address = mongoose.model("address", addressSchemaStructure);

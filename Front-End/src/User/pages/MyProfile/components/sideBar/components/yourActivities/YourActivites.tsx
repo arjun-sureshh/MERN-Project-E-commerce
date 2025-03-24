@@ -1,5 +1,7 @@
 import React from "react";
 import styles from './YourActivites.module.css'
+import { useDispatch } from "react-redux";
+import { togglePageControlInUser } from "../../../../../../../redux/toogleSlice";
 
 interface YourActivitesProps {
     headName: string;
@@ -9,6 +11,9 @@ interface YourActivitesProps {
 }
 
 const YourActivites: React.FC<YourActivitesProps> = ({ icon, headName, subName, rightArrow }) => {
+
+    const dispatch = useDispatch();
+
     return (
         <div className={`${styles.body} ${headName === "Logout" ? styles.disableBorder : ""}`}>
             <div className={styles.nameSection}>
@@ -19,7 +24,7 @@ const YourActivites: React.FC<YourActivitesProps> = ({ icon, headName, subName, 
             { subName.length > 0 && <div className={styles.subBody}>
                 {
                     subName.map((name, index) => (
-                        <div className={styles.subNames} key={index}>{name}</div>
+                        <div className={styles.subNames} key={index} onClick={() => dispatch(togglePageControlInUser(name))}>{name}</div>
                     ))
                 }
 

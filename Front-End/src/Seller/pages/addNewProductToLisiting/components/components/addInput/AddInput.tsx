@@ -9,15 +9,16 @@ import { removeFeatureField, toggleFeatureAdd } from '../../../../../../redux/to
 
 interface InputProps {
     headName?: string;
+    type: string;
 }
 
-const AddInput:React.FC<InputProps> = ({ headName}) => {
+const AddInput:React.FC<InputProps> = ({ type,headName}) => {
     const dispatch = useDispatch();
     const features = useSelector((state: RootState) => state.toggle.features);
     console.log(features);
    
 
-    const addFeatureField = () => {
+    const   addFeatureField = () => {
         dispatch(toggleFeatureAdd({ title: "", content: "" }));
     };
 
@@ -36,7 +37,7 @@ const AddInput:React.FC<InputProps> = ({ headName}) => {
     {features.map((feature,index) =>(
     <div className={styles.subContainer}>
     <div className={styles.inputField}>
-       <InputField feature={feature} index={index}/>
+       <InputField feature={feature} index={index} type={type}/>
     </div>
     <div
         className={styles.addButton}

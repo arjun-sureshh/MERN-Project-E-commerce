@@ -8,8 +8,6 @@ const NavBar: React.FC = () => {
     <div className={styles.body}>
     <MainBar/>
     <CategoryBar/>
-          
-     
     </div>
   )
 }

@@ -15,6 +15,13 @@ import PolicyMethod from "../../../policyMethos/PolicyMethod";
 import AdminProfile from "../../../adminProfile/AdminProfile";
 import AdminEditProfile from "../../../adminEditProfile/AdminEditProfile";
 import AdminChangePassword from "../../../adminchangePassword/AdminChangePassword";
+import SizeType from "../../../sizeType/SizeType";
+import SellerQC from "../../../qcSection/sellerQC/SellerQC";
+import ApprovedSellers from "../../../approved/approvedSellers/ApprovedSellers";
+import RejectedSellers from "../../../rejected/rejectedSeller/RejectedSeller";
+import ProductQC from "../../../qcSection/productQC/ProductQC";
+import ApprovedProduct from "../../../approved/approvedProducts/ApprovedProducts";
+import RejectedProduct from "../../../rejected/rejectedProduct/RejectedProduct";
 
 // ✅ Define the Product interface
 interface Product {
@@ -103,6 +110,34 @@ const ContentArea: React.FC = () => {
       : openPage['ChangePassword']?
       <div className={styles.renderComponent}>
       <AdminChangePassword/>
+      </div> 
+      : openPage['Size']?
+      <div className={styles.renderComponent}>
+      <SizeType/>
+      </div> 
+      :  openPage['SellerQC']?
+      <div className={styles.renderComponent}>
+      <SellerQC/>
+      </div> 
+      : openPage['ApprovedSeller']?
+      <div className={styles.renderComponent}>
+      <ApprovedSellers/>
+      </div> 
+      : openPage['RejectedSeller']?
+      <div className={styles.renderComponent}>
+      <RejectedSellers/>
+      </div> 
+      : openPage['ProductQC']?
+      <div className={styles.renderComponent}>
+      <ProductQC/>
+      </div> 
+      : openPage['ApprovedProducts']?
+      <div className={styles.renderComponent}>
+      <ApprovedProduct/>
+      </div> 
+      : openPage['RejectedProducts']?
+      <div className={styles.renderComponent}>
+      <RejectedProduct/>
       </div> 
       :
 

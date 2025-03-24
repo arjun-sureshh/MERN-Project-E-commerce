@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styles from './ProductDescription.module.css'
 import { IoCheckmarkCircle } from 'react-icons/io5'
 import { RootState } from '../../../../../redux/store'
@@ -27,7 +27,6 @@ const [saved, setSaved] = useState<Boolean>(false)
       shippingProvider: useRef<HTMLInputElement>(null),
       localDeliveryCharge: useRef<HTMLInputElement>(null),
       ZonalDeliveryCharge: useRef<HTMLInputElement>(null),
-      nationalDeliveryCharge: useRef<HTMLInputElement>(null),
       length: useRef<HTMLInputElement>(null),
       breadth: useRef<HTMLInputElement>(null),
       height: useRef<HTMLInputElement>(null),
@@ -48,6 +47,8 @@ const [saved, setSaved] = useState<Boolean>(false)
       featureTitle: useRef<HTMLInputElement>(null),
       featureContent: useRef<HTMLInputElement>(null),
       color: useRef<HTMLInputElement>(null),
+      sizebody: useRef<HTMLInputElement>(null),
+      sizeHeadId: useRef<HTMLInputElement>(null),
     };
 
     // required fields for the price and stock page
@@ -60,6 +61,11 @@ const [saved, setSaved] = useState<Boolean>(false)
     "manufacturerDetails",
     "packerDetails",
   ];
+
+  useEffect(() => {
+    const filledCount = requiredFields.filter((key) => productFields[key]).length;
+    setFilledCount(filledCount);
+  }, [])
 
   const handleSave = () => {
    

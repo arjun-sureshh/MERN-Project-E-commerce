@@ -12,7 +12,6 @@ interface productFields {
     shippingProvider: string;
     localDeliveryCharge: string;
     ZonalDeliveryCharge: string;
-    nationalDeliveryCharge: string;
     length: string;
     breadth: string;
     height: string;
@@ -34,40 +33,46 @@ interface productFields {
     searchKeyword: string;
     featureTitle: string;
     featureContent: string;
-
+    sizebody: string;
+    sizeHeadId: string;
 }
-
+// interface for features..
 interface Feature {
     title: string;
     content: string;
 }
+// interface for search ...
 interface searchKeyWords {
-    index: number;
     searchKeyWord: string;
 }
 
-
+// inteface for the fields inside of initial state
 interface ToggleState {
     reduxStateName: any;
     menuOpen: boolean;
     openPage: { [key: string]: boolean };
+    openPageinUser: { [key: string]: boolean };
     productAdddingState: number | null;
     sellerRegistrationStage: number;
     productId: string;
     sellerId: string;
+    productVaraintId: string;
     productFields: productFields;
     features: Feature[],
-    searchKeyWords: searchKeyWords[],
-    images: string[],
+    searchKeyWords: searchKeyWords[] ,
+    images:  File[];
 }
 
+// initialState....
 const initialState: ToggleState = {
     menuOpen: false,
     openPage: {},
+    openPageinUser:{},
     productAdddingState: 1,
     sellerRegistrationStage: 1,
     productId: "",
     sellerId: "",
+    productVaraintId: "",
     productFields: {
         skuId: "",
         mrp: "",
@@ -79,7 +84,6 @@ const initialState: ToggleState = {
         shippingProvider: "",
         localDeliveryCharge: "",
         ZonalDeliveryCharge: "",
-        nationalDeliveryCharge: "",
         length: "",
         breadth: "",
         height: "",
@@ -101,6 +105,8 @@ const initialState: ToggleState = {
         searchKeyword: "",
         featureTitle: "",
         featureContent: "",
+        sizebody: "",
+        sizeHeadId: "",
 
     },
     features: [],
@@ -125,6 +131,15 @@ const toggleSlice = createSlice({
         toggleResetPage: (state) => {
             state.openPage = {};
         },
+        
+        togglePageControlInUser: (state, action: PayloadAction<string>) => {
+            const title = action.payload;
+            state.openPageinUser = {};
+            state.openPageinUser[title] = true
+        },
+        toggleResetPageInUser: (state) => {
+            state.openPageinUser = {};
+        },
         toggleProductAddingState: (state, action: PayloadAction<number>) => {
             state.productAdddingState = action.payload;
         },
@@ -137,12 +152,18 @@ const toggleSlice = createSlice({
         toggleSellerId: (state, action: PayloadAction<string>) => {
             state.sellerId = action.payload;
         },
+        toggleProductVaraintId: (state, action: PayloadAction<string>) => {
+            state.productVaraintId = action.payload;
+        },
         toggleProductFields: <T extends keyof productFields>(
             state: ToggleState,
             action: PayloadAction<{ field: T; value: productFields[T] }>
         ) => {
             (state.productFields as Record<keyof productFields, any>)[action.payload.field] = action.payload.value;
         },
+        // toggleResetProductFields: (state) => {
+        //     state.productFields = { ...initialState.productFields }; // Reset all fields to ""
+        // },
         // ✅ New action: Add a feature to the `features` array
         toggleFeatureAdd: (state, action: PayloadAction<Feature>) => {
             state.features.push(action.payload);
@@ -152,8 +173,8 @@ const toggleSlice = createSlice({
         }, updateFeatureField: (state, action: PayloadAction<{ index: number; key: "title" | "content"; value: string }>) => {
             state.features[action.payload.index][action.payload.key] = action.payload.value;
         },
-        toggleSearchKeyWordAdd: (state, action: PayloadAction<string>) => {
-            state.searchKeyWords.push({ index: state.searchKeyWords.length, searchKeyWord: action.payload });
+        toggleSearchKeyWordAdd: (state, action: PayloadAction<searchKeyWords>) => {
+            state.searchKeyWords.push(action.payload);
         },
         toggleSearchKeyWordFieldRemove: (state, action: PayloadAction<number>) => {
             state.searchKeyWords = state.searchKeyWords.filter((_, i) => i !== action.payload);
@@ -163,12 +184,19 @@ const toggleSlice = createSlice({
                 state.searchKeyWords[action.payload.index].searchKeyWord = action.payload.value;
             }
         },
-        toggleAddImage: (state, action: PayloadAction<string>) => {
+        toggleAddImage: (state, action: PayloadAction<File>) => {
             state.images.push(action.payload);
         },
         toggleRemoveImage: (state, action: PayloadAction<number>) => {
-            state.images = state.images.filter((_, index) => index !== action.payload);
+            state.images.slice(action.payload, 1);
         },
+        toggleResetProductData: (state) => {
+            state.productFields = { ...initialState.productFields }; // Reset all fields
+            state.features = []; // Reset features array
+            state.searchKeyWords = []; // Reset search keywords array
+            state.images = []; // Reset images array
+            state.productVaraintId = ""; // Reset Product Variant ID
+        }
 
 
 
@@ -182,16 +210,19 @@ export const {
     toggleProductAddingState,
     toggleProductId,
     toggleProductFields,
+    toggleResetProductData,
     toggleFeatureAdd,
     removeFeatureField,
     updateFeatureField,
     toggleSellerRegistrationStage,
     toggleSellerId,
+    toggleProductVaraintId,
     toggleSearchKeyWordAdd,
     toggleSearchKeyWordFieldRemove,
     toggleSearchKeyWordsUpdate,
     toggleAddImage, // ✅ Add image
     toggleRemoveImage, // ✅ Remove image
-
+    togglePageControlInUser,
+    toggleResetPageInUser
 } = toggleSlice.actions;
 export default toggleSlice.reducer;

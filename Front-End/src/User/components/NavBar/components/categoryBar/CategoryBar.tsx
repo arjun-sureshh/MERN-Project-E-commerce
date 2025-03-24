@@ -18,52 +18,56 @@ const CategoryBar: React.FC = () => {
         "Offer Zone" // Last category
     ];
 
-    // Handle when the mouse enters a category
+    // Handle when mouse enters a category
     const handleMouseEnter = (index: number) => {
         if (index !== categories.length - 1) {
             setHoveredCategory(index);
-           
+            setPopupVisible(true);
         }
     };
 
-    const handleMouseLeave = () => {
-        setHoveredCategory(null);
-
+    // Hide pop-up only when mouse leaves both the category and pop-up
+    const handleMouseLeave = (event: React.MouseEvent<HTMLDivElement>) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+            setHoveredCategory(null);
+            setPopupVisible(false);
+        }
     };
-    //   const blockvisible = hoveredCategory !== null && popupVisible
-    return (
-        <div>
-            {/* Category Bar */}
-            <div className={styles.categoryBar}>
-                <div className={styles.categoryDropdown}>
-                    {categories.map((category, index) => (
-                        <div
-                            key={index}
-                            className={styles.categories}
-                            onMouseEnter={() => handleMouseEnter(index)}
-                            onMouseLeave={handleMouseLeave}>
-                            {category}
-                            {index !== categories.length - 1 && (
-                                hoveredCategory === index ? (
-                                    <MdKeyboardArrowUp />
-                                ) : (
-                                    <MdKeyboardArrowDown />
-                                )
-                            )}
-                           
-                        </div>
-                        
-                    ))}
-                </div>
-                {hoveredCategory && <div
-                                className={styles.popUpSection}>
-                                <CategoryPopUp />
-                            </div>}
-               
 
+    return (
+        <div 
+            className={styles.categoryBar}
+            onMouseLeave={handleMouseLeave} // Ensures pop-up disappears only when both are left
+        >
+            <div className={styles.categoryDropdown}>
+                {categories.map((category, index) => (
+                    <div
+                        key={index}
+                        className={styles.categories}
+                        onMouseEnter={() => handleMouseEnter(index)}
+                    >
+                        {category}
+                        {index !== categories.length - 1 && (
+                            hoveredCategory === index ? (
+                                <MdKeyboardArrowUp />
+                            ) : (
+                                <MdKeyboardArrowDown />
+                            )
+                        )}
+                    </div>
+                ))}
             </div>
 
-
+            {/* Display pop-up only if popupVisible is true */}
+            {popupVisible && (
+                <div 
+                    className={styles.popUpSection}
+                    onMouseEnter={() => setPopupVisible(true)} // Keep pop-up visible when hovered
+                    onMouseLeave={handleMouseLeave} // Hide pop-up when mouse leaves
+                >
+                    <CategoryPopUp />
+                </div>
+            )}
         </div>
     );
 };

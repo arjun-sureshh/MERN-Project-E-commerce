@@ -1,7 +1,6 @@
 .body {
     display: flex;
     flex-direction: column;
-    /* padding-inline: 20px; */
     width: 200px;
     position: absolute;
     color: black;
@@ -23,24 +22,29 @@
 .signIn {
     flex: 1;
     padding: 10px;
+    font-size: large;
+    font-weight: 520;
 }
 
 .signup {
     padding: 10px;
-
+ font-size: large;
+ font-weight: 520;
     flex: 1;
 }
 
 .signIn:hover {
-    box-shadow: 15px 5px 20px rgb(228, 228, 228);
-    border: 1px solid rgb(183, 180, 180);
-
+    /* box-shadow: 15px 5px 20px rgb(228, 228, 228);; */
+    border-right: 1px solid rgb(183, 180, 180);
+    border-bottom: 1px solid rgb(183, 180, 180);
+    color: #393939;
 }
 
 .signup:hover {
-    box-shadow: 15px 5px 20px rgb(228, 228, 228);
-    border: 1px solid rgb(183, 180, 180);
-
+    /* box-shadow: 15px 5px 20px rgb(228, 228, 228); */
+    border-left: 1px solid rgb(183, 180, 180);
+    border-bottom: 1px solid rgb(183, 180, 180);
+    color: #393939;
 }
 
 .subBody {
@@ -57,9 +61,11 @@
     padding-block: 10px;
     padding-left: 30px;
     text-align: left;
+    font-weight: 510;
+    font-size: 16px;
 }
 .suboptions:hover{
-    box-shadow: 15px 5px 20px rgb(228, 228, 228);
-    border: 1px solid rgb(183, 180, 180);
+    box-shadow: 5px 5px 20px rgb(194, 191, 191,0.5);
+    border-bottom: 1px solid rgb(183, 180, 180);
     flex: 1;
 }

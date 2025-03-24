@@ -16,8 +16,12 @@ const AdminDashboard:React.FC = () => {
       <Sidebar/>
       </div>}
         <div className={styles.container}>
-        <NavBar/>
-        <ContentArea/>
+        <div className={styles.navbar}>
+          <NavBar />
+        </div>
+        <div className={styles.content}>
+          <ContentArea />
+        </div>
         </div>
     </div>
   )

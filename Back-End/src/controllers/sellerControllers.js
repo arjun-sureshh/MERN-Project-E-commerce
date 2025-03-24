@@ -8,12 +8,32 @@ const otpGenerator = require("otp-generator");
 
 const getSeller = async (req,res) =>{
     try {
-        const sellerDetails = await User.find();
-        res.status(200).json(sellerDetails)
+        const sellerDetails = await Seller.find({ListingStatus : 4, qcStatus:0 });
+        res.status(200).json({message:"fetching seller details successfull",data:sellerDetails})
     } catch (error) {
-        res.status(500).json({messgae:"Error in fetching User ", error})
+        res.status(500).json({messgae:"Error in fetching Seller ", error})
     }
-}
+};
+
+// get approved seller details
+const getApprovedSeller = async (req,res) =>{
+    try {
+        const sellerDetails = await Seller.find({ListingStatus : 4, qcStatus:1 });
+        res.status(200).json({message:"fetching Approved seller details successfull",data:sellerDetails})
+    } catch (error) {
+        res.status(500).json({messgae:"Error in fetching Seller ", error})
+    }
+};
+
+// get approved seller details
+const getRejectedSeller = async (req,res) =>{
+    try {
+        const sellerDetails = await Seller.find({ListingStatus : 4, qcStatus:-1 });
+        res.status(200).json({message:"fetching Rejected seller details successfull",data:sellerDetails})
+    } catch (error) {
+        res.status(500).json({messgae:"Error in fetching Seller ", error})
+    }
+};
 
 // get product bY Id 
 const getSellerById = async (req, res) => {
@@ -70,7 +90,37 @@ const createSeller = async (req, res) => {
 
         res.status(500).json({ message: "server error" })
     }
-}
+};
+
+// update the Qc Status for Approval
+
+const updateQcStatus = async (req,res) =>{
+    const {sellerId} = req.params;
+    const {qcStatus} = req.body;
+    
+
+    if ( !qcStatus ) {
+        return res.status(400).json({ message: "Please provide teh Qc status" });
+    }
+
+    try {
+        const updateData = await Seller.findByIdAndUpdate(
+            sellerId, 
+            { qcStatus:qcStatus }, 
+            { new: true, runValidators: true }
+        );
+
+        if (!updateData) {
+            return res.status(404).json({ message: "Seller Account Not Found" });
+        }
+
+        res.status(200).json({ message: "Seller Account Approved", data: updateData });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
 
 // update the full Name and Display Name in to the seller Account 
 
@@ -100,7 +150,7 @@ const updateNametoSeller = async (req,res) =>{
         console.error(error);
         res.status(500).json({ message: "Server error" });
     }
-}
+};
 
 // update balance details such as bank details
 
@@ -213,5 +263,8 @@ module.exports = {
     getSellerById,
     updateBankDetailstoSeller,
     sendOTP,
-    verifyOTP
+    verifyOTP,
+    updateQcStatus,
+    getApprovedSeller,
+    getRejectedSeller
 }
