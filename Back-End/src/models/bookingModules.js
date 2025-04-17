@@ -4,7 +4,6 @@ const orderSchemaStructure = new mongoose.Schema({
 
   amount: {
     type: String,
-    required: true,
     trim: true
   },
   userId: {

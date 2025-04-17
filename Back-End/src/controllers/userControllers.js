@@ -1,7 +1,8 @@
 const { default: mongoose } = require("mongoose");
 const User = require("../models/userModels");
 const bcrypt = require('bcrypt')
-
+const nodemailer = require("nodemailer");
+const otpGenerator = require("otp-generator");
 
 // user get
 
@@ -80,6 +81,18 @@ const createUser = async (req, res) => {
     }
 };
 
+// Check User Email
+
+const checkUserEmail = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const user = await User.findOne({ userEmail: email });
+        res.status(200).json({ exists: !!user }); // Returns true if seller exists
+    } catch (error) {
+        res.status(500).json({ message: "Error in fetching User", error });
+    }
+};
+
 // update or change the user details 
 
 const updateUserDetails = async (req,res) =>{
@@ -116,11 +129,111 @@ const updateUserDetails = async (req,res) =>{
 
 
 
+// otp generation
+
+// store  OTP temporarily
+const otpStorage = {};
+
+// Configure Nodemailer transporter
+const transporter = nodemailer.createTransport({
+    service: process.env.EMAIL_SERVICE,
+    auth: {
+        user: process.env.EMAIL_USER, // Your email
+        pass: process.env.EMAIL_PASS, // Your email app password
+    }
+});
+
+// Generate and send OTP to email
+const sendOTP = async (req, res) => {
+    const { email } = req.body;
+    
+    if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+    }
+
+    try {
+        // Generate OTP
+        const otp = otpGenerator.generate(4, {
+            digits: true, 
+            upperCaseAlphabets: false, 
+            specialChars: false, 
+            lowerCaseAlphabets: false // Ensure no lowercase letters
+          });
+          otpStorage[email] = otp;
+
+        // Email message
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "Your OTP Code",
+            text: `Your OTP code is: ${otp}. It will expire in 5 minutes.`
+        };
+
+        await transporter.sendMail(mailOptions);
+        res.status(200).json({ message: "OTP sent successfully" });
+
+        // Set OTP expiry (optional)
+        setTimeout(() => {
+            delete otpStorage[email];
+        }, 300000); // OTP expires in 5 minutes
+
+    } catch (error) {
+        console.error("Error sending OTP:", error);
+        res.status(500).json({ message: "Error sending OTP", error });
+    }
+};
+// Verify OTP
+const verifyOTP = (req, res) => {
+    const { email, otp } = req.body;
+
+    if (otpStorage[email] === otp) {
+        
+        res.status(200).json({success: true, message: "OTP verified successfully" });
+        delete otpStorage[email]; // Remove OTP after use
+    } else {
+
+        res.status(400).json({success: false, message: "Invalid or expired OTP" });
+    }
+};
+
+const resetPassword = async (req,res) =>{
+    const {email,password} = req.body;
+    
+
+    if ( !email || !password) {
+        return res.status(400).json({ message: "Please provide all reuierd fields" });
+    }
+     // hash the password
+     const salt = await bcrypt.genSalt(10);
+     const hashedPassword = await bcrypt.hash(password, salt);
+
+    try {
+        const updateData = await User.findOneAndUpdate(
+            {userEmail:email} ,
+            { userPassword:hashedPassword }, 
+            { new: true, runValidators: true }
+        );
+
+        if (!updateData) {
+            return res.status(404).json({ message: "User Account Not Found" });
+        }
+
+        res.status(200).json({ message: "changed the passowrd ", data: updateData });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
 
 
 module.exports = {
     createUser,
     getUser,
     getUserByUserId,
-    updateUserDetails
+    updateUserDetails,
+    checkUserEmail,
+    sendOTP,
+    verifyOTP,
+    resetPassword
 }

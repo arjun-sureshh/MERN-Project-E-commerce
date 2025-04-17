@@ -35,7 +35,7 @@ const ContentArea: React.FC<ContentAreaprops> = ({userData}) => {
 
         : openPageInUser["Manage Addresses"] ?
           <div className={styles.renderComponent}>
-            <Address />
+            <Address userData={userData}/>
           </div>
           :
           <div className={styles.renderComponent}>

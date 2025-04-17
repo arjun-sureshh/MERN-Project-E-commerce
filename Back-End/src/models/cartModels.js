@@ -14,7 +14,6 @@ const cartSchemaStructure = new mongoose.Schema({
     bookingID:{
       type:mongoose.Schema.Types.ObjectId,
       ref:"booking",
-      required:true,
     },
     cartStatus:{
       type:Number,

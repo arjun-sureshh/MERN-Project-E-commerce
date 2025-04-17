@@ -45,7 +45,7 @@ const DisplayContainer: React.FC<DisplayInputContainerProps> = ({ inputRefs }) =
       <InputBox type={"text"} headName={""} attributeName={"In The Box"} ref={inputRefs["intheBox"]} name={"intheBox"} inputContain={""} required={"*"}/>
       <InputBox type={"number"} headName={""} attributeName={"Minimum OrderQty"} ref={inputRefs["minimumOrderQty"]} name={"minimumOrderQty"} inputContain={""} required={"*"}/>
 
-      <SelectCountry headName="Manufacturing Details" attributeName="Country Of Origin" name="countryOfOrigin" isCountrySelect={true} required={"*"} />
+      <SelectCountry headName="Manufacturing Details" attributeName="Country Of Origin" name="countryOfOrigin" isCountrySelect={true} required={""} />
 
       <SelectBox headName={"Color Of Your Product"} attributeName={"Color"} name={"color"} inputContain={fetchColor} required={"*"}/>
       

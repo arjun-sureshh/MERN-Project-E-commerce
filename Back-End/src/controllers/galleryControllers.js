@@ -15,16 +15,18 @@ const getGallery = async (req, res) => {
 
 // product images get by varaint Id 
 const getImagesByProductVaraintId = async (req, res) => {
-
-    const {productVariantId} = req.params;
+    const { productVariantId } = req.params;
     
-    try {
-        const productImageDetails = await Gallery.find({varientId:productVariantId});
-        
+    console.log("Received productVariantId:", productVariantId); // Debugging log
 
-        if (!productImageDetails) {
+    try {
+        const productImageDetails = await Gallery.find({ varientId: productVariantId });
+        console.log("Query Result:", productImageDetails); // Debugging log
+
+        if (!productImageDetails.length) { // Fix condition
             return res.status(404).json({ message: "Product Images not found with the given ID." });
         }
+        
         res.status(200).json({ 
             message: "Product Images fetched successfully", 
             data: productImageDetails 

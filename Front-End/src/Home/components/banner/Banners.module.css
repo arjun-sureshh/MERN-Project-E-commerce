@@ -1,27 +1,71 @@
 .body {
-    display: flex;
-
-    justify-content: center;
-    margin-inline: 60px;
-    margin-top: 20px;
-    border-radius: 4.4px;
-    background-color: #fff;
-    padding-block: 35px;
-    gap: 10px;
-}
-
-.addBanner {
-    width: 50%;
-    height: 400px;
-    margin-left: 20px;
-}
-
-.smallCard {
-    display: flex;
-    flex-wrap: wrap;
-    width: 44%;
-    justify-content: end;
-    gap: 10px;
-    margin-right: 10px;
-
-}
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .addBanner {
+    width: 100%;
+    height: 400px; /* Standard height for a normal banner */
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  
+  .smallCard {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    width: 100%;
+  }
+  
+  .smallCard > div {
+    height: 180px; /* Fixed height for consistency */
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  /* Responsive Design */
+  @media (min-width: 769px) {
+    .body {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+  
+    .addBanner {
+      width: 60%;
+      margin-bottom: 0;
+    }
+  
+    .smallCard {
+      width: 38%;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .addBanner {
+      height: 300px;
+    }
+  
+    .smallCard {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .addBanner {
+      height: 250px;
+    }
+  
+    .smallCard {
+      gap: 10px;
+    }
+  
+    .smallCard > div {
+      height: 150px;
+    }
+  }

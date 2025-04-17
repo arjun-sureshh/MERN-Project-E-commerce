@@ -3,6 +3,7 @@ import styles from './MyProfile.module.css'
 import SideBar from "./components/sideBar/SideBar";
 import ContentArea from "./components/contentArea/ContentArea";
 import axios from "axios";
+import { existingUserData } from "../../components/types/types";
 
 interface fetchedUserData{
     _id:string;
@@ -17,9 +18,45 @@ const MyProfile: React.FC = () => {
 
     const [fetchedUserData, setFetchedUserData] = useState<fetchedUserData | null>(null)
 
-    useEffect(() => {
-        const fetchedUser = async () => {
-            const UserId = "67dbbcb0b24bfd96d2f74697"
+    const [existingUserData, setExistingUserData] = useState<existingUserData | null>(null);
+      
+        // Fetch user details
+        useEffect(() => {
+          const fetchUserDetails = async () => {
+            const token = sessionStorage.getItem('user');
+            if (!token) {
+              console.log('No user signed in');
+              setExistingUserData(null);
+              return;
+            }
+      
+            try {
+              const response = await axios.get('http://localhost:5000/api/Login', {
+                headers: {
+                  'x-auth-token': token,
+                },
+              });
+              console.log('Logged user response:', response.data);
+              setExistingUserData(response.data);
+              fetchedUser(response.data._id);
+            } catch (error: any) {
+              console.error('Error fetching user details:', {
+                message: error.message,
+                response: error.response?.data,
+              });
+              setExistingUserData(null);
+              sessionStorage.removeItem('user');
+            }
+          };
+      
+          
+
+          fetchUserDetails();
+
+        }, []);
+
+   
+        const fetchedUser = async (UserId:string) => {
             try {
                 const response = await axios.get(`http://localhost:5000/api/user/FetchDataByUserId/${UserId}`);
                 console.log(response.data);
@@ -28,8 +65,7 @@ const MyProfile: React.FC = () => {
                 console.error("Error fetching user data:", error);
             }
         }
-        fetchedUser();
-    }, [])
+
 
 
     return (

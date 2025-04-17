@@ -51,7 +51,8 @@ const District: React.FC = () => {
   const fetchdistrict = async () => {
     try {
       const response = await axios.get("http://localhost:5000/api/district");
-      setAlldistrict(response.data.districtDetails)
+      
+      setAlldistrict(response.data.data)
     } catch (error) {
       console.error("Error Fetching district:", error);
     }
@@ -188,7 +189,7 @@ const District: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {alldistrict.length > 0 ? (
+            { alldistrict && alldistrict.length > 0 ? (
               alldistrict.map((district, index) => (
                 <tr key={district._id}>
                   <td>{index + 1}</td>

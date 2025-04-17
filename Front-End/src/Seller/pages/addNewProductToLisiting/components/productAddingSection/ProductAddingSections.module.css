@@ -81,3 +81,14 @@
     border: 1px solid rgb(0, 102, 204);
     background-color: rgb(255, 255, 255);
 }
+.variantBtn{
+    text-align: center;
+    border-radius: 50%;
+    border: 1px solid rgb(0, 102, 204);
+    background-color: rgb(224, 238, 244);
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    outline: none;
+    white-space: nowrap;
+}

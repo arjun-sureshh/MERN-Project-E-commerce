@@ -146,62 +146,100 @@ const updateCategory = async (req, res) => {
 }
 
 
-    const searchCategory = async (req, res) => {
-        try {
-          const { searchData } = req.params;
-      
-          if (!searchData) {
-            return res.status(400).json({ message: "Search term is required" });
-          }
-      
-          const categories = await Category.aggregate([
-            {
-              $match: {
-                categoryName: { $regex: `^${searchData}`, $options: "i" }, // Case-insensitive match
-              },
-            },
-            {
-              $graphLookup: {
-                from: "categories", // Collection name (should match DB)
-                startWith: "$mainCategory",
-                connectFromField: "mainCategory",
-                connectToField: "_id",
-                as: "parentCategories",
-              },
-            },
-            {
-              $addFields: {
-                fullPath: {
-                  $concat: [
-                    { $reduce: {
-                        input: "$parentCategories",
-                        initialValue: "",
-                        in: { $concat: ["$$value", "", "$$this.categoryName"] },
-                      },
-                    },
-                    "/",
-                    "$categoryName",
-                  ],
-                },
-              },
-            },
-            {
-              $project: {
-                _id: 1,
-                categoryName: 1,
-                fullPath: 1, // "fashion/men/tshirt"
-              },
-            },
-            { $sort: { fullPath: 1 } }, // Sort alphabetically
-          ]);
-      
-          return res.json(categories);
-        } catch (error) {
-          console.error("Error searching categories:", error);
-          res.status(500).json({ message: "Internal Server Error" });
-        }
-      };
+const searchCategory = async (req, res) => {
+  try {
+    const { searchData } = req.params;
 
+    if (!searchData) {
+      return res.status(400).json({ message: "Search term is required" });
+    }
+
+    const categories = await Category.aggregate([
+      // Match categories by name (case-insensitive)
+      {
+        $match: {
+          categoryName: { $regex: `^${searchData}`, $options: "i" },
+        },
+      },
+      // Lookup all parent categories recursively
+      {
+        $graphLookup: {
+          from: "categories",
+          startWith: "$mainCategory", // Start from the matched category's mainCategory
+          connectFromField: "mainCategory", // Field pointing to the parent
+          connectToField: "_id", // Field to match against (parent's _id)
+          as: "parentCategories",
+          depthField: "depth", // Track hierarchy level
+        },
+      },
+      // Sort parentCategories by depth in ascending order (root first)
+      {
+        $addFields: {
+          allCategories: {
+            $concatArrays: [
+              "$parentCategories",
+              [{ _id: "$_id", categoryName: "$categoryName", depth: { $add: [{ $max: "$parentCategories.depth" }, 1] } }],
+            ],
+          },
+        },
+      },
+      // Unwind to process each category in the hierarchy
+      {
+        $unwind: {
+          path: "$allCategories",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      // Sort by depth to ensure root-to-leaf order
+      {
+        $sort: {
+          "allCategories.depth": 1,
+        },
+      },
+      // Group back and construct the full path
+      {
+        $group: {
+          _id: "$_id",
+          categoryName: { $first: "$categoryName" },
+          allCategories: { $push: "$allCategories" },
+        },
+      },
+      // Construct the fullPath
+      {
+        $addFields: {
+          fullPath: {
+            $reduce: {
+              input: "$allCategories",
+              initialValue: "",
+              in: {
+                $concat: [
+                  "$$value",
+                  { $cond: [{ $eq: ["$$value", ""] }, "", "/"] }, // Add "/" only after first element
+                  "$$this.categoryName",
+                ],
+              },
+            },
+          },
+        },
+      },
+      // Final projection
+      {
+        $project: {
+          _id: 1,
+          categoryName: 1,
+          fullPath: 1,
+        },
+      },
+      // Sort alphabetically by fullPath
+      { $sort: { fullPath: 1 } },
+    ]);
+
+    return res.json(categories);
+  } catch (error) {
+    console.error("Error searching categories:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 module.exports = {
     createCategory,

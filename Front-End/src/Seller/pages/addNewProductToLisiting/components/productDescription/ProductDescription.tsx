@@ -57,7 +57,6 @@ const [saved, setSaved] = useState<Boolean>(false)
     "productDiscription",
     "intheBox",
     "minimumOrderQty",
-    "countryOfOrigin",
     "manufacturerDetails",
     "packerDetails",
   ];

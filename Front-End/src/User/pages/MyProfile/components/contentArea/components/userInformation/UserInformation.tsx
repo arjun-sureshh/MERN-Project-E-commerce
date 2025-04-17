@@ -3,6 +3,7 @@ import styles from './UserInformation.module.css'
 import { Button, TextField } from '@mui/material'
 import axios from 'axios';
 import { data } from 'react-router';
+import { existingUserData } from '../../../../../../components/types/types';
 
 interface handleEditboolean {
   personalInfo: boolean;
@@ -63,6 +64,8 @@ const UserInformation: React.FC<UserInformationprops> = ({ userData }) => {
     email: true,
     mobileNumber: true,
   });
+
+   
 
   const handlechange = (name: string) => {
     setHandleEdit({

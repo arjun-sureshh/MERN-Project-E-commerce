@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import styles from './AddNewProduct.module.css'
 import SubNav from '../mylisting/components/subNav/SubNav'
 import img from '../../../assets/lens.jpg'
@@ -18,10 +18,22 @@ interface fetchedDataProps {
     qcStatus: number;
     skuId: string;
 }
-
+interface sellerData {
+    _id: string;
+    storeDiscription: string;
+    sellerName: string;
+    sellerMobileNumber: string;
+    sellerGST: string;
+    sellerEmail: string;
+    sellerDisplayName: string;
+    qcStatus: string;
+    ifscCode: string;
+    createdAt: string;
+    bankAccountNo: string;
+    ListingStatus?: string;
+  }
 const AddNewProduct: React.FC = () => {
 
-    const sellerId = "67c926173f7fe222ff32287e"
 
     const dispatch = useDispatch();
     const productvaraintId = useSelector((state: RootState) => state.toggle.productVaraintId);
@@ -31,13 +43,58 @@ const AddNewProduct: React.FC = () => {
 
     const [fetchedData, setfetchedData] = useState<fetchedDataProps[]>([]);
 
+    const [sellerData, setSellerData] = useState<sellerData>({
+      _id: "",
+      storeDiscription: "",
+      sellerName: "",
+      sellerMobileNumber: "",
+      sellerGST: "",
+      sellerEmail: "",
+      sellerDisplayName: "",
+      qcStatus: "",
+      ifscCode: "",
+      createdAt: "",
+      bankAccountNo: "",
+      ListingStatus: "",
+    });
+  
+    useLayoutEffect(() => {
+      const fetchSellerDetails = async () => {
+        const token = sessionStorage.getItem("seller");
+        console.log(token);
+        
+        if (!token) {
+          navigate("/SellerLanding"); // Redirect if no token found
+          return;
+        }
+  
+        try {
+          const response = await axios.get("http://localhost:5000/api/Login", {
+            headers: {
+              "x-auth-token": token, // Send token in header
+            },
+          });
+          setSellerData(response.data); // Set seller details in state
+          console.log(response.data, "sellerdata");
+        } catch (error) {
+          console.error("Error fetching seller details:", error);
+          // navigate("/login"); // Redirect to login on error
+        }
+      };
+  
+      fetchSellerDetails();
+    }, [navigate]);
+
     useEffect(() => {
         setActivateDelete(false);
 
         const fetchListingProduct = async () => {
+
+            const sellerId = sellerData._id;
+
             try {
                 const response = await axios.get(`http://localhost:5000/api/product/fetchallproducts/${sellerId}`);
-                console.log(response.data);
+                // console.log(response.data);
                 setfetchedData(response.data.data)
 
             } catch (error: any) {
@@ -46,8 +103,8 @@ const AddNewProduct: React.FC = () => {
             }
         }
 
-        fetchListingProduct();
-    }, [activateDelete])
+     fetchListingProduct();
+    }, [activateDelete,sellerData])
 
     // handle continue
     const handleContinue = async (_id: string) => {

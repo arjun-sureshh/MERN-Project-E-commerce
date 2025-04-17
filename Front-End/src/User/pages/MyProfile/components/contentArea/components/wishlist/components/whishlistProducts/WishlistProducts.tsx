@@ -2,6 +2,7 @@ import React from 'react'
 import styles from './WishlistProducts.module.css'
 import { FaStar } from 'react-icons/fa'
 import { MdDelete } from 'react-icons/md';
+import axios from 'axios';
 
 
 
@@ -13,9 +14,12 @@ import { MdDelete } from 'react-icons/md';
     sellingPrice:string;
     MRP:string;
     offerPer:string;
+    productvaraintId:string;
+    deleteFromWishlist: (productvaraintId: string) => Promise<void>; // Corrected name and type
   }
 
-const WishlistProducts:React.FC<WishlistProductsProps> = ({img,productName,productRating,totalOrders,sellingPrice,MRP,offerPer}) => {
+const WishlistProducts:React.FC<WishlistProductsProps> = ({deleteFromWishlist,productvaraintId,img,productName,productRating,totalOrders,sellingPrice,MRP,offerPer}) => {
+  
   return (
     <div className={styles.body}>
         <div className={styles.imageSection}><img src={img} alt="product img" /></div>
@@ -24,7 +28,7 @@ const WishlistProducts:React.FC<WishlistProductsProps> = ({img,productName,produ
                 <div className={styles.productName}>{productName}</div>
                 <div className={styles.deletandCart}>
                 <div className={styles.addtoCart}>Add to Cart</div>
-                <div className={styles.delete}><MdDelete/></div>
+                <div className={styles.delete} onClick={() =>deleteFromWishlist(productvaraintId)}><MdDelete/></div>
                 </div>
                 
             </div>

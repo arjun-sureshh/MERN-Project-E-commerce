@@ -32,6 +32,10 @@ const bookingRouter = require('./routers/bookingRouters');
 const wishlistRouter = require('./routers/wishlistRouters');
 const cartRouter = require('./routers/cartRouters');
 const chatRouter = require('./routers/chatusRouters');
+const loginRouter = require('./routers/loginRouters');
+const specification = require('./routers/specificationRouters');
+const auth = require('./routers/authRouter')
+
 
 
 
@@ -59,6 +63,10 @@ app.use('/api/booking', bookingRouter);
 app.use('/api/wishlist', wishlistRouter);
 app.use('/api/cart', cartRouter); 
 app.use('/api/chatus', chatRouter);  
+app.use('/api/Login', loginRouter);
+app.use('/api/specification', specification);
+app.use('/api/auth', auth);
+
 
 
 

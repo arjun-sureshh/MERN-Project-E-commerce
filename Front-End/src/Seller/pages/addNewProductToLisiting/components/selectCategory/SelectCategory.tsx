@@ -12,8 +12,11 @@ interface fetchData {
   fullPath: string;
   _id: string;
 }
+interface selectCategoryProps{
+  sellerId: string;
+}
 
-const SelectCategory: React.FC = () => {
+const SelectCategory: React.FC <selectCategoryProps>= ({sellerId}) => {
 
   const dispatch = useDispatch();
   const productId = useSelector((state: RootState) => state.toggle.productId); // fetch the productid from the redux
@@ -36,8 +39,7 @@ const SelectCategory: React.FC = () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/category/search/${value}`);
       setFetchData(response.data);
-      // console.log(fetchData);
-      // console.log(e.currentTarget);
+
 
     } catch (error) {
       console.error("Error fetching categories", error);
@@ -53,7 +55,7 @@ const SelectCategory: React.FC = () => {
 
   const handleSubmit = async () => {
     const data = {
-      sellerId: "67c926173f7fe222ff32287e",
+      sellerId: sellerId,
       categoryId: selectedCategory,
     };
     console.log(productId);

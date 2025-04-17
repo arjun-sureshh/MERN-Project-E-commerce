@@ -21,6 +21,7 @@ const SellerRegFirstPage: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [otp, setOtp] = useState<string>("");
   const [otpSent, setOtpSent] = useState<boolean>(false);
+  const [emailVerified, setEmailVerified] = useState<boolean>(false)
   const [frontEndError, setFrontEndError] = useState<frontEndErrorProps>({
     mobilenumber: "",
     email: "",
@@ -76,6 +77,7 @@ const SellerRegFirstPage: React.FC = () => {
       console.log(response.data);
       if (response.data && response.data.success) {
         alert("OTP Verified!");
+        setEmailVerified(true);
       } else {
         alert("Invalid OTP");
       }
@@ -139,6 +141,13 @@ const SellerRegFirstPage: React.FC = () => {
       });
       passwordRef.current?.focus();
       return;
+    }else if(!emailVerified){
+      setFrontEndError({
+        ...frontEndError,
+        email: "Verify Your Email",
+      });
+      emailRef.current?.focus();
+      return;
     }
 
     // data set to pass into the api
@@ -152,9 +161,6 @@ const SellerRegFirstPage: React.FC = () => {
       const response = await axios.post("http://localhost:5000/api/seller", data);
       console.log(response.data);
       const seller_id = response.data.data._id;
-
-     
-
       dispatch(toggleSellerId(""));
       setTimeout(() => dispatch(toggleSellerId(seller_id)), 0);
 
@@ -164,14 +170,13 @@ const SellerRegFirstPage: React.FC = () => {
         otpverify:"",
         mobilenumber:""
       })
+      setEmailVerified(false);
 
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
         if ( error.response.data.emailExist) {
           setEmailExist("Seller is already exists in this email")
-        } else {
-          alert("Invalid OTP");
-        }
+        } 
         console.log(error.response.data.message);
       } else {
         console.log("Something went wrong. Please try again.");

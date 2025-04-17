@@ -22,7 +22,7 @@ const SideBar: React.FC <SideBarProps>= ({userName}) => {
                 <YourActivites headName={"My Order"} subName={[]} icon={<FaParachuteBox/>} rightArrow={<IoIosArrowForward/>}/>
                 <YourActivites  headName={"Account Settings"} subName={["Profile Name","Manage Addresses"]} icon={<FaHouseUser/>} rightArrow={null}/>
                 <YourActivites  headName={"MY STUFF"} subName={["My Reviews & Ratings","All Notifications","My Wishlist"]}  icon={<ImNotification/>} rightArrow={null}/>
-                <YourActivites  headName={"Logout"} subName={[]} icon={<FiLogOut/>} rightArrow={null}/>
+                <YourActivites  headName={"Logout"}  subName={[]} icon={<FiLogOut/>} rightArrow={null}/>
                 </div>
             </div>
         </div>

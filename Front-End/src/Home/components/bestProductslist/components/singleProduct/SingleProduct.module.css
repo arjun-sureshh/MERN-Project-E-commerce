@@ -1,44 +1,90 @@
 .body {
-    width: 240px;
-    height: 255px;
+    width: 200px;
+    height: 250px;
     cursor: pointer;
-    border: 1px solid rgb(225, 224, 224);
-    border-radius: 2.6px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    justify-content: center;
-}
-
-.imgSec {
+    gap: 10px;
+    justify-content: space-between;
+    background-color: #ffffff;
+    padding: 10px;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  
+  .body:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+  
+  .imgSec {
     display: flex;
     justify-content: center;
-    /* border: 2px solid; */
-
-    img {
-        width: 60%;
-        height: 100%;
-        object-fit: contain;
-        /* border: 2px solid; */
-    }
-}
-
-.imgSec:hover img{
-    transform: scale(1.02);
-}
-
-.productName {
-    font-size: 14px;
-    width: 100%;
-    height: fit-content;
+    align-items: center;
+    height: 150px;
     overflow: hidden;
-    color: rgb(68, 67, 67);
-}
-
-.highlightword {
-    font-size: 16px;
-    font-weight: 550;
-}
-.nameSec{
+  }
+  
+  .imgSec img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.2s;
+  }
+  
+  .imgSec:hover img {
+    transform: scale(1.05);
+  }
+  
+  .nameSec {
     text-align: center;
-}
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .productName {
+    font-size: 14px;
+    color: #212121;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .highlightword {
+    font-size: 16px;
+    font-weight: 600;
+    color: #388e3c;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .body {
+      width: 160px;
+      height: 220px;
+    }
+  
+    .imgSec {
+      height: 120px;
+    }
+  
+    .productName {
+      font-size: 12px;
+    }
+  
+    .highlightword {
+      font-size: 14px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .body {
+      width: 140px;
+      height: 200px;
+    }
+  
+    .imgSec {
+      height: 100px;
+    }
+  }

@@ -3,7 +3,7 @@ import styles from './BodyName.module.css'
 
 interface BodyNameProps {
     headName: string;
-    itemsNo: string;
+    itemsNo: number | null;
     price: string;
 }
 const BodyName:React.FC<BodyNameProps> = ({headName, itemsNo , price}) => {

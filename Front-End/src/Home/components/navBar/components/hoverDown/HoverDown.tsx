@@ -13,7 +13,7 @@ const HoverDown:React.FC = () => {
        </div>
      <div className={styles.subBody}>
       <div className={styles.suboptions}><Link style={{textDecoration:"none",color: 'inherit'  }} to={'/User/MyAccount'}> <FaRegCircleUser/> My Profile </Link></div>
-      <div className={styles.suboptions}><Link style={{textDecoration:"none",color: 'inherit'  }} to={'/User/MyAccount'}> <LuBox/> Orders </Link></div>
+      <div className={styles.suboptions}><Link style={{textDecoration:"none",color: 'inherit'  }} to={'/User/Orders'}> <LuBox/> Orders </Link></div>
       {/* <div className={styles.suboptions}></div> */}
 
      </div>

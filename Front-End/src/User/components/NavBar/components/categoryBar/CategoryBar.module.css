@@ -36,6 +36,7 @@
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out; 
     width: 100vw;
     top: 50px; /* Adjust based on placement */
+    z-index: 20000001;
 }
 
 

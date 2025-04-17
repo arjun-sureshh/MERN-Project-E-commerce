@@ -12,7 +12,7 @@ interface fetchData {
   _id: string;
 }
 
-const SelectBrand: React.FC = () => {
+const SelectBrand: React.FC= () => {
 
   const productId = useSelector((state: RootState) => state.toggle.productId);
 

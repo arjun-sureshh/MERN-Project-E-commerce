@@ -25,7 +25,7 @@ const DisplayInputContainer:React.FC<DisplayInputContainerProps> = ({inputRefs})
         <InputBox type={"number"} headName={""} attributeName={"Procurement SLA"} ref={inputRefs["ProcurementSLA"]} name={"ProcurementSLA"} inputContain={"DAY"} required={"*"}/>
         <InputBox type={"number"} headName={""} attributeName={"Stock"} ref={inputRefs["stock"]} name={"stock"} inputContain={""} required={"*"}/>
   
-        <SelectBox headName={""} attributeName={"Shipping provider"} name={"shippingProvider"} inputContain={["FlipKart"]} required={"*"} />
+        <SelectBox headName={""} attributeName={"Shipping provider"} name={"shippingProvider"} inputContain={["Beestore"]} required={"*"} />
 
         <InputBox type={"number"} headName={"Delivery charge to customer"} attributeName={"Local delivery charge "} ref={inputRefs["localDeliveryCharge"]} name={"localDeliveryCharge"} inputContain={"INR"} required={"*"}/>
         <InputBox type={"number"} headName={""} attributeName={"Zonal delivery charge "} name={"ZonalDeliveryCharge"} ref={inputRefs["ZonalDeliveryCharge"]} inputContain={"INR"} required={"*"}/>

@@ -1,56 +1,43 @@
-import React from 'react'
-import styles from './Table.module.css'
+import React from 'react';
+import styles from './Table.module.css';
 
-interface TableProps{
-  headnames:string[];
+interface TableProps {
+  headnames: string[];
+  data?: string[][];
 }
 
-const Table: React.FC<TableProps> = ({headnames}) => {
+const Table: React.FC<TableProps> = ({ headnames, data = [] }) => {
   return (
-    <div className={styles.body}>
-     <table>
-      <thead>
-        <tr className={styles.head}>
-          <th>0</th>
-          {
-            headnames.map((names,index) =>(
-              <th>{names}</th>
-            ))
-            }
+    <div className={styles.tableContainer}>
+      <div className={styles.table}>
+        {/* Header Row */}
+        <div className={`${styles.row} ${styles.headerRow}`}>
+          <div className={styles.cell}>#</div>
+          {headnames.map((name, index) => (
+            <div key={index} className={styles.cell}>
+              {name}
+            </div>
+          ))}
+        </div>
 
-
-          {/* <th>Listing Price</th>
-          <th>Final Price</th>
-          <th>Stock</th>
-          <th>Category</th>
-          <th>Fulfillment</th>
-          <th>Listing Quality</th>
-          <th>Additional Info</th>
-          <th>Action</th> */}
-        </tr>
-      </thead>
-      <tr className={styles.details}>
-        <th>1</th>
-       {
-        headnames.map((names,index) =>(
-
-          <th>222</th>
-        ))
-        }
-
-
-        {/* <th>fdds</th>
-        <th>vds</th>
-        <th>sdv</th>
-        <th>dsv</th>
-        <th>dsvsd</th>
-        <th>sds</th>
-        <th>dsvds</th>
-        <th>delete</th> */}
-      </tr>
-     </table>
+        {/* Data Rows */}
+        {data.length > 0 ? (
+          data.map((row, rowIndex) => (
+            <div key={rowIndex} className={styles.row}>
+              <div className={styles.cell}>{rowIndex + 1}</div>
+              {row.map((value, colIndex) => (
+                <div key={colIndex} className={styles.cell}>
+                  {value}
+                </div>
+              ))}
+            </div>
+          ))
+        ) : (
+          <div className={styles.noData}>No data available</div>
+        )}
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Table
+export default Table;

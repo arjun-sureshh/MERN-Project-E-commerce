@@ -1,9 +1,11 @@
 const express = require("express");
-const { createWishlist, getWishlist } = require("../controllers/wishlistControllers");
+const { createWishlist, getWishlist, getWishlistStatus, deleteWishlist } = require("../controllers/wishlistControllers");
 
 const router = express.Router();
 
-router.post('/',createWishlist);
+router.get('/status', getWishlistStatus);
+router.post('/', createWishlist);
+router.delete('/', deleteWishlist);
 router.get('/',getWishlist);
 
 

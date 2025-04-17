@@ -11,7 +11,7 @@ interface SelectBoxProps {
   inputContain?: string[] | { _id: string; color: string }[]; // Made optional
   name:keyof RootState['toggle']['productFields'];
   required?: string;
- 
+
 }
 
 const SelectBox: React.FC<SelectBoxProps> = ({ headName, attributeName, inputContain = [] , name , required}) => {

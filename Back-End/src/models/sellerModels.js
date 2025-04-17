@@ -46,7 +46,6 @@ const sellerSchemaStructure = new mongoose.Schema({
         type:String,
         required:false,
         default:null,
-        unique:true,  
         trim:true,
     },
     ifscCode:{
@@ -54,7 +53,6 @@ const sellerSchemaStructure = new mongoose.Schema({
         required:false,
         default:null,
         trim:true,
-        unique:true
     },
     storeDiscription:{
         type:String,

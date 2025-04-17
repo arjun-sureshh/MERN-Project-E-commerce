@@ -2,9 +2,16 @@ import React from 'react';
 import styles from './NavBar.module.css';
 import { NavDropdown } from 'react-bootstrap';
 import { IoLogOutOutline } from 'react-icons/io5';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const NavBar: React.FC = () => {
+
+    const navigate = useNavigate();
+    const handleLogout = () => {
+        sessionStorage.removeItem("seller"); // Remove token from session storage
+        navigate("/"); // Redirect to login page
+      };
+
     return (
         <div className={styles.body}>
             <div className={styles.section1}>
@@ -23,7 +30,9 @@ const NavBar: React.FC = () => {
                 </div>
                 <div className={styles.orders}>
                     <NavDropdown title="Orders" id="basic-nav-dropdown">
-                        <NavDropdown.Item as="div">Active Orders</NavDropdown.Item>
+                        <NavDropdown.Item as="div">
+                        <Link to="/Seller/Inventory" style={{ textDecoration: 'none', color: 'inherit' }}>Inventory</Link>
+                          </NavDropdown.Item>
                         <NavDropdown.Item as="div">Returns</NavDropdown.Item>
                         <NavDropdown.Item as="div">Cancellation</NavDropdown.Item>
                     </NavDropdown>
@@ -37,7 +46,7 @@ const NavBar: React.FC = () => {
                 </div>
             </div>
             <div className={styles.section2}>
-                <div className={styles.logout}>
+                <div className={styles.logout} onClick={handleLogout}>
                     <span className={styles.logoutIcons}><IoLogOutOutline /></span> Log out
                 </div>
             </div>

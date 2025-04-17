@@ -6,6 +6,7 @@ import AddInput from '../../../components/addInput/AddInput';
 import SearchKeywordManager from '../../../components/addsearchInput/AddSearchInput';
 import AddSize from '../../../components/addForSize/AddSize';
 import axios from 'axios';
+import Specification from '../../../components/addSpecification/AddSpecification';
 
 type DisplayInputContainerProps = {
   inputRefs: Record<
@@ -43,9 +44,11 @@ const DisplayContainer:React.FC<DisplayInputContainerProps> = ({inputRefs}) => {
     <div className={styles.inputwholeContainer}>
         <InputBox type={'text'} headName={"Warranty Details"}   attributeName={"Warranty Period"} ref={inputRefs["warrantyPeriod"]} name={'warrantyPeriod'} inputContain={""} required={""}/>
         <InputBox type={'text'} headName={""} attributeName={"Waranty Summary"} ref={inputRefs["warantySummary"]} name={"warantySummary"} inputContain={"INR"} required={""}/>
-        <AddInput type={'text'} headName={"Key Features / Specifications"} />
+        <Specification type={'text'} headName={"Specificatipons"}   attributeName={"Specification"} required={""}/>
+        <AddInput type={'text'} headName={"Key Features"} />
         <AddSize type={'text'} headName={"Size Info"}   attributeName={"Size"} ref={inputRefs["sizebody"]} selectName={'sizeHeadId'} inputName={"sizebody"} inputContain={fetchColor} required={""}  />
         <SearchKeywordManager type={'text'} headName={"Key Words"}   attributeName={"Search Key Words"} required={""}/>
+
         </div>
   )
 }

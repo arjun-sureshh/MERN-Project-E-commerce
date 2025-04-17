@@ -1,7 +1,6 @@
-const { default: mongoose } = require("mongoose");
+const { default: mongoose} = require("mongoose");
 const Product = require("../models/productModels");
-
-
+const { Types } = mongoose; // Ensure Mongoose is imported if used
 
 // get all products
 const getProduct = async (req, res) => {
@@ -14,25 +13,590 @@ const getProduct = async (req, res) => {
         res.status(500).json({ message: "Error in fetching product ", error })
     }
 };
+// search prouducts
+const searchProducts = async (req, res) => {
+  const { query } = req.query;
+
+  if (!query || query.trim().length === 0) {
+    return res.status(400).json({ message: 'Search query is required' });
+  }
+
+  try {
+    const productDetails = await Product.aggregate([
+      { $match: { qcStatus: 1 } },
+      {
+        $lookup: {
+          from: 'productvariantdetails',
+          let: { productId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ['$productId', '$$productId'] },
+                $text: { $search: query.trim() },
+              },
+            },
+            { $sort: { score: { $meta: 'textScore' } } },
+          ],
+          as: 'productVariantDetails',
+        },
+      },
+      { $unwind: { path: '$productVariantDetails', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'categories',
+          let: { categoryId: '$categoryId' },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ['$_id', '$$categoryId'] },
+                $text: { $search: query.trim() },
+              },
+            },
+          ],
+          as: 'categoryDetails',
+        },
+      },
+      { $unwind: { path: '$categoryDetails', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'brand',
+          let: { brandId: '$brandId' },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ['$_id', '$$brandId'] },
+                $text: { $search: query.trim() },
+              },
+            },
+          ],
+          as: 'brandDetails',
+        },
+      },
+      { $unwind: { path: '$brandDetails', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'searchKeyword',
+          let: { variantId: '$productVariantDetails._id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ['$productVariantId', '$$variantId'] },
+                $text: { $search: query.trim() },
+              },
+            },
+          ],
+          as: 'searchKeywordsDetails',
+        },
+      },
+      {
+        $match: {
+          $or: [
+            { 'productVariantDetails': { $ne: null } },
+            { 'categoryDetails': { $ne: null } },
+            { 'brandDetails': { $ne: null } },
+            { 'searchKeywordsDetails': { $ne: [] } },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: 'productimages', // Assuming you have an images collection
+          localField: 'productVariantDetails._id',
+          foreignField: 'varientId',
+          as: 'galleryImages',
+        },
+      },
+      { $unwind: { path: '$galleryImages', preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          productId: '$_id',
+          productTitle: '$productVariantDetails.productTitle',
+          sellingPrice: '$productVariantDetails.sellingPrice',
+          mrp: '$productVariantDetails.mrp',
+          image: '$galleryImages.photos',
+          brandName: '$brandDetails.brandName',
+          categoryName: '$categoryDetails.categoryName',
+          keywords: '$searchKeywordsDetails.searchKeyword',
+          searchScore: { $meta: 'textScore' },
+        },
+      },
+      { $sort: { searchScore: -1 } },
+      { $limit: 50 },
+    ]);
+
+    if (!productDetails || productDetails.length === 0) {
+      return res.status(404).json({ message: 'No products found for the given query.' });
+    }
+    res.status(200).json({
+      message: 'Search results fetched successfully',
+      data: productDetails,
+    });
+  } catch (error) {
+    console.error('Error in searchProducts:', error);
+    res.status(500).json({ message: 'Error searching products', error: error.message });
+  }
+};
+
+
+// Search products by name, brand, category, or keywords
+
+const searchProductSuggestions = async (req, res) => {
+  const { query } = req.query;
+console.log(query);
+
+  if (!query || query.trim().length === 0) {
+    return res.status(400).json({ message: 'Search query is required' });
+  }
+
+  try {
+    const suggestions = await Product.aggregate([
+      { $match: { qcStatus: 1 } },
+      {
+        $lookup: {
+          from: 'productvariantdetails',
+          let: { productId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ['$productId', '$$productId'] },
+                $text: { $search: query.trim() },
+              },
+            },
+            { $project: { suggestion: '$productTitle' } },
+          ],
+          as: 'productVariantDetails',
+        },
+      },
+      { $unwind: { path: '$productVariantDetails', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'categories',
+          let: { categoryId: '$categoryId' },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ['$_id', '$$categoryId'] },
+                $text: { $search: query.trim() },
+              },
+            },
+            { $project: { suggestion: '$categoryName' } },
+          ],
+          as: 'categoryDetails',
+        },
+      },
+      { $unwind: { path: '$categoryDetails', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'brand',
+          let: { brandId: '$brandId' },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ['$_id', '$$brandId'] },
+                $text: { $search: query.trim() },
+              },
+            },
+            { $project: { suggestion: '$brandName' } },
+          ],
+          as: 'brandDetails',
+        },
+      },
+      { $unwind: { path: '$brandDetails', preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          suggestions: {
+            $setUnion: [
+              { $ifNull: ['$productVariantDetails.suggestion', []] },
+              { $ifNull: ['$categoryDetails.suggestion', []] },
+              { $ifNull: ['$brandDetails.suggestion', []] },
+            ],
+          },
+        },
+      },
+      { $unwind: '$suggestions' },
+      { $match: { 'suggestions': { $ne: null } } },
+      { $limit: 5 },
+      { $project: { suggestion: '$suggestions' } },
+    ]);
+
+    const suggestionList = suggestions.map((s) => s.suggestion).filter(Boolean);
+    res.status(200).json({ suggestions: suggestionList });
+  } catch (error) {
+    console.error('Error fetching suggestions:', error);
+    res.status(500).json({ message: 'Error fetching suggestions', error: error.message });
+  }
+};
+
+// get top groupd category
+
+const getProductsGroupedByTopCategory = async (req, res) => {
+    try {
+      const productDetails = await Product.aggregate([
+        // Step 1: Match approved products
+        { $match: { qcStatus: 1 } },
+  
+        // Step 2: Lookup category details
+        {
+          $lookup: {
+            from: "categories",
+            localField: "categoryId",
+            foreignField: "_id",
+            as: "categoryDetails",
+          },
+        },
+        { $unwind: { path: "$categoryDetails", preserveNullAndEmptyArrays: true } },
+  
+        // Step 3: Graph lookup for full category hierarchy
+        {
+          $graphLookup: {
+            from: "categories",
+            startWith: "$categoryDetails.mainCategory",
+            connectFromField: "mainCategory",
+            connectToField: "_id",
+            as: "categoryHierarchy",
+            depthField: "depth", // Add depth to track hierarchy levels
+          },
+        },
+  
+        // Step 4: Add top parent category (root is where mainCategory is null or lowest depth)
+        {
+          $addFields: {
+            topParentCategory: {
+              $cond: {
+                if: { $eq: ["$categoryDetails.mainCategory", null] },
+                then: "$categoryDetails",
+                else: {
+                  $arrayElemAt: [
+                    {
+                      $filter: {
+                        input: "$categoryHierarchy",
+                        cond: { $eq: ["$$this.mainCategory", null] }, // Find the root
+                      },
+                    },
+                    0,
+                  ],
+                },
+              },
+            },
+          },
+        },
+  
+        // Step 5: Lookup one product variant
+        {
+          $lookup: {
+            from: "productvariantdetails",
+            localField: "_id",
+            foreignField: "productId",
+            as: "productVariantDetails",
+            pipeline: [{ $sort: { sellingPrice: 1 } }, { $limit: 1 }],
+          },
+        },
+        { $unwind: { path: "$productVariantDetails", preserveNullAndEmptyArrays: true } },
+  
+        // Step 6: Lookup one image
+        {
+          $lookup: {
+            from: "productimages",
+            localField: "productVariantDetails._id",
+            foreignField: "varientId",
+            as: "galleryImages",
+          },
+        },
+        { $unwind: { path: "$galleryImages", preserveNullAndEmptyArrays: true } },
+  
+        // Step 7: Lookup brand and seller
+        {
+          $lookup: {
+            from: "brands",
+            localField: "brandId",
+            foreignField: "_id",
+            as: "brandDetails",
+          },
+        },
+        { $unwind: { path: "$brandDetails", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            from: "sellers",
+            localField: "sellerId",
+            foreignField: "_id",
+            as: "sellerDetails",
+          },
+        },
+        { $unwind: { path: "$sellerDetails", preserveNullAndEmptyArrays: true } },
+  
+        // Step 8: Project essential fields
+        {
+          $project: {
+            productId: "$_id",
+            topParentCategoryName: "$topParentCategory.categoryName",
+            topParentCategoryId: "$topParentCategory._id",
+            productTitle: "$productVariantDetails.productTitle",
+            sellingPrice: "$productVariantDetails.sellingPrice",
+            mrp: "$productVariantDetails.mrp",
+            image: "$galleryImages.photos",
+            brandName: "$brandDetails.brandName",
+            sellerName: "$sellerDetails.sellerName",
+          },
+        },
+  
+        // Step 9: Group by top parent category
+        {
+          $group: {
+            _id: {
+              topParentCategoryId: "$topParentCategoryId",
+              topParentCategoryName: "$topParentCategoryName",
+            },
+            products: {
+              $push: {
+                productId: "$productId",
+                productTitle: "$productTitle",
+                sellingPrice: "$sellingPrice",
+                mrp: "$mrp",
+                image: "$image",
+                brandName: "$brandName",
+                sellerName: "$sellerName",
+                topcategoryId:"$topParentCategoryId",
+              },
+            },
+            productCount: { $sum: 1 },
+          },
+        },
+  
+        // Step 10: Final projection
+        {
+          $project: {
+            _id: 0,
+            categoryId: "$_id.topParentCategoryId",
+            categoryName: "$_id.topParentCategoryName",
+            productCount: 1,
+            products: 1,
+          },
+        },
+  
+        // Step 11: Sort
+        { $sort: { categoryName: 1 } },
+      ]);
+  
+      if (!productDetails || productDetails.length === 0) {
+        return res.status(404).json({ message: "No products found." });
+      }
+  
+      res.status(200).json({
+        message: "Products grouped by top category fetched successfully",
+        data: productDetails,
+      });
+    } catch (error) {
+      console.error("Error in getProductsGroupedByTopCategory:", error);
+      res.status(500).json({ message: "Error fetching products", error: error.message });
+    }
+  };
+//  fetch by top category
+  const getProductBasedOnTopCategory = async (req, res) => {
+    const { clickedCategory } = req.body;
+  
+    // Validate clickedCategory
+    if (!clickedCategory || !Types.ObjectId.isValid(clickedCategory)) {
+      return res.status(400).json({ message: "Invalid or missing category ID" });
+    }
+  
+    try {
+      const productDetails = await Product.aggregate([
+        // Step 1: Match approved products
+        { $match: { qcStatus: 1 } },
+  
+        // Step 2: Lookup category details
+        {
+          $lookup: {
+            from: "categories",
+            localField: "categoryId",
+            foreignField: "_id",
+            as: "categoryDetails",
+          },
+        },
+        { $unwind: { path: "$categoryDetails", preserveNullAndEmptyArrays: true } },
+  
+        // Step 3: Graph lookup for full category hierarchy
+        {
+          $graphLookup: {
+            from: "categories",
+            startWith: "$categoryDetails.mainCategory",
+            connectFromField: "mainCategory",
+            connectToField: "_id",
+            as: "categoryHierarchy",
+            depthField: "depth",
+          },
+        },
+  
+        // Step 4: Add top parent category
+        {
+          $addFields: {
+            topParentCategory: {
+              $cond: {
+                if: { $eq: ["$categoryDetails.mainCategory", null] },
+                then: "$categoryDetails",
+                else: {
+                  $arrayElemAt: [
+                    {
+                      $filter: {
+                        input: "$categoryHierarchy",
+                        cond: { $eq: ["$$this.mainCategory", null] },
+                      },
+                    },
+                    0,
+                  ],
+                },
+              },
+            },
+          },
+        },
+  
+        // Step 4.5: Filter by clickedCategory (moved here)
+        { $match: { "topParentCategory._id": new Types.ObjectId(clickedCategory) } },
+  
+        // Step 5: Lookup one product variant
+        {
+          $lookup: {
+            from: "productvariantdetails",
+            localField: "_id",
+            foreignField: "productId",
+            as: "productVariantDetails",
+            pipeline: [{ $sort: { sellingPrice: 1 } }],
+          },
+        },
+        { $unwind: { path: "$productVariantDetails", preserveNullAndEmptyArrays: true } },
+  
+        // Step 6: Lookup one image
+        {
+          $lookup: {
+            from: "productimages",
+            localField: "productVariantDetails._id",
+            foreignField: "varientId",
+            as: "galleryImages",
+          },
+        },
+        { $unwind: { path: "$galleryImages", preserveNullAndEmptyArrays: true } },
+         // Step 6: Lookup  color
+         {
+          $lookup: {
+            from: "colors",
+            localField: "productVariantDetails.colorId",
+            foreignField: "_id",
+            as: "colorDetails",
+          },
+        },
+        { $unwind: { path: "$colorDetails", preserveNullAndEmptyArrays: true } },
+  
+        // Step 7: Lookup brand and seller
+        {
+          $lookup: {
+            from: "brands",
+            localField: "brandId",
+            foreignField: "_id",
+            as: "brandDetails",
+          },
+        },
+        { $unwind: { path: "$brandDetails", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            from: "sellers",
+            localField: "sellerId",
+            foreignField: "_id",
+            as: "sellerDetails",
+          },
+        },
+        { $unwind: { path: "$sellerDetails", preserveNullAndEmptyArrays: true } },
+  
+        // Step 8: Project essential fields
+        {
+          $project: {
+            productId: "$_id",
+            topParentCategoryName: "$topParentCategory.categoryName",
+            topParentCategoryId: "$topParentCategory._id",
+            productTitle: "$productVariantDetails.productTitle",
+            sellingPrice: "$productVariantDetails.sellingPrice",
+            mrp: "$productVariantDetails.mrp",
+            image: "$galleryImages.photos",
+            brandName: "$brandDetails.brandName",
+            sellerName: "$sellerDetails.sellerName",
+            color:"$colorDetails.color"
+          },
+        },
+  
+        // Step 9: Group by top parent category (optional)
+        {
+          $group: {
+            _id: {
+              topParentCategoryId: "$topParentCategoryId",
+              topParentCategoryName: "$topParentCategoryName",
+            },
+            products: {
+              $push: {
+                productId: "$productId",
+                productTitle: "$productTitle",
+                sellingPrice: "$sellingPrice",
+                mrp: "$mrp",
+                image: "$image",
+                brandName: "$brandName",
+                sellerName: "$sellerName",
+                topcategoryId: "$topParentCategoryId",
+                color:"$color"
+
+              },
+            },
+            productCount: { $sum: 1 },
+          },
+        },
+  
+        // Step 10: Final projection
+        {
+          $project: {
+            _id: 0,
+            categoryId: "$_id.topParentCategoryId",
+            categoryName: "$_id.topParentCategoryName",
+            productCount: 1,
+            products: 1,
+          },
+        },
+  
+        // Step 11: Sort
+        { $sort: { categoryName: 1 } },
+      ]);
+  
+      if (!productDetails || productDetails.length === 0) {
+        return res.status(404).json({
+          message: `No products found for category ID ${clickedCategory}`,
+        });
+      }
+  
+      res.status(200).json({
+        message: "Products grouped by top category fetched successfully",
+        data: productDetails,
+      });
+    } catch (error) {
+      console.error("Error in getProductsGroupedByTopCategory:", error);
+      res.status(500).json({ message: "Error fetching products", error: error.message });
+    }
+  };
+
 
 // get approved seller details
 
-const getApprovedProduct = async (req,res) =>{
+const getApprovedProduct = async (req, res) => {
     try {
-        const productDetails = await Product.find({ListingStatus : 4, qcStatus:1 });
-        res.status(200).json({message:"fetching Approved Product details successfull",data:productDetails})
+        const productDetails = await Product.find({ ListingStatus: 4, qcStatus: 1 });
+        res.status(200).json({ message: "fetching Approved Product details successfull", data: productDetails })
     } catch (error) {
-        res.status(500).json({messgae:"Error in fetching Product ", error})
+        res.status(500).json({ messgae: "Error in fetching Product ", error })
     }
 };
 
 // get approved seller details
-const getRejectedProduct = async (req,res) =>{
+const getRejectedProduct = async (req, res) => {
     try {
-        const productDetails = await Product.find({ListingStatus : 4, qcStatus:-1 });
-        res.status(200).json({message:"fetching Rejected Product details successfull",data:productDetails})
+        const productDetails = await Product.find({ ListingStatus: 4, qcStatus: -1 });
+        res.status(200).json({ message: "fetching Rejected Product details successfull", data: productDetails })
     } catch (error) {
-        res.status(500).json({messgae:"Error in fetching Product ", error})
+        res.status(500).json({ messgae: "Error in fetching Product ", error })
     }
 };
 
@@ -66,7 +630,7 @@ const getProductToQC = async (req, res) => {
                     as: "brandDetails"
                 }
             },
-            
+
             {
                 $unwind: {
                     path: "$brandDetails",
@@ -81,7 +645,7 @@ const getProductToQC = async (req, res) => {
                     as: "sellerDetails"
                 }
             },
-            
+
             {
                 $unwind: {
                     path: "$sellerDetails",
@@ -102,7 +666,7 @@ const getProductToQC = async (req, res) => {
                     zonalDeliveryCharge: 1,
                     categoryName: "$categoryDetails.categoryName", // Assuming 'name' is the field for category name
                     brandName: "$brandDetails.brandName", // Assuming 'name' is the field for brand name
-                    sellerName:"$sellerDetails.sellerName",
+                    sellerName: "$sellerDetails.sellerName",
                 }
             }
         ]);
@@ -136,7 +700,7 @@ const getProductByProductId = async (req, res) => {
             data: productDetails
         });
 
-      
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Error fetching product", error });
@@ -159,7 +723,7 @@ const getProductBySellerID = async (req, res) => {
 
         const productDetails = await Product.aggregate([
             {
-                $match: { sellerId: sellerObjectId , qcStatus : 0 }
+                $match: { sellerId: sellerObjectId, qcStatus: 0 }
             },
             {
                 $lookup: {
@@ -254,7 +818,7 @@ const createProduct = async (req, res) => {
     try {
 
         const newProduct = new Product({
-            sellerId, categoryId, ListingStatus:2,
+            sellerId, categoryId, ListingStatus: 2,
         });
 
         const savedProduct = await newProduct.save();
@@ -306,19 +870,19 @@ const updateBrandId = async (req, res) => {
 };
 
 // update the product Qcstatus
-const updateQcStatus = async (req,res) =>{
-    const {productId} = req.params;
-    const {qcStatus} = req.body;
-    
+const updateQcStatus = async (req, res) => {
+    const { productId } = req.params;
+    const { qcStatus } = req.body;
 
-    if ( !qcStatus ) {
+
+    if (!qcStatus) {
         return res.status(400).json({ message: "Please provide teh Qc status" });
     }
 
     try {
         const updateData = await Product.findByIdAndUpdate(
-            productId, 
-            { qcStatus:qcStatus }, 
+            productId,
+            { qcStatus: qcStatus },
             { new: true, runValidators: true }
         );
 
@@ -404,6 +968,10 @@ module.exports = {
     getProductToQC,
     updateQcStatus,
     getApprovedProduct,
-    getRejectedProduct
+    getRejectedProduct,
+    getProductsGroupedByTopCategory,
+    getProductBasedOnTopCategory,
+    searchProducts,
+    searchProductSuggestions
 }
 

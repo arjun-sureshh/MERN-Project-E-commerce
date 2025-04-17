@@ -4,6 +4,9 @@ import NavBar from '../components/navBar/NavBar'
 import SellerRouters from '../sellerRouters/SellerRouters'
 
 const SellerDashBoard:React.FC = () => {
+
+ 
+
   return (
     <div className={styles.body}>
     <div className={styles.navBar}>

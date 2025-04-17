@@ -4,6 +4,8 @@ import SideBar from './components/sideBar/SideBar'
 import styles from './ProductListing.module.css'
 
 const ProductListing = () => {
+  
+
    return (
     <div className={styles.body}>
      <div className={styles.contentBody}>

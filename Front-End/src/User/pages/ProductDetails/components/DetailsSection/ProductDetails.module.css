@@ -1,5 +1,4 @@
-
-.body{
+.body {
     display: flex;
     flex-direction: column;
     font-size: 14px;
@@ -8,32 +7,28 @@
     padding-top: 7px;
     gap: 10px;
     height: 100vh;
-}
-.body::-webkit-scrollbar {
-    display: none; /* For Chrome, Safari, and Edge */
   }
-.productPath{
+  .body::-webkit-scrollbar {
+    display: none;
+  }
+  .productPath {
     display: flex;
     justify-content: space-between;
-}
-.path{
-  
+  }
+  .path {
     font-size: 13px;
     font-weight: 400;
     color: #888585;
     line-height: 1.4;
     width: 50%;
     height: 20px;
-   
     overflow: hidden;
     text-overflow: ellipsis;
-   
-    p{
-        font-family: Inter, -apple-system, Helvetica, Arial, sans-serif;
-    }
-
-}
-.share{
+  }
+  .path p {
+    font-family: Inter, -apple-system, Helvetica, Arial, sans-serif;
+  }
+  .share {
     display: flex;
     font-size: 1.1em;
     color: rgb(54, 53, 53);
@@ -41,25 +36,22 @@
     justify-content: center;
     gap: 6px;
     margin-right: 15px;
-
-}
-
-.share span{
- color: rgb(144, 142, 142);
-}
-.share:hover{
+  }
+  .share span {
+    color: rgb(144, 142, 142);
+  }
+  .share:hover {
     color: rgb(16, 3, 252);
-    span{
-        color: rgb(16, 3, 252);
-    }
-   
-}
-.varientName{
+  }
+  .share:hover span {
+    color: rgb(16, 3, 252);
+  }
+  .varientName {
     font-size: 20px;
     font-weight: 530;
     font-family: Inter, -apple-system, Helvetica, Arial, sans-serif;
-}
-.colorvariants{
+  }
+  .colorvariants {
     height: 52px;
     width: 52px;
     background-position: 50%;
@@ -70,23 +62,21 @@
     text-align: center;
     border-radius: 2px;
     border: 1px solid #e0dede;
-
-}
-.colorvariants img{
+  }
+  .colorvariants img {
     width: 40px;
     height: 52px;
-}
-
-.name_Price{
+  }
+  .name_Price {
     display: flex;
     flex-direction: column;
     gap: 5px;
-}
-.rating{
+  }
+  .rating {
     display: flex;
     gap: 7px;
-}
-.avgRating{
+  }
+  .avgRating {
     background-color: rgb(22, 150, 48);
     color: #fff;
     padding: 2px;
@@ -94,143 +84,130 @@
     height: 16px;
     font-size: 70%;
     text-align: center;
-}
-.totalRating_Review{
+  }
+  .totalRating_Review {
     font-weight: 500;
     color: #878787;
-}
-.pricesection{
+  }
+  .pricesection {
     display: flex;
     gap: 7px;
     align-items: center;
-}
-.sellingPrice{
+  }
+  .sellingPrice {
     font-size: 30px;
     font-weight: 545;
     color: #212121;
-}
-.MRP{
+  }
+  .MRP {
     color: #878787;
     font-size: 17px;
     font-weight: 300;
-    
-}
-.offerPer{
+  }
+  .offerPer {
     font-size: 15px;
     font-weight: 555;
     color: #38ac3e;
-}
-.Extraoffer{
+  }
+  .Extraoffer {
     font-weight: 555;
     font-size: 14px;
     text-align: left;
     color: #21a828;
     font-family: Inter, -apple-system, Helvetica, Arial, sans-serif;
-}
-.strick{
+  }
+  .strick {
     text-decoration: line-through;
-}
-.headOfOffer{
+  }
+  .headOfOffer {
     font-size: 16px;
     font-weight: 555;
     color: #212121;
     margin-bottom: 10px;
-}
-.availableOffers{
+  }
+  .availableOffers {
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;
-}
-.wholeOfferDetails{
+  }
+  .wholeOfferDetails {
     display: flex;
     flex-direction: column;
     gap: 10px;
-}
-.offerdetails{
+  }
+  .offerdetails {
     display: flex;
     gap: 10px;
-}
-.offericon{
+  }
+  .offericon {
     color: #21a828;
-
-
-}
-.bankOffer{
+  }
+  .bankOffer {
     display: flex;
     gap: 10px;
-  
-}
-.defineOffer{
+  }
+  .defineOffer {
     font-size: 1.1em;
-    font-weight: 430; 
+    font-weight: 430;
     font-family: Inter, -apple-system, Helvetica, Arial, sans-serif;
-}
-.bold{
+  }
+  .bold {
     color: black;
     font-weight: 551;
     font-size: 15px;
     margin-right: 7px;
-}
-
-.termBlue{
+  }
+  .termBlue {
     color: rgb(0, 60, 255);
-}
-.warrantySection{
+  }
+  .warrantySection {
     display: flex;
-
-}
-.warrantyKnowMore{
+  }
+  .warrantyKnowMore {
     color: blue;
-}
-.otherDetails{
+  }
+  .otherDetails {
     display: flex;
-margin-top: 20px;
-}
-.variant{
+    margin-top: 20px;
+  }
+  .variant {
     display: flex;
     max-width: 50%;
-   
-}
-.delivery{
+  }
+  .delivery {
     display: flex;
-
-}
-.headName{
-    
+  }
+  .headName {
     font-weight: 500;
     color: #878787;
     width: 110px;
     padding-right: 10px;
     float: left;
-}
-.varientBody{
+  }
+  .varientBody {
     display: flex;
     gap: 10px;
     width: 100%;
     flex-wrap: wrap;
-    
-}
-.StorageBody{
-   display: flex;
-   gap: 20px; 
-}
-.varaintStorage{
+  }
+  .StorageBody {
+    display: flex;
+    gap: 20px;
+  }
+  .varaintStorage {
     padding: 7px;
     height: fit-content;
     text-align: center;
     border: 1.2px dotted #c1bdbd;
     border-radius: 2px;
-    /* float: left; */
-}
-
-.flex{
+  }
+  .flex {
     display: flex;
-}
-.green{
+  }
+  .green {
     color: green;
-}
-.circlePopUp{
-    
+  }
+  .circlePopUp {
     border-radius: 50%;
     background-color: #fff;
     color: #878787;
@@ -246,12 +223,104 @@ margin-top: 20px;
     vertical-align: middle;
     margin: 0 2px 0 8px;
     cursor: pointer;
-}
-.highlightDatas{
+  }
+  .highlightDatas {
     display: flex;
     flex-direction: column;
-}
-.headDetails{
+  }
+  .headDetails {
     display: flex;
     flex-direction: column;
+  }
+  /* Existing styles (unchanged) */
+.specificationDatas {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
+
+.specItem {
+  padding: 5px 0;
+}
+
+.specValue {
+  font-size: 14px;
+  font-weight: 400;
+  color: #212121;
+}
+
+.noSpecs {
+  font-size: 14px;
+  font-weight: 400;
+  color: #878787;
+}
+
+/* New style for selected variant */
+.colorvariants {
+  height: 52px;
+  width: 52px;
+  background-position: 50%;
+  background-repeat: no-repeat;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+  text-align: center;
+  border-radius: 2px;
+  border: 1px solid #e0dede;
+  cursor: pointer;
+}
+
+.colorvariants img {
+  width: 40px;
+  height: 52px;
+}
+
+.colorvariants.selected {
+  border: 2px solid #388e3c; /* Green border for selected variant */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+  
+  .specificationDatas {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .specGroup {
+    margin-bottom: 15px;
+  }
+  
+  .specTitle {
+    font-size: 16px;
+    font-weight: 500;
+    color: #212121;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 5px;
+  }
+  
+  .specItem {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+  }
+  
+  .specKey {
+    font-size: 14px;
+    font-weight: 400;
+    color: #878787;
+    width: 40%;
+  }
+  
+  .specValue {
+    font-size: 14px;
+    font-weight: 400;
+    color: #212121;
+    width: 60%;
+  }
+  
+  .noSpecs {
+    font-size: 14px;
+    font-weight: 400;
+    color: #878787;
+  }

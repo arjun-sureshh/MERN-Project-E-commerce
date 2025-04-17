@@ -45,6 +45,10 @@ interface Feature {
 interface searchKeyWords {
     searchKeyWord: string;
 }
+// interface for search ...
+interface specification {
+    specification: string;
+}
 
 // inteface for the fields inside of initial state
 interface ToggleState {
@@ -59,17 +63,22 @@ interface ToggleState {
     productVaraintId: string;
     productFields: productFields;
     features: Feature[],
-    searchKeyWords: searchKeyWords[] ,
-    images:  File[];
+    searchKeyWords: searchKeyWords[],
+    productSpecification: specification[],
+    images: File[];
+    clickedForproductListing: string;
+    singleProductId:string;
 }
 
 // initialState....
 const initialState: ToggleState = {
     menuOpen: false,
     openPage: {},
-    openPageinUser:{},
+    openPageinUser: {},
     productAdddingState: 1,
     sellerRegistrationStage: 1,
+    clickedForproductListing: "",
+    singleProductId:"",
     productId: "",
     sellerId: "",
     productVaraintId: "",
@@ -111,6 +120,8 @@ const initialState: ToggleState = {
     },
     features: [],
     searchKeyWords: [],
+    productSpecification: [],
+
     images: [], // ✅ Added empty array for images
     reduxStateName: undefined
 }
@@ -131,7 +142,7 @@ const toggleSlice = createSlice({
         toggleResetPage: (state) => {
             state.openPage = {};
         },
-        
+
         togglePageControlInUser: (state, action: PayloadAction<string>) => {
             const title = action.payload;
             state.openPageinUser = {};
@@ -155,16 +166,19 @@ const toggleSlice = createSlice({
         toggleProductVaraintId: (state, action: PayloadAction<string>) => {
             state.productVaraintId = action.payload;
         },
+        toggleClickedForproductListing:(state,action:PayloadAction<string>)=>{
+            state.clickedForproductListing = action.payload;
+        },
+        toggleSingleProductId:(state,action:PayloadAction<string>)=>{
+            state.singleProductId = action.payload;
+        },
         toggleProductFields: <T extends keyof productFields>(
             state: ToggleState,
             action: PayloadAction<{ field: T; value: productFields[T] }>
         ) => {
             (state.productFields as Record<keyof productFields, any>)[action.payload.field] = action.payload.value;
         },
-        // toggleResetProductFields: (state) => {
-        //     state.productFields = { ...initialState.productFields }; // Reset all fields to ""
-        // },
-        // ✅ New action: Add a feature to the `features` array
+
         toggleFeatureAdd: (state, action: PayloadAction<Feature>) => {
             state.features.push(action.payload);
         },
@@ -182,6 +196,17 @@ const toggleSlice = createSlice({
         toggleSearchKeyWordsUpdate: (state, action: PayloadAction<{ index: number; value: string }>) => {
             if (state.searchKeyWords[action.payload.index]) {
                 state.searchKeyWords[action.payload.index].searchKeyWord = action.payload.value;
+            }
+        },
+        toggleSpecificationAdd: (state, action: PayloadAction<specification>) => {
+            state.productSpecification.push(action.payload);
+        },
+        toggleSpecificationRemove: (state, action: PayloadAction<number>) => {
+            state.productSpecification = state.productSpecification.filter((_, i) => i !== action.payload);
+        },
+        toggleSpecificationUpdate: (state, action: PayloadAction<{ index: number; value: string }>) => {
+            if (state.productSpecification[action.payload.index]) {
+                state.productSpecification[action.payload.index].specification = action.payload.value;
             }
         },
         toggleAddImage: (state, action: PayloadAction<File>) => {
@@ -223,6 +248,11 @@ export const {
     toggleAddImage, // ✅ Add image
     toggleRemoveImage, // ✅ Remove image
     togglePageControlInUser,
-    toggleResetPageInUser
+    toggleResetPageInUser,
+    toggleSpecificationAdd,
+    toggleSpecificationRemove,
+    toggleSpecificationUpdate,
+    toggleClickedForproductListing,
+    toggleSingleProductId
 } = toggleSlice.actions;
 export default toggleSlice.reducer;

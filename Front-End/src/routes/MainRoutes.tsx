@@ -20,8 +20,6 @@ const Routers = () => {
         <Route path="/Seller/Registration" element={<SellerRegistration />} />
         <Route path="/Admin/*" element={<AdminApp />} />
         <Route path="/Admin/Registration" element={<AdminRegistration />} />
-
-
       </Routes>
     </div>
   )

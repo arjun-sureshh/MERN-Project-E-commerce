@@ -298,7 +298,7 @@ if (!storePinCode) {
                reEnterAccNUmber:""
             })
            
-            navigate("/Seller");
+            navigate("/SellerLanding");
 
         } catch (error: any) {
             if (axios.isAxiosError(error) && error.response) {
@@ -309,10 +309,6 @@ if (!storePinCode) {
         }
 
     }
-
-
-
-
 
     return (
         <div className={styles.full}>

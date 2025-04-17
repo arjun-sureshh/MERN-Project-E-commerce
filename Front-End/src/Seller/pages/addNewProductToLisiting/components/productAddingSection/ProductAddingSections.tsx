@@ -7,8 +7,43 @@ import axios from 'axios';
 import { toggleAddImage, toggleProductFields, toggleProductVaraintId, toggleResetProductData, toggleSearchKeyWordAdd, } from '../../../../../redux/toogleSlice';
 import { useNavigate } from 'react-router';
 
-interface fetchedDatas{
-    stockqty:string;
+interface fetchedDatas {
+    ProductVariantId:string;
+    productId:string;
+    stockqty: string;
+    skuId: string;
+    mrp: string;
+    fullfilementBy: string;
+    ProcurementType: string;
+    ProcurementSLA: string;
+    sellingPrice: string;
+    stock: string;
+    shippingProvider: string;
+    localDeliveryCharge: string;
+    ZonalDeliveryCharge: string;
+    length: string;
+    breadth: string;
+    height: string;
+    weight: string;
+    HSN: string;
+    taxCode: string;
+
+    countryOfOrigin: string;
+    manufacturerDetails: string;
+    packerDetails: string;
+    productTitle: string;
+    productDiscription: string;
+    intheBox: string;
+    minimumOrderQty: string;
+    color: string;
+
+    warantySummary: string;
+    warrantyPeriod: string;
+    searchKeyword: string;
+    featureTitle: string;
+    featureContent: string;
+    size: string;
+    sizeHeadId: string;
 }
 
 const ProductAddingSections: React.FC = () => {
@@ -20,12 +55,50 @@ const ProductAddingSections: React.FC = () => {
     const productId = useSelector((state: RootState) => state.toggle.productId);
     const productFields = useSelector((state: RootState) => state.toggle.productFields);
     const ProductVaraintId = useSelector((state: RootState) => state.toggle.productVaraintId);
-
+    const [productVariants, setProductVariants] = useState<any[]>([]);
     const [fetchedData, setFetchedData] = useState<fetchedDatas[]>([]);
     const produKeyFeature = useSelector((state: RootState) => state.toggle.features);
     const searchKeyWords = useSelector((state: RootState) => state.toggle.searchKeyWords);
+    const specification = useSelector((state: RootState) => state.toggle.productSpecification);
+   const [selectedVariant, setSelectedVariant] = useState<fetchedDatas>({
+    ProductVariantId:"",
+    productId:"",
+    stockqty: "",
+    skuId: "",
+    mrp: "",
+    fullfilementBy: "",
+    ProcurementType: "",
+    ProcurementSLA: "",
+    sellingPrice: "",
+    stock: "",
+    shippingProvider: "",
+    localDeliveryCharge: "",
+    ZonalDeliveryCharge: "",
+    length:"",
+    breadth:"",
+    height: "",
+    weight: "",
+    HSN: "",
+    taxCode: "",
+
+    countryOfOrigin: "",
+    manufacturerDetails: "",
+    packerDetails: "",
+    productTitle: "",
+    productDiscription: "",
+    intheBox: "",
+    minimumOrderQty: "",
+    color: "",
+
+    warantySummary: "",
+    warrantyPeriod: "",
+    searchKeyword: "",
+    featureTitle: "",
+    featureContent: "",
+    size: "",
+    sizeHeadId: "",
+   })
     const productImage = useSelector((state: RootState) => state.toggle.images);
-    // const [formDataImages, setFormDataImages] = useState<[]>([]);
 
     // required fields for the price and stock page
     const requiredFields: (keyof typeof productFields)[] = [
@@ -50,7 +123,6 @@ const ProductAddingSections: React.FC = () => {
         "productDiscription",
         "intheBox",
         "minimumOrderQty",
-        "countryOfOrigin",
         "manufacturerDetails",
         "packerDetails",
     ];
@@ -63,10 +135,15 @@ const ProductAddingSections: React.FC = () => {
             try {
                 const response = await axios.get(`http://localhost:5000/api/product/fetchProductData/${productId}`);
                 console.log(response.data);
+                const product_Id = response.data.data._id;
                 dispatch(toggleProductFields({ field: 'skuId', value: response.data.data.skuId }));
                 dispatch(toggleProductFields({ field: 'fullfilementBy', value: response.data.data.fulfilmentBy }));
                 dispatch(toggleProductFields({ field: 'localDeliveryCharge', value: response.data.data.localDeliveryCharge }));
                 dispatch(toggleProductFields({ field: 'ZonalDeliveryCharge', value: response.data.data.zonalDeliveryCharge }));
+
+                if (product_Id) {
+                    fetchDatasFromProductVaraint(product_Id)
+                };
 
             } catch (error: any) {
                 console.error("Error fetching product status:", error.response?.data || error.message);
@@ -75,116 +152,144 @@ const ProductAddingSections: React.FC = () => {
 
         // fetch data from the product Variant model
 
-        const fetchDatasFromProductVaraint = async () => {
-            if (!ProductVaraintId) return; // Prevent unnecessary API calls
+        const fetchDatasFromProductVaraint = async (product_Id: string) => {
+            if (!product_Id) return; // Prevent unnecessary API calls
 
             try {
-                const response = await axios.get(`http://localhost:5000/api/productvaraint/fetchProductVaraintData/${ProductVaraintId}`);
-                console.log(response.data);
+                const response = await axios.get(`http://localhost:5000/api/productvaraint/fetchVaraintByProductId/${product_Id}`);
+                // console.log(response.data);
 
-                dispatch(toggleProductFields({ field: 'length', value: response.data.data.Length }));
-                dispatch(toggleProductFields({ field: 'breadth', value: response.data.data.breadth }));
-                dispatch(toggleProductFields({ field: 'height', value: response.data.data.height }));
-                dispatch(toggleProductFields({ field: 'weight', value: response.data.data.weight }));
+                // Assuming response.data.data is the array of variants
+                const variants = response.data.data;
+                setFetchedData(variants)
+                console.log(fetchedData,"FETCHED DATA");
+                
+                // Store all variants in useState
+                setProductVariants(variants);
+                // store all varaonts
+                // Check if there’s at least one variant to set in Redux
+                if (variants.length > 0) {
+                    const firstVariant = variants[0]; // Get the first variant
+                    const productVariantId = firstVariant._id;
 
+                    // Dispatch the first variant's data to Redux
+                    dispatch(toggleProductFields({ field: 'length', value: firstVariant.Length }));
+                    dispatch(toggleProductFields({ field: 'breadth', value: firstVariant.breadth }));
+                    dispatch(toggleProductFields({ field: 'height', value: firstVariant.height }));
+                    dispatch(toggleProductFields({ field: 'weight', value: firstVariant.weight }));
+                    dispatch(toggleProductFields({ field: 'countryOfOrigin', value: firstVariant.countryOfOrgin }));
+                    dispatch(toggleProductFields({ field: 'HSN', value: firstVariant.hsnCode }));
+                    dispatch(toggleProductFields({ field: 'intheBox', value: firstVariant.intheBox }));
+                    dispatch(toggleProductFields({ field: 'manufacturerDetails', value: firstVariant.manufactureDetails }));
+                    dispatch(toggleProductFields({ field: 'minimumOrderQty', value: firstVariant.minimumOrderQty }));
+                    dispatch(toggleProductFields({ field: 'mrp', value: firstVariant.mrp }));
+                    dispatch(toggleProductFields({ field: 'packerDetails', value: firstVariant.packerDetails }));
+                    dispatch(toggleProductFields({ field: 'productDiscription', value: firstVariant.productDiscription }));
+                    dispatch(toggleProductFields({ field: 'ProcurementType', value: firstVariant.procurementType }));
+                    dispatch(toggleProductFields({ field: 'ProcurementSLA', value: firstVariant.procurementSLA }));
+                    dispatch(toggleProductFields({ field: 'color', value: firstVariant.colorId }));
+                    dispatch(toggleProductFields({ field: 'productTitle', value: firstVariant.productTitle }));
+                    dispatch(toggleProductFields({ field: 'sellingPrice', value: firstVariant.sellingPrice }));
+                    dispatch(toggleProductFields({ field: 'shippingProvider', value: firstVariant.shippingProvider }));
+                    dispatch(toggleProductFields({ field: 'taxCode', value: firstVariant.taxCode }));
+                    dispatch(toggleProductFields({ field: 'warantySummary', value: firstVariant.warantySummary }));
+                    dispatch(toggleProductFields({ field: 'warrantyPeriod', value: firstVariant.warrantyPeriod }));
+                    dispatch(toggleAddImage(firstVariant.photos));
+                    dispatch(toggleProductFields({ field: 'stock', value: firstVariant.stockqty }));
+                    dispatch(toggleProductFields({ field: 'sizebody', value: firstVariant.size }));
+                    dispatch(toggleProductFields({ field: 'sizeHeadId', value: firstVariant.sizeHeadId }));
+                    dispatch(toggleSearchKeyWordAdd(response.data.data));
 
-                dispatch(toggleProductFields({ field: 'countryOfOrigin', value: response.data.data.countryOfOrgin }));
-                dispatch(toggleProductFields({ field: 'HSN', value: response.data.data.hsnCode }));
-                dispatch(toggleProductFields({ field: 'intheBox', value: response.data.data.intheBox }));
-                dispatch(toggleProductFields({ field: 'manufacturerDetails', value: response.data.data.manufactureDetails }));
-                dispatch(toggleProductFields({ field: 'minimumOrderQty', value: response.data.data.minimumOrderQty }));
-                dispatch(toggleProductFields({ field: 'mrp', value: response.data.data.mrp }));
-                dispatch(toggleProductFields({ field: 'packerDetails', value: response.data.data.packerDetails }));
-                dispatch(toggleProductFields({ field: 'productDiscription', value: response.data.data.productDiscription }));
-                dispatch(toggleProductFields({ field: 'ProcurementType', value: response.data.data.ProcurementType }));
-                dispatch(toggleProductFields({ field: 'ProcurementSLA', value: response.data.data.procurementSLA }));
-                dispatch(toggleProductFields({ field: 'color', value: response.data.data.colorId }));
-                dispatch(toggleProductFields({ field: 'productTitle', value: response.data.data.productTitle }));
-                dispatch(toggleProductFields({ field: 'sellingPrice', value: response.data.data.sellingPrice }));
-                dispatch(toggleProductFields({ field: 'shippingProvider', value: response.data.data.shippingProvider }));
-                dispatch(toggleProductFields({ field: 'taxCode', value: response.data.data.taxCode }));
-                dispatch(toggleProductFields({ field: 'warantySummary', value: response.data.data.warantySummary }));
-                dispatch(toggleProductFields({ field: 'warrantyPeriod', value: response.data.data.warrantyPeriod }));
-
+                    // Call additional fetch functions with the first variant's ID
+                    // if (productVariantId) {
+                    //     fetchDatasFromStock(productVariantId);
+                    //     fetchDatasFromKeyFeatures(productVariantId);
+                    //     fetchDatasFromsearchKeyWord(productVariantId);
+                    //     fetchDatasFromSize(productVariantId);
+                    //     fetchDatasFromImage(productVariantId);
+                    // }
+                }
             } catch (error: any) {
                 console.error("Error fetching product variant status:", error.response?.data || error.message);
             }
         };
 
-        // fetch data from the stock model
-        const fetchDatasFromStock = async () => {
-            try {
-                const response = await axios.get(`http://localhost:5000/api/productstock/fetchProductStock/${ProductVaraintId}`);
-                console.log(response.data);
-                setFetchedData(response.data.data && response.data.data);
-                dispatch(toggleProductFields({ field: 'stock', value: response.data.data.stockqty }));
+        // // fetch data from the stock model
+        // const fetchDatasFromStock = async (productVariantId: string) => {
 
-            } catch (error: any) {
-                console.error("Error fetching product status:", error.response?.data || error.message);
-            }
-        };
+        //     if (!productVariantId) return; // Prevent unnecessary API calls
 
-        // fetch data from the Features model
-        const fetchDatasFromKeyFeatures = async () => {
-            try {
-                const response = await axios.get(`http://localhost:5000/api/keyfeatures/fetchKeyFeaturesBYProductVaraintId/${ProductVaraintId}`);
-                console.log(response.data);
+        //     try {
+        //         const response = await axios.get(`http://localhost:5000/api/productstock/fetchProductStock/${productVariantId}`);
+        //         console.log(response.data);
+        //         setFetchedData(response.data.data && response.data.data);
+        //         dispatch(toggleProductFields({ field: 'stock', value: response.data.data.stockqty }));
 
-            } catch (error: any) {
-                console.error("Error fetching product status:", error.response?.data || error.message);
-            }
-        };
+        //     } catch (error: any) {
+        //         console.error("Error fetching product status:", error.response?.data || error.message);
+        //     }
+        // };
 
-        // fetch data from the Size Words  model
-        const fetchDatasFromSize = async () => {
-            try {
-                const response = await axios.get(`http://localhost:5000/api/sizebody/fetchSizeBYProductVaraintId/${ProductVaraintId}`);
-                console.log(response.data);
-                dispatch(toggleProductFields({ field: 'sizebody', value: response.data.data.sizebody }));
-                dispatch(toggleProductFields({ field: 'sizeHeadId', value: response.data.data.sizeHeadId }));
-                
-            } catch (error: any) {
-                console.error("Error fetching product status:", error.response?.data || error.message);
-            }
-        };
+        // // fetch data from the Features model
+        // const fetchDatasFromKeyFeatures = async (productVariantId: string) => {
+        //     if (!productVariantId) return; // Prevent unnecessary API calls
+
+        //     try {
+        //         const response = await axios.get(`http://localhost:5000/api/keyfeatures/fetchKeyFeaturesBYProductVaraintId/${productVariantId}`);
+        //         console.log(response.data);
+
+        //     } catch (error: any) {
+        //         console.error("Error fetching product status:", error.response?.data || error.message);
+        //     }
+        // };
+
+        // // fetch data from the Size Words  model
+        // const fetchDatasFromSize = async (productVariantId: string) => {
+        //     if (!productVariantId) return; // Prevent unnecessary API calls
+
+        //     try {
+        //         const response = await axios.get(`http://localhost:5000/api/sizebody/fetchSizeBYProductVaraintId/${productVariantId}`);
+        //         console.log(response.data);
+        //         dispatch(toggleProductFields({ field: 'sizebody', value: response.data.data.sizebody }));
+        //         dispatch(toggleProductFields({ field: 'sizeHeadId', value: response.data.data.sizeHeadId }));
+
+        //     } catch (error: any) {
+        //         console.error("Error fetching product status:", error.response?.data || error.message);
+        //     }
+        // };
 
 
-        // fetch data from the Search Key Words  model
-        const fetchDatasFromsearchKeyWord = async () => {
-            try {
-                const response = await axios.get(`http://localhost:5000/api/searchkeyword/fetchSearchKeyBYProductVaraintId/${ProductVaraintId}`);
-                console.log(response.data);
-                dispatch(toggleSearchKeyWordAdd(response.data.data));
-            } catch (error: any) {
-                console.error("Error fetching product status:", error.response?.data || error.message);
-            }
-        };
+        // // fetch data from the Search Key Words  model
+        // const fetchDatasFromsearchKeyWord = async (productVariantId: string) => {
+        //     if (!productVariantId) return; // Prevent unnecessary API calls
 
-        // fetch data from Image  model
-        const fetchDatasFromImage = async () => {
-            try {
-                const response = await axios.get(`http://localhost:5000/api/gallery/fetchImagesBYProductVaraintId/${ProductVaraintId}`);
-                console.log(response.data);
+        //     try {
+        //         const response = await axios.get(`http://localhost:5000/api/searchkeyword/fetchSearchKeyBYProductVaraintId/${productVariantId}`);
+        //         console.log(response.data);
+        //         dispatch(toggleSearchKeyWordAdd(response.data.data));
+        //     } catch (error: any) {
+        //         console.error("Error fetching product status:", error.response?.data || error.message);
+        //     }
+        // };
 
-                dispatch(toggleAddImage(response.data.data.photos));
-            } catch (error: any) {
-                console.error("Error fetching product status:", error.response?.data || error.message);
-            }
-        };
+        // // fetch data from Image  model
+        // const fetchDatasFromImage = async (productVariantId: string) => {
+        //     if (!productVariantId) return; // Prevent unnecessary API calls
+
+        //     try {
+        //         const response = await axios.get(`http://localhost:5000/api/gallery/fetchImagesBYProductVaraintId/${productVariantId}`);
+        //         console.log(response.data);
+
+        //         dispatch(toggleAddImage(response.data.data.photos));
+        //     } catch (error: any) {
+        //         console.error("Error fetching product status:", error.response?.data || error.message);
+        //     }
+        // };
 
 
 
         if (productId) fetchDatasFromProduct();
-        if (ProductVaraintId) {
-            Promise.all([
-                fetchDatasFromProductVaraint(),
-                fetchDatasFromStock(),
-                fetchDatasFromKeyFeatures(),
-                fetchDatasFromsearchKeyWord(),
-                fetchDatasFromSize(),
-                fetchDatasFromImage(),
-            ]);
-        }
+
 
     }, [productId, ProductVaraintId]); // ✅ Ensure it runs when ProductVaraintId updates
 
@@ -278,16 +383,15 @@ const ProductAddingSections: React.FC = () => {
 
         if (
             produKeyFeature.length < 0 ||
-            produKeyFeature && 
-            produKeyFeature.every(feature => 
+            produKeyFeature &&
+            produKeyFeature.every(feature =>
                 feature.title.trim() === "" || feature.content.trim() === ""
             )
-        )
-         {
+        ) {
             console.log("Key Features are missing, so we didn't activate the API");
             return;
         }
-        
+
         if (!variantID) {
             // alert("Missing product variant ID");
             console.log("Missing Product Variant ID in update keyfeatures");
@@ -314,9 +418,9 @@ const ProductAddingSections: React.FC = () => {
     const handleSearchKeywords = async (variantID: string | null) => {
 
         console.log(searchKeyWords.length);
-        console.log(searchKeyWords,"seracjhKeyWord");
-        
-        
+        console.log(searchKeyWords, "seracjhKeyWord");
+
+
         if (searchKeyWords.length < 0 || searchKeyWords && searchKeyWords.every(keyword => keyword.searchKeyWord.trim() === "")) {
             console.log("Missing SearchKey so we didnt active the API");
             return;
@@ -332,12 +436,47 @@ const ProductAddingSections: React.FC = () => {
 
         try {
             console.log("Handle Search KeyWord Working");
-            
+
             const response = await axios.post(`http://localhost:5000/api/searchkeyword`, {
                 productVariantId: variantID,
                 searchKeyWords: searchKeyWords // ✅ Pass an array of { searchKeyWord }
             });
-            
+
+
+            console.log(response.data.message);
+        } catch (error) {
+            console.error("Error updating:", error);
+        }
+    };
+
+    //  insert the Specification
+    const handleSpecifications = async (variantID: string | null) => {
+
+        console.log(specification.length);
+        console.log(specification, "seracjhKeyWord");
+
+
+        if (specification.length < 0 || specification && specification.every(keyword => keyword.specification.trim() === "")) {
+            console.log("Missing Specification so we didnt active the API");
+            return;
+        }
+
+
+        if (!variantID) {
+            // alert("Missing product  Varaint ID");
+            console.log("Missing Product Variant ID in update search");
+            return;
+        }
+
+
+        try {
+            console.log("Handle Specification Working");
+
+            const response = await axios.post(`http://localhost:5000/api/specification`, {
+                productVariantId: variantID,
+                specification: specification // ✅ Pass an array of { searchKeyWord }
+            });
+
 
             console.log(response.data.message);
         } catch (error) {
@@ -357,22 +496,22 @@ const ProductAddingSections: React.FC = () => {
             console.error("Missing Product Variant ID in update image");
             return;
         }
-    
+
         try {
             const formData = new FormData();
-    
+
             productImage.forEach((file) => {
                 formData.append("photos", file); // Ensure correct key name
             });
-    
+
             formData.append("productVariantId", variantID); // Ensure correct field name
-    
+
             const response = await axios.post("http://localhost:5000/api/gallery/gallery", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
             });
-    
+
             console.log("Upload success:", response.data);
         } catch (error: any) {
             console.error("Error uploading images:", error);
@@ -381,7 +520,7 @@ const ProductAddingSections: React.FC = () => {
             }
         }
     };
-    
+
 
 
     // handle the stock field
@@ -408,7 +547,7 @@ const ProductAddingSections: React.FC = () => {
     };
 
     // update the stock if it already exixt in the variant
-/////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////
     const handleUpdateTheStock = async (variantID: string | null) => {
         if (!productFields.stock) {
             console.log("Missing product Stock so we didnt Active the API");
@@ -453,6 +592,59 @@ const ProductAddingSections: React.FC = () => {
             console.error("Error updating:", error);
         }
     };
+ // select Variant
+ const handleSelectVariant =(Variant:any) =>{
+  setSelectedVariant(Variant);
+    console.log(Variant,"selected variant");
+    dispatch(toggleResetProductData());
+    // Dispatch the first variant's data to Redux
+    dispatch(toggleProductFields({ field: 'length', value: Variant.Length }));
+    dispatch(toggleProductFields({ field: 'breadth', value: Variant.breadth }));
+    dispatch(toggleProductFields({ field: 'height', value: Variant.height }));
+    dispatch(toggleProductFields({ field: 'weight', value: Variant.weight }));
+    dispatch(toggleProductFields({ field: 'countryOfOrigin', value: Variant.countryOfOrgin }));
+    dispatch(toggleProductFields({ field: 'HSN', value: Variant.hsnCode }));
+    dispatch(toggleProductFields({ field: 'intheBox', value: Variant.intheBox }));
+    dispatch(toggleProductFields({ field: 'manufacturerDetails', value: Variant.manufactureDetails }));
+    dispatch(toggleProductFields({ field: 'minimumOrderQty', value: Variant.minimumOrderQty }));
+    dispatch(toggleProductFields({ field: 'mrp', value: Variant.mrp }));
+    dispatch(toggleProductFields({ field: 'packerDetails', value: Variant.packerDetails }));
+    dispatch(toggleProductFields({ field: 'productDiscription', value: Variant.productDiscription }));
+    dispatch(toggleProductFields({ field: 'ProcurementType', value: Variant.procurementType }));
+    dispatch(toggleProductFields({ field: 'ProcurementSLA', value: Variant.procurementSLA }));
+    dispatch(toggleProductFields({ field: 'color', value: Variant.colorId }));
+    dispatch(toggleProductFields({ field: 'productTitle', value: Variant.productTitle }));
+    dispatch(toggleProductFields({ field: 'sellingPrice', value: Variant.sellingPrice }));
+    dispatch(toggleProductFields({ field: 'shippingProvider', value: Variant.shippingProvider }));
+    dispatch(toggleProductFields({ field: 'taxCode', value: Variant.taxCode }));
+    dispatch(toggleProductFields({ field: 'warantySummary', value: Variant.warantySummary }));
+    dispatch(toggleProductFields({ field: 'warrantyPeriod', value: Variant.warrantyPeriod }));
+    dispatch(toggleAddImage(Variant.photos));
+    dispatch(toggleProductFields({ field: 'stock', value: Variant.stockqty }));
+    dispatch(toggleProductFields({ field: 'sizebody', value: Variant.size }));
+    dispatch(toggleProductFields({ field: 'sizeHeadId', value: Variant.sizeHeadId }));
+    dispatch(toggleSearchKeyWordAdd(Variant.searchKeyWord));
+ }
+
+ // handle update the varaint /
+
+const handleUpdateVaraint = () =>{
+    const variantID = selectedVariant.ProductVariantId;
+    updateProductVariant(variantID);
+
+        handleKeyFeatures(variantID);
+        handleSearchKeywords(variantID);
+        handleImage(variantID);
+        fetchedData.forEach((variant) => {
+            variant.stockqty ? handleUpdateTheStock(variantID) : handleStock(variantID);
+        });
+        handleCreateSize(variantID);
+        handleSpecifications(variantID);
+        dispatch(toggleProductVaraintId(""));
+        dispatch(toggleResetProductData());
+
+        navigate("/Seller/AddNewProduct");
+}
 
 
     // handle Save And Back Button........
@@ -470,9 +662,11 @@ const ProductAddingSections: React.FC = () => {
         handleKeyFeatures(variantID);
         handleSearchKeywords(variantID);
         handleImage(variantID);
-        handleStock(variantID);
+        fetchedData.forEach((variant) => {
+            variant.stockqty ? handleUpdateTheStock(variantID) : handleStock(variantID);
+        });
         handleCreateSize(variantID);
-
+        handleSpecifications(variantID);
         dispatch(toggleProductVaraintId(""));
         dispatch(toggleResetProductData());
 
@@ -507,8 +701,12 @@ const ProductAddingSections: React.FC = () => {
         handleKeyFeatures(variantID);
         handleSearchKeywords(variantID);
         handleImage(variantID);
-        handleStock(variantID);
+        fetchedData.forEach((variant) => {
+            variant.stockqty ? handleUpdateTheStock(variantID) : handleStock(variantID);
+        });
+
         handleCreateSize(variantID);
+        handleSpecifications(variantID);
 
         dispatch(toggleProductVaraintId(""));
         dispatch(toggleResetProductData());
@@ -545,15 +743,16 @@ const ProductAddingSections: React.FC = () => {
         handleKeyFeatures(variantID);
         handleSearchKeywords(variantID);
         handleImage(variantID);
-        handleStock(variantID);
+        fetchedData.forEach((variant) => {
+            variant.stockqty ? handleUpdateTheStock(variantID) : handleStock(variantID);
+        });
         handleCreateSize(variantID);
-
+        handleSpecifications(variantID);
+ 
         dispatch(toggleProductVaraintId(""));
         dispatch(toggleResetProductData());
 
     }
-
-
 
 
     return (
@@ -578,8 +777,11 @@ const ProductAddingSections: React.FC = () => {
                 </div>
             </div>
             <div className={styles.section2}>
+                {fetchedData.length > 0 && fetchedData.map((Varaint, index) => (
+                    <div className={styles.variantBtn} onClick={()=>handleSelectVariant(Varaint)}>{index + 1}</div>
+                ))}
                 <div className={styles.btn} onClick={handleCreateAnotherVariant}>Create Another Variant</div>
-                <div className={styles.btn} onClick={handleSaveAndBack}>Save & Go Back</div>
+                <div className={styles.btn} onClick={selectedVariant  ? handleUpdateVaraint :  handleSaveAndBack}>Save & Go Back</div>
                 <div className={styles.btn} onClick={handleSendToQC} >Send to QC</div>
             </div>
         </div>

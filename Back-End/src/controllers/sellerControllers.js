@@ -15,6 +15,19 @@ const getSeller = async (req,res) =>{
     }
 };
 
+// Check Seller Email
+
+const checkSellerEmail = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const seller = await Seller.findOne({ sellerEmail: email });
+        res.status(200).json({ exists: !!seller }); // Returns true if seller exists
+    } catch (error) {
+        res.status(500).json({ message: "Error in fetching seller", error });
+    }
+};
+
+
 // get approved seller details
 const getApprovedSeller = async (req,res) =>{
     try {
@@ -57,6 +70,36 @@ const getSellerById = async (req, res) => {
     }
 };
 
+
+const resetPassword = async (req,res) =>{
+    const {email,password} = req.body;
+    
+
+    if ( !email || !password) {
+        return res.status(400).json({ message: "Please provide all reuierd fields" });
+    }
+     // hash the password
+     const salt = await bcrypt.genSalt(10);
+     const hashedPassword = await bcrypt.hash(password, salt);
+
+    try {
+        const updateData = await Seller.findOneAndUpdate(
+            {sellerEmail:email} ,
+            { sellerPassword:hashedPassword }, 
+            { new: true, runValidators: true }
+        );
+
+        if (!updateData) {
+            return res.status(404).json({ message: "Seller Account Not Found" });
+        }
+
+        res.status(200).json({ message: "changed the passowrd ", data: updateData });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
 // seller create
 
 const createSeller = async (req, res) => {
@@ -64,7 +107,7 @@ const createSeller = async (req, res) => {
     const {  sellerEmail, sellerMobileNumber ,sellerPassword } = req.body;
    
     if ( !sellerEmail || !sellerMobileNumber || !sellerPassword ) {
-        return res.status(400).json({ message: "Please Provide Email , Mobile Number , password Fields" })
+        return res.status(400).json({ message:"Please Provide Email , Mobile Number , password Fields" })
     }
     try {
         const existingSeller = await Seller.findOne({ sellerEmail })
@@ -80,7 +123,7 @@ const createSeller = async (req, res) => {
             sellerEmail, sellerPassword:hashedPassword, sellerMobileNumber, ListingStatus:2
         })
         await newSeller.save();
-        res.status(201).json({ message: "User Created successfully " ,data:newSeller})
+        res.status(201).json({ message: "Seller Created successfully " ,data:newSeller})
 
     } catch (error) {
         console.error(error);
@@ -201,14 +244,11 @@ const transporter = nodemailer.createTransport({
 const sendOTP = async (req, res) => {
     const { sellerEmail } = req.body;
     
-
     if (!sellerEmail) {
         return res.status(400).json({ message: "Email is required" });
     }
 
     try {
-       
-
         // Generate OTP
         const otp = otpGenerator.generate(4, {
             digits: true, 
@@ -242,7 +282,6 @@ const sendOTP = async (req, res) => {
 // Verify OTP
 const verifyOTP = (req, res) => {
     const { sellerEmail, otp } = req.body;
-    
 
     if (otpStorage[sellerEmail] === otp) {
         
@@ -256,6 +295,8 @@ const verifyOTP = (req, res) => {
 
 
 
+
+
 module.exports = {
     createSeller,
     getSeller,
@@ -266,5 +307,7 @@ module.exports = {
     verifyOTP,
     updateQcStatus,
     getApprovedSeller,
-    getRejectedSeller
+    getRejectedSeller,
+    checkSellerEmail,
+    resetPassword
 }

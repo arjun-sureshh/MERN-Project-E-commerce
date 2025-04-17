@@ -79,6 +79,57 @@ const createProductStock = async (req, res) => {
 
 };
 
+// add stock
+const AddProductStock = async (req, res) => {
+    try {
+        const { stockqty } = req.body;
+        const { productvariantId } = req.params;
+
+        console.log("Product Variant ID:", productvariantId);
+
+        // Validate input
+        if (!stockqty || !productvariantId) {
+            return res.status(400).json({ message: "Please provide all required fields" });
+        }
+
+        // Convert stockqty to number
+        const stockToAdd = Number(stockqty);
+        if (isNaN(stockToAdd)) {
+            return res.status(400).json({ message: "Invalid stock quantity" });
+        }
+
+        // Find the existing stock (Optional, for logging/debugging)
+        const existingStock = await ProductStock.findOne({productvariantId: productvariantId });
+        console.log("Existing Stock Before Update:", existingStock?.stockqty ?? "Not Found");
+
+        // Update stock quantity (Increment stock)
+        const updatedStock = await ProductStock.findOneAndUpdate(
+            { productvariantId }, // Query filter
+            { $inc: { stockqty: stockToAdd } },  // Increment the stock field
+            { new: true, runValidators: true } // Return updated document
+        );
+
+        if (!updatedStock) {
+            return res.status(404).json({ message: "Product variant not found" });
+        }
+
+        console.log("Updated Stock:", updatedStock.stock);
+
+        res.status(200).json({ message: "Product stock updated successfully", data: updatedStock });
+    } catch (error) {
+        console.error(error);
+
+        if (error.name === "ValidationError") {
+            return res.status(400).json({ message: error.message });
+        }
+
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+
+
+
 // Product stock post
 const updateProductStock = async (req, res) => {
     const { stockqty } = req.body;
@@ -115,6 +166,7 @@ module.exports = {
     getProductStock,
     getStockByProductVaraintId,
     getStockByVariantIds,
-    updateProductStock
+    updateProductStock,
+    AddProductStock
 }
 

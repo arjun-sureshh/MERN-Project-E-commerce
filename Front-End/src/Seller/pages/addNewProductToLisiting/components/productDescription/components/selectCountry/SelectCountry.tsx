@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../../../redux/store";
 import { toggleProductFields } from "../../../../../../../redux/toogleSlice";
 import AttributeBox from "../../../components/attributeBox/AttributeBox";
+import axios from "axios";
 
 interface SelectBoxProps {
   headName?: string;
@@ -32,10 +33,15 @@ const SelectCountry: React.FC<SelectBoxProps> = ({
 
   useEffect(() => {
     if (isCountrySelect) {
-      fetch("https://restcountries.com/v3.1/all")
-        .then((res) => res.json())
-        .then((data) => {
-          const countryNames = data.map((country: any) => country.name.common).sort();
+  
+      axios.get("https://countriesnow.space/api/v0.1/countries/population/cities")
+        .then((response) => {
+          console.log(response.data);
+  
+          const countryNames = response.data
+            .map((country: any) => country.name.common)
+            .sort();
+  
           setCountries(countryNames);
           setFilteredOptions(countryNames);
         })

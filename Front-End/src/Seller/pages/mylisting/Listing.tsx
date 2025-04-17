@@ -2,6 +2,7 @@ import styles from './Listing.module.css'
 import SubNav from './components/subNav/SubNav'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { useNavigate } from 'react-router';
 
 interface fetchedDataProps {
   _id: string;
@@ -14,37 +15,80 @@ interface fetchedDataProps {
   fulfilmentBy: string;
   brandName: string;
   categoryName: string;
-  productId:string;
-  stockqty?:string;
+  productId: string;
+  stockqty?: string;
+}
+
+interface sellerData {
+  _id: string;
+  storeDiscription: string;
+  sellerName: string;
+  sellerMobileNumber: string;
+  sellerGST: string;
+  sellerEmail: string;
+  sellerDisplayName: string;
+  qcStatus: string;
+  ifscCode: string;
+  createdAt: string;
+  bankAccountNo: string;
+  ListingStatus?: string;
 }
 
 const Listing: React.FC = () => {
 
-  const sellerId = "67c926173f7fe222ff32287e";
-  // const [productId, setProductId] = useState<string>("")
+  const sellerTocken = sessionStorage.getItem('seller');
+  const navigate = useNavigate();
+  const [sellerData, setSellerData] = useState<sellerData>({
+    _id: "",
+    storeDiscription: "",
+    sellerName: "",
+    sellerMobileNumber: "",
+    sellerGST: "",
+    sellerEmail: "",
+    sellerDisplayName: "",
+    qcStatus: "",
+    ifscCode: "",
+    createdAt: "",
+    bankAccountNo: "",
+    ListingStatus: "",
+
+  });
+
+  useEffect(() => {
+    const fetchSellerDetails = async () => {
+      const token = sessionStorage.getItem("seller");
+      if (!token) {
+        navigate("/SellerLanding"); // Redirect if no token found
+        return;
+      }
+
+      try {
+        const response = await axios.get("http://localhost:5000/api/Login", {
+          headers: {
+            "x-auth-token": token, // Send token in header
+          },
+        });
+        setSellerData(response.data); // Set seller details in state
+        console.log(response.data, "sellerdata");
+      } catch (error) {
+        console.error("Error fetching seller details:", error);
+        // navigate("/login"); // Redirect to login on error
+      }
+    };
+
+    fetchSellerDetails();
+  }, [navigate]);
+
+  // const sellerId = sellerData?;
   const [fetchedData, setfetchedData] = useState<fetchedDataProps[]>([]);
 
-  // useeffect for fetch data from Product 
-  // useEffect(() => {
-  //     const fetchListingProduct = async () => {
-  //         try {
-  //             const response = await axios.get(`http://localhost:5000/api/product/fetchallproducts/${sellerId}`);
-  //             console.log(response.data);
-  //             setfetchedData(response.data.data)
-  //             // setProductId(response.data.data._id)
-  //         } catch (error: any) {
-  //             console.log(error);
 
-  //         }
-  //     }
-  //     fetchListingProduct();
-  // }, []);
 
   // useeffect for fetch data from Product Variant
   useEffect(() => {
 
     const fetchProductVaraint = async () => {
-
+      const sellerId = sellerData?._id;
       try {
         const response = await axios.get(`http://localhost:5000/api/productvaraint/fetchallproducts/${sellerId}`);
         console.log(response.data.data);
@@ -54,7 +98,7 @@ const Listing: React.FC = () => {
         if (productVariantIds.length > 0) {
           fetchProducstock(productVariantIds);
         }
-         
+
       } catch (error: any) {
         console.log(error);
 
@@ -92,11 +136,11 @@ const Listing: React.FC = () => {
 
   // handle delete
 
-  const handleDelete = async(productVaraintId:string,productId:string) =>{
+  const handleDelete = async (productVaraintId: string, productId: string) => {
     try {
       const response = await axios.delete(`http://localhost:5000/api/productvaraint/${productVaraintId}`)
       console.log(response.data);
-    } catch (error:any) {
+    } catch (error: any) {
       console.log(error);
     }
     // try {
@@ -106,7 +150,7 @@ const Listing: React.FC = () => {
     //   console.log(error);
     // }
   };
- 
+
 
 
   return (
@@ -175,7 +219,7 @@ const Listing: React.FC = () => {
                       <th>{item.fulfilmentBy}</th>
                       <th>{item.brandName}</th>
                       <th>{item.productDiscription}</th>
-                      <th className={styles.delete} onClick={() => handleDelete(item._id,item.productId)}>Delete</th>
+                      <th className={styles.delete} onClick={() => handleDelete(item._id, item.productId)}>Delete</th>
                     </tr>
                   ))}
               </tbody>

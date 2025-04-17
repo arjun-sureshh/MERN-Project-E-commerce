@@ -15,12 +15,6 @@ const PriceAndStock: React.FC = () => {
   const [filledCount, setFilledCount] = useState<number>(0)
 
 
-  
-  
-  
- 
-  
-
   // Store refs for each input field
   const inputRefs: Record<
     keyof RootState["toggle"]["productFields"],

@@ -1,5 +1,8 @@
 const { default: mongoose } = require("mongoose");
 const ProductVariant = require("../models/productVariantModels");
+const SearchKeywords = require("../models/searchKeywordsModels");
+const Specification = require("../models/productSpecification");
+const { string } = require("joi");
 
 
 // product get 
@@ -33,44 +36,435 @@ const getVariantToQC = async (req, res) => {
 
 // get product based on the productId
 
-const getVaraintByID = async(req,res) =>{
-    const {productVaraintId} = req.params;
-try {
-    const productDetails = await ProductVariant.findById(productVaraintId);
-    if (!productDetails) {
-        return res.status(404).json({ message: "Product Varaint not found with the given ID." });
-    }
+const getVaraintByID = async (req, res) => {
+    const { productVaraintId } = req.params;
+    console.log(productVaraintId);
 
-    res.status(200).json({ 
-        message: "Product Variant fetched successfully", 
-        data:productDetails 
-    });
-} catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error fetching product Varaint", error });
-}
+    try {
+        const productDetails = await ProductVariant.findById(productVaraintId);
+        if (!productDetails) {
+            return res.status(404).json({ message: "Product Varaint not found with the given ID." });
+        }
+
+        res.status(200).json({
+            message: "Product Variant fetched successfully",
+            data: productDetails
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error fetching product Varaint", error });
+    }
 };
 
 // get product varaint by the product id  based on the productId
 
-const getVaraintByProductID = async(req,res) =>{
-    const {productId} = req.params;
-    
-try {
-    const productDetails = await ProductVariant.findOne({productId:productId});
-    if (!productDetails) {
-        return res.status(404).json({ message: "Product Varaint not found with the given ID." });
-    }
+const getVaraintByPrID = async (req, res) => {
+    const { productId } = req.params;
 
-    res.status(200).json({ 
-        message: "Product Variant fetched successfully", 
-        data: productDetails 
-    });
-} catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error fetching product Varaint", error });
-}
+    try {
+        const productDetails = await ProductVariant.find({ productId: productId });
+        if (!productDetails) {
+            return res.status(404).json({ message: "Product Varaint not found with the given ID." });
+        }
+
+        res.status(200).json({
+            message: "Product Variant fetched successfully",
+            data: productDetails
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error fetching product Varaint", error });
+    }
 };
+
+
+// get product Details by Seller ID
+
+const getVaraintByProductID = async (req, res) => {
+    const { productId } = req.params;
+
+    try {
+        // Ensure productId is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
+            return res.status(400).json({ message: "Invalid Product ID" });
+        }
+
+        const productObjectId = new mongoose.Types.ObjectId(String(productId));
+
+        const productVariantDetails = await ProductVariant.aggregate([
+            {
+                $match: {
+                    productId: productObjectId
+                }
+            },
+            // Lookup product details (one-to-one)
+            {
+                $lookup: {
+                    from: "productdetails",
+                    localField: "productId",
+                    foreignField: "_id",
+                    as: "productDetails"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$productDetails",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            // Lookup color details (one-to-one)
+            {
+                $lookup: {
+                    from: "colors",
+                    localField: "colorId",
+                    foreignField: "_id",
+                    as: "colorDetails"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$colorDetails",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            // Lookup category details (one-to-one)
+            {
+                $lookup: {
+                    from: "categories",
+                    localField: "productDetails.categoryId",
+                    foreignField: "_id",
+                    as: "categoryDetails"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$categoryDetails",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            // Lookup brand details (one-to-one)
+            {
+                $lookup: {
+                    from: "brands",
+                    localField: "productDetails.brandId",
+                    foreignField: "_id",
+                    as: "brandDetails"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$brandDetails",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            // Lookup stock details (one-to-one)
+            {
+                $lookup: {
+                    from: "productstocks",
+                    localField: "_id",
+                    foreignField: "productvariantId",
+                    as: "stockDetails"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$stockDetails",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            // Lookup images (one-to-many, keep as array)
+            {
+                $lookup: {
+                    from: "productimage",
+                    localField: "_id",
+                    foreignField: "varientId",
+                    as: "galleryDetails"
+                }
+            },
+            // Lookup specifications (one-to-many, keep as array)
+            {
+                $lookup: {
+                    from: "productSpecification",
+                    localField: "_id",
+                    foreignField: "productVariantId",
+                    as: "specificationDetails"
+                }
+            },
+            // Lookup sizes (one-to-many, keep as array)
+            {
+                $lookup: {
+                    from: "sizeBody",
+                    localField: "_id",
+                    foreignField: "productVariantId",
+                    as: "sizeDetails"
+                }
+            },
+            // Lookup search keywords (one-to-many, keep as array)
+            {
+                $lookup: {
+                    from: "searchKeyword",
+                    localField: "_id",
+                    foreignField: "productVariantId",
+                    as: "searchKeywordsDetails"
+                }
+            },
+            // Lookup features (one-to-many, keep as array)
+            {
+                $lookup: {
+                    from: "features",
+                    localField: "_id",
+                    foreignField: "productVariantId",
+                    as: "featuresDetails"
+                }
+            },
+            // Project the desired fields
+            {
+                $project: {
+                    ProductVariantId: "$_id",
+                    mrp: 1,
+                    sellingPrice: 1,
+                    productDiscription: 1,
+                    productTitle: 1,
+                    minimumOrderQty:1,
+                    shippingProvider:1,
+                    Length:1,
+                    breadth:1,
+                    height:1,
+                    weight:1,
+                    hsnCode:1,
+                    taxCode:1,
+                    countryOfOrgin:1,
+                    manufactureDetails:1,
+                    packerDetails:1,
+                    procurementSLA:1,
+                    procurementType:1,
+                    intheBox:1,
+                    warrantyPeriod:1,
+                    warantySummary:1,
+                    colorId: 1,
+                    colorName: "$colorDetails.color",
+                    fulfilmentBy: "$productDetails.fulfilmentBy",
+                    skuId: "$productDetails.fulfilmentBy",
+                    localDeliveryCharge: "$productDetails.fulfilmentBy",
+                    fulfilmentBy: "$productDetails.fulfilmentBy",
+
+                    brandName: "$brandDetails.brandName",
+                    categoryName: "$categoryDetails.categoryName",
+                    productId: "$productDetails._id",
+                    stockqty: "$stockDetails.stockqty",
+                    images: "$galleryDetails.photos", // Array of photos
+                    searchKeywords: "$searchKeywordsDetails.searchKeyword", // Array of keywords
+                    specification: "$specificationDetails.specification", // Array of specifications
+                    size:{
+                        $map: {
+                            input: "$sizeDetails",
+                            as: "size",
+                            in: {
+                                size: "$$size.size",
+                                sizehead_Id: "$$size.sizeHeadNameId"
+                            }
+                        }
+                    } ,
+                    features:{
+                        $map: {
+                            input: "$featuresDetails",
+                            as: "feature",
+                            in: {
+                                title: "$$feature.featureTitle",
+                                content: "$$feature.featureContent"
+                            }
+                        }
+                    }
+                        // featureTitle: "$featuresDetails.featureTitle", // Array of feature titles
+                        // featureContent: "$featuresDetails.featureContent" // Array of feature contents
+                    
+                }
+            }
+        ]);
+
+        if (!productVariantDetails || productVariantDetails.length === 0) {
+            return res.status(404).json({ message: "No product variants found for the given product ID." });
+        }
+
+
+        res.status(200).json({
+            message: "Product variants fetched successfully",
+            data: productVariantDetails
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error fetching product variants", error });
+    }
+};
+
+// get product varaint to the single product view
+const getproductforSingleView = async (req, res) => {
+    const { productId } = req.body;
+  
+    try {
+      if (!mongoose.Types.ObjectId.isValid(productId)) {
+        return res.status(400).json({ message: "Invalid Product ID" });
+      }
+  
+      const productObjectId = new mongoose.Types.ObjectId(String(productId));
+  
+      const productVariantDetails = await ProductVariant.aggregate([
+        { $match: { productId: productObjectId } },
+        {
+          $lookup: {
+            from: "productdetails",
+            localField: "productId",
+            foreignField: "_id",
+            as: "productDetails",
+          },
+        },
+        { $unwind: { path: "$productDetails", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            from: "colors",
+            localField: "colorId",
+            foreignField: "_id",
+            as: "colorDetails",
+          },
+        },
+        { $unwind: { path: "$colorDetails", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            from: "categories",
+            localField: "productDetails.categoryId",
+            foreignField: "_id",
+            as: "categoryDetails",
+          },
+        },
+        { $unwind: { path: "$categoryDetails", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            from: "brands",
+            localField: "productDetails.brandId",
+            foreignField: "_id",
+            as: "brandDetails",
+          },
+        },
+        { $unwind: { path: "$brandDetails", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            from: "productstocks",
+            localField: "_id",
+            foreignField: "productvariantId",
+            as: "stockDetails",
+          },
+        },
+        { $unwind: { path: "$stockDetails", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            from: "productimages", // Fixed typo
+            localField: "_id",
+            foreignField: "varientId", // Fixed typo
+            as: "galleryDetails",
+          },
+        },
+        {
+          $lookup: {
+            from: "productspecifications", // Fixed collection name
+            localField: "_id",
+            foreignField: "productVariantId",
+            as: "specificationDetails",
+          },
+        },
+        {
+          $lookup: {
+            from: "sizebodies", // Fixed collection name
+            localField: "_id",
+            foreignField: "productVariantId",
+            as: "sizeDetails",
+          },
+        },
+        {
+          $lookup: {
+            from: "searchkeywords", // Fixed collection name
+            localField: "_id",
+            foreignField: "productVariantId",
+            as: "searchKeywordsDetails",
+          },
+        },
+        {
+          $lookup: {
+            from: "features",
+            localField: "_id",
+            foreignField: "productVariantId",
+            as: "featuresDetails",
+          },
+        },
+        {
+          $project: {
+            variantId: "$_id",
+            mrp: 1,
+            sellingPrice: 1,
+            productDescription: "$productDiscription", // Fixed typo
+            productTitle: 1,
+            minimumOrderQty: 1,
+            shippingProvider: 1,
+            length: "$Length", // Consistent naming
+            breadth: 1,
+            height: 1,
+            weight: 1,
+            hsnCode: 1,
+            taxCode: 1,
+            countryOfOrigin: "$countryOfOrgin", // Fixed typo
+            manufactureDetails: 1,
+            packerDetails: 1,
+            procurementSLA: 1,
+            procurementType: 1,
+            inTheBox: "$intheBox", // Consistent naming
+            warrantyPeriod: 1,
+            warrantySummary: "$warantySummary", // Fixed typo
+            colorId: 1,
+            colorName: "$colorDetails.color",
+            brandName: "$brandDetails.brandName",
+            categoryName: "$categoryDetails.categoryName",
+            productId: "$productDetails._id",
+            stockQty: "$stockDetails.stockqty",
+            images: "$galleryDetails.photos", // Array of image URLs
+            specifications: "$specificationDetails.specification", // Array
+            sizes: {
+              $map: {
+                input: "$sizeDetails",
+                as: "size",
+                in: {
+                  size: "$$size.size",
+                  sizeHeadId: "$$size.sizeHeadNameId",
+                },
+              },
+            },
+            searchKeywords: "$searchKeywordsDetails.searchKeyword", // Array
+            features: {
+              $map: {
+                input: "$featuresDetails",
+                as: "feature",
+                in: {
+                  title: "$$feature.featureTitle",
+                  content: "$$feature.featureContent",
+                },
+              },
+            },
+          },
+        },
+      ]);
+  
+      if (!productVariantDetails || productVariantDetails.length === 0) {
+        return res.status(404).json({ message: "No product variants found for the given product ID." });
+      }
+  
+      res.status(200).json({
+        message: "Product variants fetched successfully",
+        data: productVariantDetails,
+      });
+    } catch (error) {
+      console.error("Error fetching product variants:", error);
+      res.status(500).json({ message: "Error fetching product variants", error: error.message });
+    }
+  };
 
 
 
@@ -80,30 +474,30 @@ const getVaraintBySellerID = async (req, res) => {
 
 
     try {
-               // Ensure sellerId is a valid ObjectId
-               if (!mongoose.Types.ObjectId.isValid(sellerId)) {
-                return res.status(400).json({ message: "Invalid Product ID" });
-            }
+        // Ensure sellerId is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(sellerId)) {
+            return res.status(400).json({ message: "Invalid Product ID" });
+        }
 
-            const sellerObjectId = new mongoose.Types.ObjectId(String(sellerId));
+        const sellerObjectId = new mongoose.Types.ObjectId(String(sellerId));
 
         const productVaraintDetails = await ProductVariant.aggregate([
-            
+
             {
-                $lookup:{
-                    from:"productdetails",
-                    localField:"productId",
-                    foreignField:"_id",
-                    as:"productDetails"
+                $lookup: {
+                    from: "productdetails",
+                    localField: "productId",
+                    foreignField: "_id",
+                    as: "productDetails"
                 }
             },
             {
-                $unwind:{
-                    path:"$productDetails",
+                $unwind: {
+                    path: "$productDetails",
                     preserveNullAndEmptyArrays: true // If no category is found, keep null instead of removing the document
                 }
             },
-          
+
             {
                 $match: {
                     "productDetails.sellerId": sellerObjectId,
@@ -111,17 +505,17 @@ const getVaraintBySellerID = async (req, res) => {
                 }
             },
             {
-                $lookup:{
-                    from:"colors",
-                    localField:"colorId",
-                    foreignField:"_id",
-                    as:"colorDetails"
+                $lookup: {
+                    from: "colors",
+                    localField: "colorId",
+                    foreignField: "_id",
+                    as: "colorDetails"
                 }
             },
-            
+
             {
-                $unwind:{
-                    path:"$colorDetails",
+                $unwind: {
+                    path: "$colorDetails",
                     preserveNullAndEmptyArrays: true // If no category is found, keep null instead of removing the document
                 }
             },
@@ -154,18 +548,18 @@ const getVaraintBySellerID = async (req, res) => {
                 }
             },
             {
-                $project:{
+                $project: {
                     _id: 1,
                     mrp: 1,
                     sellingPrice: 1,
                     productDiscription: 1,
                     productTitle: 1,
                     colorId: 1,
-                    colorName:"$colorDetails.color",
+                    colorName: "$colorDetails.color",
                     fulfilmentBy: "$productDetails.fulfilmentBy", // Assuming 'name' is the field for category name
-                    brandName: "$brandDetails.brandName" ,// Assuming 'name' is the field for brand name
-                    categoryName:"$categoryDetails.categoryName",
-                    productId:"$productDetails._id",
+                    brandName: "$brandDetails.brandName",// Assuming 'name' is the field for brand name
+                    categoryName: "$categoryDetails.categoryName",
+                    productId: "$productDetails._id",
                 }
             }
         ]);
@@ -191,13 +585,13 @@ const createProductVariant = async (req, res) => {
     const { productId } = req.body;
 
     try {
-       
+
         const newProductVareint = new ProductVariant({
             productId
         });
 
         await newProductVareint.save();
-        res.status(201).json({ message: "Product Variant created succeccfully", data:newProductVareint });
+        res.status(201).json({ message: "Product Variant created succeccfully", data: newProductVareint });
     } catch (error) {
         console.error(error)
 
@@ -214,9 +608,9 @@ const updateProductVariant = async (req, res) => {
     const { productVaraintId } = req.params;
     const {
         productId, mrp, sellingPrice, minimumOrderQty, shippingProvider,
-        Length, breadth,height, weight, hsnCode, taxCode, countryOfOrgin,
+        Length, breadth, height, weight, hsnCode, taxCode, countryOfOrgin,
         manufactureDetails, packerDetails, productDiscription,
-        productTitle, procurementSLA, procurementType, colorId, 
+        productTitle, procurementSLA, procurementType, colorId,
         intheBox, warrantyPeriod, warantySummary
     } = req.body;
 
@@ -228,9 +622,9 @@ const updateProductVariant = async (req, res) => {
         // ✅ Handle empty colorId: Set it to null if it's empty
         let updateData = {
             productId, mrp, sellingPrice, minimumOrderQty, shippingProvider,
-            Length, breadth,height, weight, hsnCode, taxCode, countryOfOrgin,
+            Length, breadth, height, weight, hsnCode, taxCode, countryOfOrgin,
             manufactureDetails, packerDetails, productDiscription,
-            productTitle, procurementSLA, procurementType, intheBox, 
+            productTitle, procurementSLA, procurementType, intheBox,
             warrantyPeriod, warantySummary
         };
 
@@ -266,9 +660,9 @@ const updateProductVariant = async (req, res) => {
 
 
 // delete the product varaint
-const deleteProductVaraint = async (req,res) =>{
+const deleteProductVaraint = async (req, res) => {
 
-try {
+    try {
         const { id } = req.params;
 
         const deleted = await ProductVariant.findByIdAndDelete(id)
@@ -292,6 +686,7 @@ module.exports = {
     deleteProductVaraint,
     getVaraintByProductID,
     getVaraintByID,
-    getVariantToQC
+    getVariantToQC,
+    getproductforSingleView
 }
 
